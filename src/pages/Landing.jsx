@@ -1,9 +1,9 @@
-// src/pages/Landing.jsx – version avec fixes demandés
 import React, { useEffect, useState } from "react";
 import {
   Box, Container, Flex, HStack, VStack, Stack, Spacer, Button, IconButton,
   Heading, Text, Badge, SimpleGrid, Stat, StatLabel, StatNumber, useColorMode,
-  useColorModeValue, Link as ChakraLink, Divider, Tag, TagLeftIcon, TagLabel, Icon, Tooltip
+  useColorModeValue, Link as ChakraLink, Divider, Tag, TagLeftIcon, TagLabel, Icon, Tooltip,
+  AspectRatio
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon, LockIcon, CheckCircleIcon, TimeIcon, ExternalLinkIcon, StarIcon } from "@chakra-ui/icons";
 import { FaLinkedin, FaTwitter } from "react-icons/fa";
@@ -12,17 +12,15 @@ import { motion, useMotionValue, animate } from "framer-motion";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import AnimatedParticles from "../components/AnimatedParticles"; // ← bien "s" à la fin
+import AnimatedParticles from "../components/AnimatedParticles";
 import GlowBlob from "../components/GlowBlob";
-import TrustLogos from "../components/TrustLogos";
 import GlowCard from "../components/GlowCard";
 import HowItWorksTimeline from "../components/HowItWorksTimeline";
-// NOTE: Counter existe mais on n’en a plus besoin sous le slogan (tu peux le garder pour Metrics)
 
-const MotionBox = motion.create ? motion.create(Box) : motion(Box); // fallback
+const MotionBox = motion.create ? motion.create(Box) : motion(Box);
 
-const Section = ({ children, id }) => (
-  <Box as="section" id={id} py={{ base: 14, md: 18 }}>
+const Section = ({ children, id, bg }) => (
+  <Box as="section" id={id} py={{ base: 14, md: 18 }} bg={bg}>
     <Container maxW="6xl" position="relative" zIndex={1}>
       {children}
     </Container>
@@ -43,7 +41,6 @@ const BrandButton = ({ children, ...props }) => (
   </Button>
 );
 
-/** Wrapper qui donne l’effet “le bouton suit légèrement la souris” */
 function Magnetic({ children }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -52,7 +49,7 @@ function Magnetic({ children }) {
     const rect = e.currentTarget.getBoundingClientRect();
     const dx = e.clientX - (rect.left + rect.width / 2);
     const dy = e.clientY - (rect.top + rect.height / 2);
-    x.set(Math.max(Math.min(dx * 0.06, 10), -10)); // limite ±10px
+    x.set(Math.max(Math.min(dx * 0.06, 10), -10));
     y.set(Math.max(Math.min(dy * 0.06, 10), -10));
   };
 
@@ -72,7 +69,6 @@ export default function Landing() {
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
 
-  // 🎨 BG UNIFORME global
   const pageBg = useColorModeValue(
     "linear(to-b, #f7faff, #eef3ff, #eaf0ff)",
     "linear(to-b, #0a0f1f, #0f172a, #0b1220)"
@@ -80,7 +76,6 @@ export default function Landing() {
   const subText = useColorModeValue("gray.600", "gray.300");
   const borderCol = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
 
-  // Live metrics (toujours utiles pour les cartes Metrics)
   const [metrics, setMetrics] = useState({ total_transactions: 0, total_volume: 0, transactions_by_psp: {} });
   useEffect(() => {
     const fetchMetrics = async () => {
@@ -154,7 +149,7 @@ export default function Landing() {
         </Container>
       </Box>
 
-      {/* HERO – garde les “segments flottants” */}
+      {/* HERO */}
       <Box as="header" position="relative">
         <Box position="absolute" inset={0} zIndex={0}>
           <AnimatedParticles />
@@ -176,8 +171,6 @@ export default function Landing() {
                 </Box>
               </Heading>
 
-              {/* ⛔️ Retiré : le HStack "Processed volume (demo)" */}
-
               <Text fontSize="lg" color={subText}>
                 Automatically route each payment to the best PSP (Stripe, Adyen, Wise, Rapyd) based on country, currency,
                 fees, and device. More conversions. Lower costs.
@@ -187,7 +180,14 @@ export default function Landing() {
                 <Magnetic>
                   <BrandButton onClick={() => navigate("/app")}>Get started</BrandButton>
                 </Magnetic>
-                <Button variant="ghost" rightIcon={<ExternalLinkIcon />} onClick={() => scrollTo("#how")}>
+                <Button
+                  variant="outline"
+                  borderColor="brand.400"
+                  color="brand.400"
+                  rightIcon={<ExternalLinkIcon />}
+                  onClick={() => scrollTo("#how")}
+                  _hover={{ bg: "brand.50" }}
+                >
                   See how it works
                 </Button>
               </HStack>
@@ -202,11 +202,8 @@ export default function Landing() {
                   <Text color={subText}>Latency-aware routing</Text>
                 </HStack>
               </HStack>
-
-              <TrustLogos />
             </VStack>
 
-            {/* Hero right card */}
             <GlowCard flex="1" p={6}>
               <VStack align="stretch" spacing={5}>
                 <Heading size="md">What SwitchPay optimizes</Heading>
@@ -230,7 +227,7 @@ export default function Landing() {
 
       <SoftSeparator />
 
-      {/* HOW IT WORKS – Timeline */}
+      {/* HOW IT WORKS */}
       <Section id="how">
         <VStack align="start" spacing={8}>
           <Heading size="xl">How it works</Heading>
@@ -240,14 +237,41 @@ export default function Landing() {
 
       <SoftSeparator />
 
+      {/* DEMO VIDEO */}
+      <Section id="demo" bg={useColorModeValue("linear(to-r, white, blue.50)", "linear(to-r, gray.900, gray.800)")}>
+        <VStack spacing={6} align="center">
+          <Heading size="xl">Product Demo</Heading>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            viewport={{ once: true }}
+            style={{ width: "100%", maxWidth: "800px" }}
+          >
+            <AspectRatio ratio={16 / 9} w="100%">
+              <iframe
+                src="https://www.youtube.com/embed/JE_LsFrjcAA"
+                title="SwitchPay Demo"
+                allowFullScreen
+              />
+            </AspectRatio>
+          </motion.div>
+        </VStack>
+      </Section>
+
+      <SoftSeparator />
+
       {/* WHY SWITCHPAY */}
-      <Section id="why">
+      <Section
+        id="why"
+        bg={useColorModeValue("linear(to-b, white, purple.50)", "linear(to-b, gray.800, gray.900)")}
+      >
         <VStack align="start" spacing={8}>
           <Heading size="xl">Why SwitchPay</Heading>
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
-            <ValueCard title="Plug & Play" text="Backend FastAPI + front React prêts pour l’itération." />
-            <ValueCard title="Idempotency by design" text="Protection contre les retries — même clé = même réponse." />
-            <ValueCard title="Observability" text="KPIs, volumes & distribution par PSP via /metrics." />
+            <ValueCard title="Plug & Play" text="Integrate in minutes. A ready-to-use backend (FastAPI) and frontend (React) built for fast iteration and seamless scaling." />
+            <ValueCard title="Idempotency by design" text="Never lose sleep over duplicate payments. Every request is safe: same key for same response, always." />
+            <ValueCard title="Observability" text="Track what matters. Get real-time KPIs, transaction volumes, and PSP distribution straight from metrics" />
           </SimpleGrid>
         </VStack>
       </Section>
@@ -255,7 +279,10 @@ export default function Landing() {
       <SoftSeparator />
 
       {/* LIVE METRICS */}
-      <Section id="metrics">
+      <Section
+        id="metrics"
+        bg={useColorModeValue("linear(to-r, blue.50, white)", "linear(to-r, gray.800, gray.700)")}
+      >
         <VStack align="start" spacing={6}>
           <Heading size="xl">Live Metrics</Heading>
           <Text color={subText}>Real data from your local instance via <code>/metrics</code>.</Text>
@@ -287,13 +314,15 @@ export default function Landing() {
       <SoftSeparator />
 
       {/* SECURITY */}
-      <Section id="security">
+      <Section
+        id="security"
+        bg={useColorModeValue("linear(to-r, gray.50, white)", "linear(to-r, gray.900, gray.800)")}
+      >
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10} alignItems="center">
           <VStack align="start" spacing={6}>
             <Heading size="xl">Security & Reliability</Heading>
             <Text color={subText}>
-              API Keys via <code>.env</code>, stored idempotency, controlled CORS. Replace simulated PSPs with real calls
-              (Stripe/Adyen SDK) when you’re ready.
+              Start with simulated PSPs and switch seamlessly to real providers (Stripe, Adyen, Wise…) when you’re ready.
             </Text>
             <HStack spacing={4}>
               <Badge colorScheme="green" px={3} py={1} borderRadius="full">
@@ -311,9 +340,9 @@ export default function Landing() {
           <GlowCard>
             <VStack align="stretch" spacing={4}>
               <Heading size="md">Next steps</Heading>
-              <RoadmapItem text="Connect Stripe (PaymentIntent) sandbox." />
-              <RoadmapItem text="Add retry & failover (PSP fallback) in backend." />
-              <RoadmapItem text="Routing score = cost + latency + auth rate + region." />
+              <RoadmapItem text="Connect your first sandbox (e.g. Stripe PaymentIntent)." />
+              <RoadmapItem text="Enable retry & failover with PSP fallback." />
+              <RoadmapItem text="Optimize routing score." />
             </VStack>
           </GlowCard>
         </SimpleGrid>
@@ -337,8 +366,8 @@ export default function Landing() {
 
       <SoftSeparator />
 
-      {/* CONTACT (déplacé après le CTA) */}
-      <Section id="contact">
+      {/* CONTACT */}
+      <Section id="contact" bg={useColorModeValue("linear(to-r, white, gray.50)", "linear(to-r, gray.800, gray.900)")}>
         <GlowCard>
           <Flex align="center" gap={6} wrap="wrap" justify="space-between">
             <VStack align="start" spacing={1}>
@@ -361,7 +390,7 @@ export default function Landing() {
               <Tooltip label="X / Twitter">
                 <Button
                   as="a"
-                  href="https://x.com/BatouS8"
+                  href="https://x.com/baptiste_sardou"
                   target="_blank"
                   rel="noreferrer"
                   leftIcon={<Icon as={FaTwitter} />}
@@ -396,15 +425,15 @@ export default function Landing() {
               <Text>© {new Date().getFullYear()} SwitchPay</Text>
             </HStack>
             <Spacer />
-            <HStack spacing={6}>
-              <ChakraLink as={RouterLink} to="/app" _hover={{ color: "brand.500" }}>
-                Product app
+            <HStack spacing={4}>
+              <ChakraLink as="a" href="https://x.com/baptiste_sardou" isExternal>
+                X
               </ChakraLink>
-              <ChakraLink as="button" onClick={() => scrollTo("#security")} _hover={{ color: "brand.500" }}>
-                Security
+              <ChakraLink as="a" href="https://www.linkedin.com/in/baptiste-sardou-789114288/" isExternal>
+                LinkedIn
               </ChakraLink>
-              <ChakraLink as="button" onClick={() => scrollTo("#contact")} _hover={{ color: "brand.500" }}>
-                Contact
+              <ChakraLink as="a" href="https://substack.com/@baptistesardou?utm_source=user-menu" isExternal>
+                Substack
               </ChakraLink>
             </HStack>
           </Flex>
@@ -414,18 +443,12 @@ export default function Landing() {
   );
 }
 
-/* === Helpers / petites cartes === */
-
+/* === Helpers === */
 function SoftSeparator() {
   const sep = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
   return (
     <Container maxW="6xl">
-      <Box
-        mt={{ base: 2, md: 4 }}
-        mb={{ base: 2, md: 4 }}
-        h="1px"
-        bgGradient={`linear(to-r, transparent, ${sep}, transparent)`}
-      />
+      <Box mt={{ base: 2, md: 4 }} mb={{ base: 2, md: 4 }} h="1px" bgGradient={`linear(to-r, transparent, ${sep}, transparent)`} />
     </Container>
   );
 }
@@ -461,9 +484,7 @@ function Feature({ label }) {
 function ValueCard({ title, text }) {
   return (
     <GlowCard>
-      <Heading size="md" mb={2}>
-        {title}
-      </Heading>
+      <Heading size="md" mb={2}>{title}</Heading>
       <Text color={useColorModeValue("gray.600", "gray.300")}>{text}</Text>
     </GlowCard>
   );
@@ -491,9 +512,7 @@ function MiniKpis({ metrics }) {
 function Kpi({ label, value }) {
   return (
     <Box p={3} borderRadius="lg" bg={useColorModeValue("gray.50", "whiteAlpha.100")} textAlign="center">
-      <Text fontSize="xs" opacity={0.7}>
-        {label}
-      </Text>
+      <Text fontSize="xs" opacity={0.7}>{label}</Text>
       <Heading size="md">{value}</Heading>
     </Box>
   );
