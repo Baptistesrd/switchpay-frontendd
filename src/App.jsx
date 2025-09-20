@@ -14,28 +14,40 @@ import MagneticButton from "./components/MagneticButton";
 import Counter from "./components/Counter";
 import DashCharts from "./components/DashCharts";
 
-const MotionBox = motion.create(Box);
+const MotionBox = motion(Box); // pour compatibilité Chakra + Framer
 
 export default function App() {
   const [transactions, setTransactions] = useState([]);
   const { colorMode, toggleColorMode } = useColorMode();
   const toast = useToast();
 
-  // 🔧 Hooks appelés en haut (pas dans des callbacks)
+  const API_KEY = process.env.REACT_APP_API_KEY;
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
   const boxBg = useColorModeValue("white", "gray.800");
   const borderCol = useColorModeValue("blackAlpha.150", "whiteAlpha.200");
-  const tabSelectedBg = useColorModeValue("white", "gray.800"); // utilisé dans _selected
+  const tabSelectedBg = useColorModeValue("white", "gray.800");
 
   const fetchTransactions = async (silent = false) => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/transactions`);
+      const res = await axios.get(`${BACKEND_URL}/transactions`, {
+        headers: {
+          "x-api-key": API_KEY
+        }
+      });
       setTransactions(res.data || []);
       if (!silent) {
         toast({ title: "Transactions refreshed", status: "success", duration: 1500, isClosable: true });
       }
     } catch (err) {
       console.error("❌ Error fetching transactions:", err);
-      toast({ title: "Fetch error", description: "Unable to load transactions.", status: "error", duration: 3000, isClosable: true });
+      toast({
+        title: "Error loading transactions",
+        description: err.response?.data?.detail || "Unknown error",
+        status: "error",
+        duration: 3000,
+        isClosable: true
+      });
     }
   };
 
@@ -45,21 +57,16 @@ export default function App() {
 
   const handleNewTransaction = () => fetchTransactions(true);
 
-  // === KPIs ===
-  const totalAmount = useMemo(
-    () => transactions.reduce((acc, tx) => acc + Number(tx.montant || 0), 0),
-    [transactions]
-  );
+  const totalAmount = useMemo(() => transactions.reduce((acc, tx) => acc + Number(tx.montant || 0), 0), [transactions]);
   const count = transactions.length;
-  const successCount = transactions.filter((tx) => tx.status === "success").length;
+  const successCount = transactions.filter(tx => tx.status === "success").length;
   const failCount = count - successCount;
   const successRate = count > 0 ? Math.round((successCount / count) * 100) : 0;
 
-  // === CSV ===
   const exportCSV = () => {
     const csvHeader = "ID,Amount,Currency,Country,PSP,Status\n";
     const csvRows = transactions
-      .map((tx) => `${tx.id},${tx.montant},${tx.devise},${tx.pays},${tx.psp},${tx.status}`)
+      .map(tx => `${tx.id},${tx.montant},${tx.devise},${tx.pays},${tx.psp},${tx.status}`)
       .join("\n");
     const blob = new Blob([csvHeader + csvRows], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
@@ -73,7 +80,6 @@ export default function App() {
 
   return (
     <Box maxW="6xl" mx="auto" px={6} py={8}>
-      {/* Header */}
       <Flex mb={6} align="center">
         <Heading size="lg" fontWeight="extrabold">
           SwitchPay.&nbsp;
@@ -92,22 +98,16 @@ export default function App() {
         </HStack>
       </Flex>
 
-      {/* Tabs */}
       <Tabs variant="enclosed" colorScheme="blue">
         <TabList mb={4} borderColor={borderCol}>
-          {["New Transaction", "Transaction History", "Dashboard"].map((label) => (
-            <Tab
-              key={label}
-              _selected={{ color: "brand.600", borderColor: borderCol, bg: tabSelectedBg }}
-              _hover={{ color: "brand.500" }}
-            >
+          {["New Transaction", "Transaction History", "Dashboard"].map(label => (
+            <Tab key={label} _selected={{ color: "brand.600", borderColor: borderCol, bg: tabSelectedBg }}>
               {label}
             </Tab>
           ))}
         </TabList>
 
         <TabPanels>
-          {/* === NEW TRANSACTION === */}
           <TabPanel>
             <MotionBox
               initial={{ opacity: 0, y: 10 }}
@@ -130,7 +130,6 @@ export default function App() {
             </MotionBox>
           </TabPanel>
 
-          {/* === HISTORY === */}
           <TabPanel>
             <Flex justify="space-between" align="center" mb={3} wrap="wrap" gap={3}>
               <HStack spacing={3}>
@@ -147,30 +146,22 @@ export default function App() {
             </MotionBox>
           </TabPanel>
 
-          {/* === DASHBOARD === */}
           <TabPanel>
             <MotionBox initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
               <SimpleGrid columns={[1, 2, 4]} spacing={6} mt={1}>
                 <KpiCard label="Total Volume">
-                  <StatNumber>
-                    <Counter to={totalAmount} isMoney decimals={2} />
-                  </StatNumber>
+                  <StatNumber><Counter to={totalAmount} isMoney decimals={2} /></StatNumber>
                 </KpiCard>
                 <KpiCard label="# Transactions">
-                  <StatNumber>
-                    <Counter to={count} />
-                  </StatNumber>
+                  <StatNumber><Counter to={count} /></StatNumber>
                 </KpiCard>
                 <KpiCard label="Success Rate">
                   <StatNumber>{successRate}%</StatNumber>
                 </KpiCard>
                 <KpiCard label="Failures">
-                  <StatNumber>
-                    <Counter to={failCount} />
-                  </StatNumber>
+                  <StatNumber><Counter to={failCount} /></StatNumber>
                 </KpiCard>
               </SimpleGrid>
-
               <Box mt={8} bg={boxBg} p={5} borderRadius="2xl" border="1px solid" borderColor={borderCol} shadow="xl">
                 <Heading size="md" mb={4}>Analytics</Heading>
                 <DashCharts transactions={transactions} />
