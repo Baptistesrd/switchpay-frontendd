@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"; 
 import {
   Box, Container, Flex, HStack, VStack, Stack, Spacer, Button, IconButton,
   Heading, Text, Badge, SimpleGrid, Stat, StatLabel, StatNumber, useColorMode,
-  useColorModeValue, Link as ChakraLink, Divider, Tag, TagLeftIcon, TagLabel, Icon, Tooltip,
-  AspectRatio
+  useColorModeValue, Link as ChakraLink, Divider, Icon, Tooltip,
+  AspectRatio, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon,
+  Modal, ModalOverlay, ModalContent, useDisclosure
 } from "@chakra-ui/react";
-import { MoonIcon, SunIcon, LockIcon, CheckCircleIcon, TimeIcon, ExternalLinkIcon, StarIcon } from "@chakra-ui/icons";
+import { MoonIcon, SunIcon, LockIcon, CheckCircleIcon, TimeIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import { FaLinkedin, FaTwitter } from "react-icons/fa";
 import { SiSubstack } from "react-icons/si";
 import { motion, useMotionValue, animate } from "framer-motion";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import AnimatedParticles from "../components/AnimatedParticles";
@@ -68,6 +69,7 @@ function Magnetic({ children }) {
 export default function Landing() {
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const pageBg = useColorModeValue(
     "linear(to-b, #f7faff, #eef3ff, #eaf0ff)",
@@ -77,6 +79,8 @@ export default function Landing() {
   const borderCol = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
 
   const [metrics, setMetrics] = useState({ total_transactions: 0, total_volume: 0, transactions_by_psp: {} });
+  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
+
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
@@ -87,6 +91,19 @@ export default function Landing() {
     fetchMetrics();
     const id = setInterval(fetchMetrics, 8000);
     return () => clearInterval(id);
+  }, []);
+
+  // Scroll detection for floating CTA
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setShowFloatingCTA(true);
+      } else {
+        setShowFloatingCTA(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollTo = (hash) => {
@@ -110,29 +127,15 @@ export default function Landing() {
           <Flex h={16} align="center">
             <HStack spacing={3}>
               <Box w="10px" h="10px" borderRadius="full" bgGradient="linear(to-br, brand.400, brand.600)" />
-              <Heading size="md">SwitchPay</Heading>
-              <Tag size="sm" variant="subtle" colorScheme="purple" ml={2}>
-                <TagLeftIcon as={StarIcon} />
-                <TagLabel>Fintech Infra</TagLabel>
-              </Tag>
+              <Heading fontSize="2xl" fontWeight="black">SwitchPay</Heading>
             </HStack>
             <Spacer />
             <HStack spacing={6} display={{ base: "none", md: "flex" }}>
-              <ChakraLink as="button" onClick={() => scrollTo("#how")} _hover={{ color: "brand.500" }}>
-                How it works
-              </ChakraLink>
-              <ChakraLink as="button" onClick={() => scrollTo("#why")} _hover={{ color: "brand.500" }}>
-                Why SwitchPay
-              </ChakraLink>
-              <ChakraLink as="button" onClick={() => scrollTo("#metrics")} _hover={{ color: "brand.500" }}>
-                Live Metrics
-              </ChakraLink>
-              <ChakraLink as="button" onClick={() => scrollTo("#security")} _hover={{ color: "brand.500" }}>
-                Security
-              </ChakraLink>
-              <ChakraLink as="button" onClick={() => scrollTo("#contact")} _hover={{ color: "brand.500" }}>
-                Contact
-              </ChakraLink>
+              <ChakraLink as="button" onClick={() => scrollTo("#how")} _hover={{ color: "brand.500" }}>How it works</ChakraLink>
+              <ChakraLink as="button" onClick={() => scrollTo("#why")} _hover={{ color: "brand.500" }}>Why SwitchPay</ChakraLink>
+              <ChakraLink as="button" onClick={() => scrollTo("#metrics")} _hover={{ color: "brand.500" }}>Live Metrics</ChakraLink>
+              <ChakraLink as="button" onClick={() => scrollTo("#security")} _hover={{ color: "brand.500" }}>Security</ChakraLink>
+              <ChakraLink as="button" onClick={() => scrollTo("#contact")} _hover={{ color: "brand.500" }}>Contact</ChakraLink>
             </HStack>
             <HStack spacing={3} ml={4}>
               <IconButton
@@ -149,33 +152,28 @@ export default function Landing() {
         </Container>
       </Box>
 
+
       {/* HERO */}
-      <Box as="header" position="relative">
+      <Box as="header" position="relative" py={30}>
         <Box position="absolute" inset={0} zIndex={0}>
           <AnimatedParticles />
           <GlowBlob top="6%" left="65%" size="520px" delay={0.2} />
           <GlowBlob top="58%" left="10%" size="460px" delay={0.6} />
         </Box>
-
         <Section id="hero">
           <Stack direction={{ base: "column", md: "row" }} spacing={10} align="center">
             <VStack align="start" spacing={6} maxW="xl">
-              <Badge colorScheme="blue" borderRadius="full" px={3} py={1}>
-                Smart Payment Routing
-              </Badge>
-              <Heading as="h1" size="2xl" lineHeight="1.1">
+              <Heading as="h1" size="2xl" lineHeight="1" fontWeight="extrabold">
                 Welcome to SwitchPay.
                 <br />
                 <Box as="span" bgGradient="linear(to-r, brand.500, brand.300)" bgClip="text" className="shimmer">
                   Your money matters.
                 </Box>
               </Heading>
-
               <Text fontSize="lg" color={subText}>
                 Automatically route each payment to the best PSP (Stripe, Adyen, Wise, Rapyd) based on country, currency,
                 fees, and device. More conversions. Lower costs.
               </Text>
-
               <HStack spacing={4}>
                 <Magnetic>
                   <BrandButton onClick={() => navigate("/app")}>Get started</BrandButton>
@@ -191,7 +189,6 @@ export default function Landing() {
                   See how it works
                 </Button>
               </HStack>
-
               <HStack spacing={6} pt={2}>
                 <HStack spacing={2}>
                   <CheckCircleIcon color="green.400" />
@@ -214,18 +211,65 @@ export default function Landing() {
                   <Feature label="Failover routing" />
                 </SimpleGrid>
                 <Divider />
-                <MiniKpis metrics={metrics} />
-                <Text fontSize="sm" color={subText}>
-                  Local demo: connected to your FastAPI backend (endpoints <code>/transaction</code> &{" "}
-                  <code>/metrics</code>).
-                </Text>
-              </VStack>
+<VStack spacing={3} align="center">
+  <Text fontWeight="bold" fontSize="md">Integrated PSPs</Text>
+  <HStack spacing={8} wrap="wrap" justify="center">
+    <Box
+      as="img"
+      src="/Stripe_Logo,_revised_2016.svg.png"
+      alt="Stripe"
+      h="40px"
+      maxW="100px"
+      objectFit="contain"
+    />
+    <Box
+      as="img"
+      src="/Adyen_Corporate_Logo.svg.png"
+      alt="Adyen"
+      h="40px"
+      maxW="100px"
+      objectFit="contain"
+    />
+    <Box
+      as="img"
+      src="/Airwallex_Logo_-_Black.png"
+      alt="Airwallex"
+      h="40px"
+      maxW="100px"
+      objectFit="contain"
+    />
+    <Box
+      as="img"
+      src="/Wise2020.svg"
+      alt="Wise"
+      h="40px"
+      maxW="100px"
+      objectFit="contain"
+    />
+    <Box
+      as="img"
+      src="/Rapyd-logo-768x236.webp"
+      alt="Rapyd"
+      h="40px"
+      maxW="100px"
+      objectFit="contain"
+    />
+    <Box
+      as="img"
+      src="/PayPal.svg.png"
+      alt="PayPal"
+      h="40px"
+      maxW="100px"
+      objectFit="contain"
+    />
+  </HStack>
+</VStack>
+
+</VStack>
             </GlowCard>
           </Stack>
         </Section>
       </Box>
-
-      <SoftSeparator />
 
       {/* HOW IT WORKS */}
       <Section id="how">
@@ -235,37 +279,99 @@ export default function Landing() {
         </VStack>
       </Section>
 
-      <SoftSeparator />
-
-      {/* DEMO VIDEO */}
+      {/* PRODUCT DEMO */}
       <Section id="demo" bg={useColorModeValue("linear(to-r, white, blue.50)", "linear(to-r, gray.900, gray.800)")}>
-        <VStack spacing={6} align="center">
-          <Heading size="xl">Product Demo</Heading>
+        <VStack spacing={8} align="center" textAlign="center">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             viewport={{ once: true }}
-            style={{ width: "100%", maxWidth: "800px" }}
+          >
+            <Heading size="2xl" bgGradient="linear(to-r, brand.500, brand.300)" bgClip="text">
+              Product Demo
+            </Heading>
+            <Text mt={3} fontSize="lg" color={subText}>
+              See SwitchPay in action — routing payments in real time.
+            </Text>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            viewport={{ once: true }}
+            whileHover={{ scale: 1.02, rotateX: 3, rotateY: -3 }}
+            style={{
+              width: "100%",
+              maxWidth: "900px",
+              borderRadius: "20px",
+              overflow: "hidden",
+              boxShadow: "0 0 40px rgba(35, 104, 245, 0.4)",
+              position: "relative",
+            }}
           >
             <AspectRatio ratio={16 / 9} w="100%">
               <iframe
-                src="https://www.youtube.com/embed/JE_LsFrjcAA"
+                src="https://www.youtube.com/embed/JE_LsFrjcAA?controls=0"
+                title="SwitchPay Demo"
+                allowFullScreen
+                style={{ borderRadius: "20px", zIndex: 1 }}
+              />
+            </AspectRatio>
+
+            <Flex
+              position="absolute"
+              inset={0}
+              justify="center"
+              align="center"
+              bg="blackAlpha.500"
+              opacity={0}
+              _hover={{ opacity: 1 }}
+              transition="all 0.3s ease"
+              zIndex={2}
+              direction="column"
+            >
+              <Button
+                size="lg"
+                mb={3}
+                bgGradient="linear(to-r, brand.500, brand.300)"
+                color="white"
+                _hover={{ filter: "brightness(1.1)" }}
+                onClick={onOpen}
+              >
+                ▶ Play Demo
+              </Button>
+              <Button
+                variant="outline"
+                color="white"
+                borderColor="whiteAlpha.600"
+                leftIcon={<ExternalLinkIcon />}
+                onClick={() => window.open("https://www.youtube.com/watch?v=JE_LsFrjcAA", "_blank")}
+              >
+                Open on YouTube
+              </Button>
+            </Flex>
+          </motion.div>
+        </VStack>
+
+        {/* Modal video */}
+        <Modal isOpen={isOpen} onClose={onClose} size="4xl" isCentered>
+          <ModalOverlay />
+          <ModalContent borderRadius="lg" overflow="hidden">
+            <AspectRatio ratio={16 / 9} w="100%">
+              <iframe
+                src="https://www.youtube.com/embed/JE_LsFrjcAA?autoplay=1"
                 title="SwitchPay Demo"
                 allowFullScreen
               />
             </AspectRatio>
-          </motion.div>
-        </VStack>
+          </ModalContent>
+        </Modal>
       </Section>
 
-      <SoftSeparator />
-
       {/* WHY SWITCHPAY */}
-      <Section
-        id="why"
-        bg={useColorModeValue("linear(to-b, white, purple.50)", "linear(to-b, gray.800, gray.900)")}
-      >
+        <Section id="why" bg={useColorModeValue("linear(to-b, gray.50, purple.50)", "linear(to-b, gray.800, gray.900)")}>
         <VStack align="start" spacing={8}>
           <Heading size="xl">Why SwitchPay</Heading>
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
@@ -276,15 +382,10 @@ export default function Landing() {
         </VStack>
       </Section>
 
-      <SoftSeparator />
-
       {/* LIVE METRICS */}
-      <Section
-        id="metrics"
-        bg={useColorModeValue("linear(to-r, blue.50, white)", "linear(to-r, gray.800, gray.700)")}
-      >
+      <Section id="metrics" bg={useColorModeValue("linear(to-r, blue.50, white)", "linear(to-r, gray.800, gray.700)")}>
         <VStack align="start" spacing={6}>
-          <Heading size="xl">Live Metrics</Heading>
+          <Heading size="xl">Track the best KPIs</Heading>
           <Text color={subText}>Real data from your local instance via <code>/metrics</code>.</Text>
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mt={2}>
             <StatCard
@@ -311,13 +412,8 @@ export default function Landing() {
         </VStack>
       </Section>
 
-      <SoftSeparator />
-
       {/* SECURITY */}
-      <Section
-        id="security"
-        bg={useColorModeValue("linear(to-r, gray.50, white)", "linear(to-r, gray.900, gray.800)")}
-      >
+      <Section id="security" bg={useColorModeValue("linear(to-r, gray.50, white)", "linear(to-r, gray.900, gray.800)")}>
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10} alignItems="center">
           <VStack align="start" spacing={6}>
             <Heading size="xl">Security & Reliability</Heading>
@@ -325,18 +421,11 @@ export default function Landing() {
               Start with simulated PSPs and switch seamlessly to real providers (Stripe, Adyen, Wise…) when you’re ready.
             </Text>
             <HStack spacing={4}>
-              <Badge colorScheme="green" px={3} py={1} borderRadius="full">
-                <LockIcon mr={1} /> API Key
-              </Badge>
-              <Badge colorScheme="purple" px={3} py={1} borderRadius="full">
-                Idempotency
-              </Badge>
-              <Badge colorScheme="blue" px={3} py={1} borderRadius="full">
-                Metrics
-              </Badge>
+              <Badge colorScheme="green" px={3} py={1} borderRadius="full"><LockIcon mr={1} /> API Key</Badge>
+              <Badge colorScheme="purple" px={3} py={1} borderRadius="full">Idempotency</Badge>
+              <Badge colorScheme="blue" px={3} py={1} borderRadius="full">Metrics</Badge>
             </HStack>
           </VStack>
-
           <GlowCard>
             <VStack align="stretch" spacing={4}>
               <Heading size="md">Next steps</Heading>
@@ -347,8 +436,6 @@ export default function Landing() {
           </GlowCard>
         </SimpleGrid>
       </Section>
-
-      <SoftSeparator />
 
       {/* CTA */}
       <Section id="cta">
@@ -364,7 +451,41 @@ export default function Landing() {
         </GlowCard>
       </Section>
 
-      <SoftSeparator />
+      {/* FAQ */}
+      <Section id="faq" bg={useColorModeValue("linear(to-r, white, gray.50)", "linear(to-r, gray.800, gray.900)")}>
+        <VStack align="start" spacing={6}>
+          <Heading size="xl">Frequently asked questions</Heading>
+          <Accordion allowToggle w="100%">
+            <AccordionItem>
+              <AccordionButton>
+                <Box flex="1" textAlign="left">What is SwitchPay?</Box>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel pb={4}>
+                SwitchPay is a smart payment router that automatically picks the best PSP for each transaction.
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem>
+              <AccordionButton>
+                <Box flex="1" textAlign="left">How do I test the app?</Box>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel pb={4}>
+                You can use the local demo with FastAPI endpoints <code>/transaction</code> and <code>/metrics</code>.
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem>
+              <AccordionButton>
+                <Box flex="1" textAlign="left">Which PSPs are supported?</Box>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel pb={4}>
+                Currently: Stripe, Adyen, Wise, Rapyd. More coming soon.
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
+        </VStack>
+      </Section>
 
       {/* CONTACT */}
       <Section id="contact" bg={useColorModeValue("linear(to-r, white, gray.50)", "linear(to-r, gray.800, gray.900)")}>
@@ -376,40 +497,13 @@ export default function Landing() {
             </VStack>
             <HStack spacing={4}>
               <Tooltip label="LinkedIn">
-                <Button
-                  as="a"
-                  href="https://www.linkedin.com/in/baptiste-sardou-789114288/"
-                  target="_blank"
-                  rel="noreferrer"
-                  leftIcon={<Icon as={FaLinkedin} />}
-                  variant="outline"
-                >
-                  LinkedIn
-                </Button>
+                <Button as="a" href="https://www.linkedin.com/in/baptiste-sardou-789114288/" target="_blank" rel="noreferrer" leftIcon={<Icon as={FaLinkedin} />} variant="outline">LinkedIn</Button>
               </Tooltip>
               <Tooltip label="X / Twitter">
-                <Button
-                  as="a"
-                  href="https://x.com/baptiste_sardou"
-                  target="_blank"
-                  rel="noreferrer"
-                  leftIcon={<Icon as={FaTwitter} />}
-                  variant="outline"
-                >
-                  X
-                </Button>
+                <Button as="a" href="https://x.com/baptiste_sardou" target="_blank" rel="noreferrer" leftIcon={<Icon as={FaTwitter} />} variant="outline">X</Button>
               </Tooltip>
               <Tooltip label="Substack">
-                <Button
-                  as="a"
-                  href="https://substack.com/@baptistesardou?utm_source=user-menu"
-                  target="_blank"
-                  rel="noreferrer"
-                  leftIcon={<Icon as={SiSubstack} />}
-                  variant="outline"
-                >
-                  Substack
-                </Button>
+                <Button as="a" href="https://substack.com/@baptistesardou?utm_source=user-menu" target="_blank" rel="noreferrer" leftIcon={<Icon as={SiSubstack} />} variant="outline">Substack</Button>
               </Tooltip>
             </HStack>
           </Flex>
@@ -426,15 +520,9 @@ export default function Landing() {
             </HStack>
             <Spacer />
             <HStack spacing={4}>
-              <ChakraLink as="a" href="https://x.com/baptiste_sardou" isExternal>
-                X
-              </ChakraLink>
-              <ChakraLink as="a" href="https://www.linkedin.com/in/baptiste-sardou-789114288/" isExternal>
-                LinkedIn
-              </ChakraLink>
-              <ChakraLink as="a" href="https://substack.com/@baptistesardou?utm_source=user-menu" isExternal>
-                Substack
-              </ChakraLink>
+              <ChakraLink as="a" href="https://x.com/baptiste_sardou" isExternal>X</ChakraLink>
+              <ChakraLink as="a" href="https://www.linkedin.com/in/baptiste-sardou-789114288/" isExternal>LinkedIn</ChakraLink>
+              <ChakraLink as="a" href="https://substack.com/@baptistesardou?utm_source=user-menu" isExternal>Substack</ChakraLink>
             </HStack>
           </Flex>
         </Container>
@@ -444,15 +532,6 @@ export default function Landing() {
 }
 
 /* === Helpers === */
-function SoftSeparator() {
-  const sep = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
-  return (
-    <Container maxW="6xl">
-      <Box mt={{ base: 2, md: 4 }} mb={{ base: 2, md: 4 }} h="1px" bgGradient={`linear(to-r, transparent, ${sep}, transparent)`} />
-    </Container>
-  );
-}
-
 function Feature({ label }) {
   const chipBg = useColorModeValue("gray.100", "whiteAlpha.200");
   const chipHoverBg = useColorModeValue("brand.500", "brand.500");

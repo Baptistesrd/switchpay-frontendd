@@ -40,3 +40,4 @@ body { animation: gradientShift 18s ease-in-out infinite; }
 
 /* remove underline globally on Chakra <a> hover by default */
 a:hover { text-decoration: none; }
+
