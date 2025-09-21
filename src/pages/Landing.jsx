@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"; 
+import React, { useEffect, useState } from "react";
 import {
   Box, Container, Flex, HStack, VStack, Stack, Spacer, Button, IconButton,
   Heading, Text, Badge, SimpleGrid, Stat, StatLabel, StatNumber, useColorMode,
@@ -13,10 +13,12 @@ import { motion, useMotionValue, animate } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import BackgroundFX from "../components/BackgroundFX";
 import AnimatedParticles from "../components/AnimatedParticles";
 import GlowBlob from "../components/GlowBlob";
 import GlowCard from "../components/GlowCard";
 import HowItWorksTimeline from "../components/HowItWorksTimeline";
+import ChatbotWidget from "../components/ChatbotWidget";
 
 const MotionBox = motion.create ? motion.create(Box) : motion(Box);
 
@@ -112,14 +114,18 @@ export default function Landing() {
   };
 
   return (
-    <Box position="relative" overflow="hidden" bgGradient={pageBg} minH="100vh">
+    <Box position="relative" overflowX="hidden" bgGradient={pageBg} minH="100vh">
+      {/* BACKGROUND FX */}
+      <BackgroundFX />
+
+
       {/* NAVBAR */}
       <Box
         position="sticky"
         top="0"
         zIndex="100"
         bg={useColorModeValue("rgba(255,255,255,0.75)", "rgba(10,15,31,0.65)")}
-        backdropFilter="saturate(180%) blur(10px)"
+        backdropFilter="saturate(250%) blur(15px)"
         borderBottom="1px solid"
         borderColor={borderCol}
       >
@@ -135,6 +141,7 @@ export default function Landing() {
               <ChakraLink as="button" onClick={() => scrollTo("#why")} _hover={{ color: "brand.500" }}>Why SwitchPay</ChakraLink>
               <ChakraLink as="button" onClick={() => scrollTo("#metrics")} _hover={{ color: "brand.500" }}>Live Metrics</ChakraLink>
               <ChakraLink as="button" onClick={() => scrollTo("#security")} _hover={{ color: "brand.500" }}>Security</ChakraLink>
+              <ChakraLink as="button" onClick={() => scrollTo("#pricing")} _hover={{ color: "brand.500" }}>Pricing</ChakraLink>
               <ChakraLink as="button" onClick={() => scrollTo("#contact")} _hover={{ color: "brand.500" }}>Contact</ChakraLink>
             </HStack>
             <HStack spacing={3} ml={4}>
@@ -151,7 +158,6 @@ export default function Landing() {
           </Flex>
         </Container>
       </Box>
-
 
       {/* HERO */}
       <Box as="header" position="relative" py={30}>
@@ -211,61 +217,18 @@ export default function Landing() {
                   <Feature label="Failover routing" />
                 </SimpleGrid>
                 <Divider />
-<VStack spacing={3} align="center">
-  <Text fontWeight="bold" fontSize="md">Integrated PSPs</Text>
-  <HStack spacing={8} wrap="wrap" justify="center">
-    <Box
-      as="img"
-      src="/Stripe_Logo,_revised_2016.svg.png"
-      alt="Stripe"
-      h="40px"
-      maxW="100px"
-      objectFit="contain"
-    />
-    <Box
-      as="img"
-      src="/Adyen_Corporate_Logo.svg.png"
-      alt="Adyen"
-      h="40px"
-      maxW="100px"
-      objectFit="contain"
-    />
-    <Box
-      as="img"
-      src="/Airwallex_Logo_-_Black.png"
-      alt="Airwallex"
-      h="40px"
-      maxW="100px"
-      objectFit="contain"
-    />
-    <Box
-      as="img"
-      src="/Wise2020.svg"
-      alt="Wise"
-      h="40px"
-      maxW="100px"
-      objectFit="contain"
-    />
-    <Box
-      as="img"
-      src="/Rapyd-logo-768x236.webp"
-      alt="Rapyd"
-      h="40px"
-      maxW="100px"
-      objectFit="contain"
-    />
-    <Box
-      as="img"
-      src="/PayPal.svg.png"
-      alt="PayPal"
-      h="40px"
-      maxW="100px"
-      objectFit="contain"
-    />
-  </HStack>
-</VStack>
-
-</VStack>
+                <VStack spacing={3} align="center">
+                  <Text fontWeight="bold" fontSize="md">Integrated PSPs</Text>
+                  <HStack spacing={8} wrap="wrap" justify="center">
+                    <Box as="img" src="/Stripe_Logo,_revised_2016.svg.png" alt="Stripe" h="40px" maxW="100px" objectFit="contain" />
+                    <Box as="img" src="/Adyen_Corporate_Logo.svg.png" alt="Adyen" h="40px" maxW="100px" objectFit="contain" />
+                    <Box as="img" src="/Airwallex_Logo_-_Black.png" alt="Airwallex" h="40px" maxW="100px" objectFit="contain" />
+                    <Box as="img" src="/Wise2020.svg" alt="Wise" h="40px" maxW="100px" objectFit="contain" />
+                    <Box as="img" src="/Rapyd-logo-768x236.webp" alt="Rapyd" h="40px" maxW="100px" objectFit="contain" />
+                    <Box as="img" src="/PayPal.svg.png" alt="PayPal" h="40px" maxW="100px" objectFit="contain" />
+                  </HStack>
+                </VStack>
+              </VStack>
             </GlowCard>
           </Stack>
         </Section>
@@ -371,7 +334,7 @@ export default function Landing() {
       </Section>
 
       {/* WHY SWITCHPAY */}
-        <Section id="why" bg={useColorModeValue("linear(to-b, gray.50, purple.50)", "linear(to-b, gray.800, gray.900)")}>
+      <Section id="why" bg={useColorModeValue("linear(to-b, gray.50, purple.50)", "linear(to-b, gray.800, gray.900)")}>
         <VStack align="start" spacing={8}>
           <Heading size="xl">Why SwitchPay</Heading>
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
@@ -435,6 +398,100 @@ export default function Landing() {
             </VStack>
           </GlowCard>
         </SimpleGrid>
+      </Section>
+
+      {/* PRICING */}
+      <Section id="pricing" bg={useColorModeValue("linear(to-b, white, gray.50)", "linear(to-b, gray.900, gray.800)")}>
+        <VStack spacing={10} align="center" textAlign="center">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            <Heading size="2xl" fontWeight="extrabold" mb={3}>
+              Simple, transparent pricing.
+            </Heading>
+            <Text fontSize="lg" color={subText}>
+              Start for free. Scale without limits. Only pay for real value.
+            </Text>
+          </motion.div>
+
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8} w="100%" maxW="6xl">
+            {[
+              {
+                title: "Starter",
+                price: "Free",
+                desc: "For indie devs & startups testing payments.",
+                features: ["100 tx/month", "Sandbox PSPs", "Basic metrics"],
+                highlight: false,
+              },
+              {
+                title: "Growth",
+                price: "€99/mo",
+                desc: "For scaling teams optimizing conversion.",
+                features: ["10k tx/month", "Smart routing", "Failover & retries", "Advanced dashboard"],
+                highlight: true,
+              },
+              {
+                title: "Enterprise",
+                price: "Custom",
+                desc: "For global players needing reliability at scale.",
+                features: ["Unlimited tx", "Dedicated PSP mix", "24/7 support", "SLAs & compliance"],
+                highlight: false,
+              },
+            ].map((tier, i) => (
+              <GlowCard
+                key={i}
+                p={8}
+                borderWidth={tier.highlight ? "2px" : "1px"}
+                borderColor={tier.highlight ? "brand.400" : borderCol}
+                transition="all 0.35s ease"
+                _hover={{
+                  transform: "scale(1.06)",
+                  boxShadow:
+                    tier.highlight
+                      ? "0 0 40px rgba(123, 63, 252, 0.6), 0 0 80px rgba(123, 63, 252, 0.3)"
+                      : "0 0 25px rgba(35,104,245,0.3)",
+                }}
+                display="flex"
+                flexDirection="column"
+              >
+                <VStack spacing={4} flex="1" align="stretch">
+                  <Badge
+                    alignSelf="center"
+                    colorScheme={tier.highlight ? "purple" : "gray"}
+                    variant={tier.highlight ? "solid" : "subtle"}
+                    px={3}
+                    py={1}
+                    borderRadius="full"
+                  >
+                    {tier.title}
+                  </Badge>
+                  <Heading size="2xl" textAlign="center">{tier.price}</Heading>
+                  <Text color={subText} mb={4} textAlign="center">{tier.desc}</Text>
+
+                  <VStack spacing={2} align="start" flex="1">
+                    {tier.features.map((f, idx) => (
+                      <HStack key={idx} spacing={2}>
+                        <CheckCircleIcon color="green.400" />
+                        <Text>{f}</Text>
+                      </HStack>
+                    ))}
+                  </VStack>
+
+                  <Spacer />
+
+                  <Magnetic>
+                    <BrandButton mt={6} w="100%">
+                      {tier.price === "Custom" ? "Contact us" : "Get started"}
+                    </BrandButton>
+                  </Magnetic>
+                </VStack>
+              </GlowCard>
+            ))}
+          </SimpleGrid>
+        </VStack>
       </Section>
 
       {/* CTA */}
@@ -527,6 +584,7 @@ export default function Landing() {
           </Flex>
         </Container>
       </Box>
+      <ChatbotWidget />
     </Box>
   );
 }

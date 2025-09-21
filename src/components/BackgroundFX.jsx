@@ -1,18 +1,24 @@
 import { Box, useColorModeValue } from "@chakra-ui/react";
 
 /**
- * BackgroundFX
- * - Quadrillage + radials + léger bruit
- * - Par défaut, position: absolute; mais peut être fixé (fixed) si besoin
- *   via la prop `fixed`.
- * - L’opacité du quadrillage est ajustable via `gridOpacity`.
+ * BackgroundFX (Aurora Gradient Flow)
+ * - Fond aurora mouvant inspiré fintech unicorn (Stripe/Revolut vibes)
+ * - Gère automatiquement le mode clair/sombre
+ * - Se fixe derrière toute la page (position: fixed)
  */
-export default function BackgroundFX({ fixed = false, gridSize = 32, gridOpacity = 0.8 }) {
-  const gridColor = useColorModeValue("rgba(10, 37, 64, 0.035)", "rgba(255,255,255,0.06)");
-  const radial = useColorModeValue(
-    "radial-gradient(800px circle at 20% 0%, rgba(35,104,245,0.12), transparent 40%), radial-gradient(800px circle at 80% 10%, rgba(120,145,255,0.12), transparent 40%)",
-    "radial-gradient(800px circle at 20% 0%, rgba(35,104,245,0.18), transparent 40%), radial-gradient(800px circle at 80% 10%, rgba(120,145,255,0.14), transparent 40%)"
-  );
+export default function BackgroundFX({ fixed = true }) {
+  // Gradients mesh/aurora différents selon mode
+  const lightGrad = `
+    radial-gradient(800px circle at 20% 20%, rgba(66, 133, 244, 0.25), transparent 60%),
+    radial-gradient(600px circle at 80% 30%, rgba(219, 68, 55, 0.18), transparent 60%),
+    radial-gradient(900px circle at 40% 80%, rgba(244, 180, 0, 0.18), transparent 70%)
+  `;
+
+  const darkGrad = `
+    radial-gradient(900px circle at 10% 20%, rgba(123,63,252,0.3), transparent 60%),
+    radial-gradient(700px circle at 80% 40%, rgba(35,104,245,0.25), transparent 60%),
+    radial-gradient(1200px circle at 60% 80%, rgba(0,200,255,0.2), transparent 70%)
+  `;
 
   return (
     <Box
@@ -20,30 +26,16 @@ export default function BackgroundFX({ fixed = false, gridSize = 32, gridOpacity
       inset={0}
       zIndex={0}
       pointerEvents="none"
-    >
-      {/* Radial lighting */}
-      <Box position="absolute" inset={0} bgImage={radial} />
-
-      {/* Grid */}
-      <Box
-        position="absolute"
-        inset={0}
-        backgroundImage={`linear-gradient(${gridColor} 1px, transparent 1px), linear-gradient(90deg, ${gridColor} 1px, transparent 1px)`}
-        backgroundSize={`${gridSize}px ${gridSize}px`}
-        opacity={gridOpacity}
-      />
-
-      {/* Subtle noise */}
-      <Box
-        position="absolute"
-        inset={0}
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='table' tableValues='0 0 0 0.07 0.13 0.07 0'/></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
-        }}
-        opacity={0.25}
-        mixBlendMode="overlay"
-      />
-    </Box>
+      bg={useColorModeValue("#f9fafe", "#0a0f1f")}
+      _before={{
+        content: '""',
+        position: "absolute",
+        inset: 0,
+        backgroundImage: useColorModeValue(lightGrad, darkGrad),
+        backgroundSize: "200% 200%",
+        animation: "auroraMove 30s ease-in-out infinite",
+      }}
+    />
   );
 }
+

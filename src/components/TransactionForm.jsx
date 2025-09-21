@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  VStack, HStack, FormControl, FormLabel, Input, Select, Button, IconButton,
+  VStack, HStack, FormControl, FormLabel, Input, Select, IconButton,
   InputGroup, InputRightElement, useToast, Tooltip, Text
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon, CopyIcon, ArrowForwardIcon } from "@chakra-ui/icons";
@@ -9,6 +9,23 @@ import MagneticButton from "./MagneticButton";
 
 const CURRENCIES = ["EUR","USD","GBP","JPY","CHF","CAD","AUD","CNY","INR","BRL","ZAR","SGD","MXN","TRY"];
 const DEVICES = ["web","mobile"];
+
+const CURRENCY_SYMBOLS = {
+  EUR: "€",
+  USD: "$",
+  GBP: "£",
+  JPY: "¥",
+  CHF: "₣",
+  CAD: "$",
+  AUD: "$",
+  CNY: "¥",
+  INR: "₹",
+  BRL: "R$",
+  ZAR: "R",
+  SGD: "$",
+  MXN: "$",
+  TRY: "₺"
+};
 
 export default function TransactionForm({ onNewTransaction }) {
   const [formData, setFormData] = useState({ montant: "", devise: "", pays: "", device: "" });
@@ -23,7 +40,7 @@ export default function TransactionForm({ onNewTransaction }) {
 
   const validate = () => {
     if (!apiKey) return "API Key is required.";
-    if (!formData.montant || Number(formData.montant) <= 0) return "Amount must be > 0.";
+    if (!formData.montant || Number(formData.montant.replace(/,/g, "")) <= 0) return "Amount must be > 0.";
     if (!formData.devise) return "Currency is required.";
     if (!formData.pays || formData.pays.length !== 2) return "Country must be 2-letter code (e.g. FR).";
     if (!formData.device) return "Device is required.";
@@ -38,7 +55,7 @@ export default function TransactionForm({ onNewTransaction }) {
       return;
     }
     const payload = {
-      montant: parseFloat(formData.montant),
+      montant: parseFloat(formData.montant.replace(/,/g, "")), // ✅ nettoyer les séparateurs
       devise: formData.devise,
       pays: formData.pays.toUpperCase(),
       device: formData.device,
@@ -77,21 +94,25 @@ export default function TransactionForm({ onNewTransaction }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <VStack spacing={5} align="stretch">
+      <VStack spacing={8} align="stretch">
         {/* API Key */}
         <FormControl>
-          <FormLabel>Your API Key</FormLabel>
+          <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>
+            API Key
+          </FormLabel>
           <InputGroup>
             <Input
               name="apiKey"
               type={showApi ? "text" : "password"}
-              placeholder="Your API Key"
+              placeholder="Paste your API Key here"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
+              borderRadius="lg"
+              shadow="sm"
             />
             <InputRightElement>
               <HStack spacing={1}>
-                <Tooltip label={showApi ? "Hide" : "Show"}>
+                <Tooltip label={showApi ? "Hide" : "Show"} hasArrow>
                   <IconButton
                     aria-label="toggle api"
                     size="sm"
@@ -100,7 +121,7 @@ export default function TransactionForm({ onNewTransaction }) {
                     onClick={() => setShowApi((s) => !s)}
                   />
                 </Tooltip>
-                <Tooltip label="Copy">
+                <Tooltip label="Copy Key" hasArrow>
                   <IconButton aria-label="copy api" size="sm" variant="ghost" icon={<CopyIcon />} onClick={copyApi} />
                 </Tooltip>
               </HStack>
@@ -108,22 +129,46 @@ export default function TransactionForm({ onNewTransaction }) {
           </InputGroup>
         </FormControl>
 
-        <HStack spacing={4} align="start">
+        {/* Amount & Currency */}
+        <HStack spacing={6} align="start">
           <FormControl isRequired>
-            <FormLabel>Amount</FormLabel>
-            <Input
-              name="montant"
-              type="number"
-              step="0.01"
-              placeholder="Amount"
-              value={formData.montant}
-              onChange={handleChange}
-            />
+            <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Amount</FormLabel>
+            <InputGroup>
+              <Input
+                name="montant"
+                type="text"
+                placeholder="0.00"
+                value={formData.montant}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^\d.]/g, ""); // chiffres + .
+                  const parts = raw.split(".");
+                  const formatted =
+                    parts.length > 1
+                      ? new Intl.NumberFormat("en-US").format(parts[0]) + "." + parts[1].slice(0,2)
+                      : new Intl.NumberFormat("en-US").format(parts[0]);
+                  setFormData((f) => ({ ...f, montant: formatted }));
+                }}
+                borderRadius="lg"
+              />
+              {formData.devise && (
+                <InputRightElement width="3rem">
+                  <Text fontWeight="semibold">
+                    {CURRENCY_SYMBOLS[formData.devise] || ""}
+                  </Text>
+                </InputRightElement>
+              )}
+            </InputGroup>
           </FormControl>
 
           <FormControl isRequired>
-            <FormLabel>Select currency</FormLabel>
-            <Select name="devise" placeholder="Select currency" value={formData.devise} onChange={handleChange}>
+            <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Currency</FormLabel>
+            <Select
+              name="devise"
+              placeholder="Select"
+              value={formData.devise}
+              onChange={handleChange}
+              borderRadius="lg"
+            >
               {CURRENCIES.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
@@ -131,9 +176,10 @@ export default function TransactionForm({ onNewTransaction }) {
           </FormControl>
         </HStack>
 
-        <HStack spacing={4} align="start">
+        {/* Country & Device */}
+        <HStack spacing={6} align="start">
           <FormControl isRequired>
-            <FormLabel>Country (ex: FR)</FormLabel>
+            <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Country</FormLabel>
             <Input
               name="pays"
               placeholder="FR"
@@ -141,12 +187,19 @@ export default function TransactionForm({ onNewTransaction }) {
               value={formData.pays}
               onChange={handleChange}
               textTransform="uppercase"
+              borderRadius="lg"
             />
           </FormControl>
 
           <FormControl isRequired>
-            <FormLabel>Select device</FormLabel>
-            <Select name="device" placeholder="Select device" value={formData.device} onChange={handleChange}>
+            <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Device</FormLabel>
+            <Select
+              name="device"
+              placeholder="Select"
+              value={formData.device}
+              onChange={handleChange}
+              borderRadius="lg"
+            >
               {DEVICES.map((d) => (
                 <option key={d} value={d}>{capitalize(d)}</option>
               ))}
@@ -154,10 +207,24 @@ export default function TransactionForm({ onNewTransaction }) {
           </FormControl>
         </HStack>
 
+        {/* Submit CTA */}
         <HStack justify="space-between">
-          <Text fontSize="sm" opacity={0.7}>Idempotency-Key generated per request</Text>
-          <MagneticButton type="submit" isLoading={loading} rightIcon={<ArrowForwardIcon />}>
-            Send
+          <Text fontSize="xs" opacity={0.6}>
+            An <b>Idempotency-Key</b> is auto-generated per request
+          </Text>
+          <MagneticButton
+            type="submit"
+            isLoading={loading}
+            rightIcon={<ArrowForwardIcon />}
+            borderRadius="full"
+            px={8}
+            py={5}
+            fontWeight="bold"
+            colorScheme="brand"
+            shadow="md"
+            _hover={{ shadow: "xl", transform: "translateY(-1px)" }}
+          >
+            Send Transaction
           </MagneticButton>
         </HStack>
       </VStack>
@@ -166,6 +233,3 @@ export default function TransactionForm({ onNewTransaction }) {
 }
 
 function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-
-
-

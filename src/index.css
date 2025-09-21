@@ -1,3 +1,4 @@
+/* === Reset & Base Styles === */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,39 +6,55 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  animation: gradientShift 18s ease-in-out infinite;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+html, body, #root {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* ✅ Supprimer la scrollbar proprement */
+html, body {
+  scrollbar-width: none; /* Firefox */
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* === Animations === */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
 .shimmer {
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.35) 50%, rgba(255,255,255,0) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,.35) 50%,
+    rgba(255,255,255,0) 100%
+  );
   background-size: 200% 100%;
   animation: shimmer 2.2s infinite;
 }
 
 @keyframes marquee {
-  0% { transform: translateX(0);}
-  100% { transform: translateX(-50%);}
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-/* animated background subtle movement */
 @keyframes gradientShift {
   0% { filter: hue-rotate(0deg) brightness(1); }
   50% { filter: hue-rotate(4deg) brightness(1.03); }
   100% { filter: hue-rotate(0deg) brightness(1); }
 }
-html, body, #root { height: 100%; }
-body { animation: gradientShift 18s ease-in-out infinite; }
 
-/* shimmer already present, keep it */
-
-/* remove underline globally on Chakra <a> hover by default */
-a:hover { text-decoration: none; }
-
+/* === Links === */
+a:hover {
+  text-decoration: none; /* Supprime l'underline au hover */
+}
