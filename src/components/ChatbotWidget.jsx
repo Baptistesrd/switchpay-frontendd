@@ -17,27 +17,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const MotionBox = motion(Box);
 
-// --- Utils robustes pour lire la position de scroll où qu'elle soit
-function getScrollTop() {
-  return (
-    window.scrollY ||
-    document.documentElement.scrollTop ||
-    document.body.scrollTop ||
-    0
-  );
-}
-function getDocHeight() {
-  const body = document.body;
-  const html = document.documentElement;
-  return Math.max(
-    body.scrollHeight,
-    body.offsetHeight,
-    html.clientHeight,
-    html.scrollHeight,
-    html.offsetHeight
-  );
-}
-
 export default function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
@@ -46,15 +25,8 @@ export default function ChatbotWidget() {
   ]);
 
   const scrollRef = useRef(null);
-  const hasAutoOpened = useRef(false);   // évite d’ouvrir plusieurs fois
-  const rafId = useRef(0);               // throttle via rAF
-  const userManuallyClosed = useRef(false); // si l’utilisateur ferme, on ne ré-ouvre pas
 
-  // Threshholds : ouvre si 200px scrollés OU >12% de la page
-  const PX_THRESHOLD = 200;
-  const RATIO_THRESHOLD = 0.12;
-
-  // 🎨 Styles (respect des hooks en haut)
+  // 🎨 Styles
   const bg = useColorModeValue("whiteAlpha.900", "gray.800");
   const headerBg = useColorModeValue("whiteAlpha.700", "gray.900");
   const border = useColorModeValue("blackAlpha.200", "whiteAlpha.200");
@@ -69,71 +41,16 @@ export default function ChatbotWidget() {
     }
   }, [messages]);
 
-  // 🧠 Logique d’ouverture auto au scroll — robuste
-  useEffect(() => {
-    function checkOpenCriteria() {
-      if (hasAutoOpened.current || userManuallyClosed.current) return;
-
-      const y = getScrollTop();
-      const docH = getDocHeight();
-      const maxScrollable = Math.max(1, docH - window.innerHeight);
-      const ratio = y / maxScrollable;
-
-      if (y > PX_THRESHOLD || ratio > RATIO_THRESHOLD) {
-        hasAutoOpened.current = true;
-        setIsOpen(true);
-        setMessages(prev => [
-          ...prev,
-          { from: "bot", text: "👋 Hello there! Need help with SwitchPay? 🚀" },
-        ]);
-      }
-    }
-
-    function onScroll() {
-      // throttle avec requestAnimationFrame
-      if (rafId.current) cancelAnimationFrame(rafId.current);
-      rafId.current = requestAnimationFrame(checkOpenCriteria);
-    }
-
-    // Écouteurs multiples pour couvrir desktop + mobile + wrappers
-    window.addEventListener("scroll", onScroll, { passive: true });
-    document.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("wheel", onScroll, { passive: true });
-    window.addEventListener("touchmove", onScroll, { passive: true });
-    window.addEventListener("keydown", (e) => {
-      if (["PageDown", "ArrowDown", "End", " "].includes(e.key)) onScroll();
-    });
-
-    // Vérifie au montage (au cas où l’utilisateur arrive déjà scrolé)
-    setTimeout(onScroll, 0);
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      document.removeEventListener("scroll", onScroll);
-      window.removeEventListener("wheel", onScroll);
-      window.removeEventListener("touchmove", onScroll);
-      window.removeEventListener("keydown", onScroll);
-      if (rafId.current) cancelAnimationFrame(rafId.current);
-    };
-  }, []);
-
-  const toggleChat = () => {
-    const next = !isOpen;
-    if (!next) {
-      // s’il ferme manuellement, on évite de ré-ouvrir automatiquement plus tard
-      userManuallyClosed.current = true;
-    }
-    setIsOpen(next);
-  };
+  const toggleChat = () => setIsOpen((prev) => !prev);
 
   const handleSend = () => {
     if (!input.trim()) return;
     const userMsg = { from: "user", text: input };
-    setMessages(prev => [...prev, userMsg]);
+    setMessages((prev) => [...prev, userMsg]);
 
-    // Mock IA (remplacer demain par un appel à ton backend /chat)
+    // Mock IA
     setTimeout(() => {
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
         { from: "bot", text: "🤖 (Demo mode) Thanks! I’ll be a real AI tomorrow." },
       ]);
@@ -143,8 +60,8 @@ export default function ChatbotWidget() {
   };
 
   return (
-    <Box position="fixed" bottom="5" right="5" zIndex="9999">
-      {/* Bouton flottant (visible si la fenêtre est fermée) */}
+    <Box position="fixed" bottom="20px" right="20px" zIndex="99999999999">
+      {/* Bouton flottant quand le chat est fermé */}
       {!isOpen && (
         <MotionBox
           initial={{ scale: 0.85, opacity: 0 }}
