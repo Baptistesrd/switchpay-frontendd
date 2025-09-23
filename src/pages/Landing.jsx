@@ -20,6 +20,7 @@ import GlowCard from "../components/GlowCard";
 import HowItWorksTimeline from "../components/HowItWorksTimeline";
 import ChatbotWidget from "../components/ChatbotWidget";
 import Layout from "../components/Layout";
+import AnimatedChat from "../components/AnimatedChat";
 
 
 
@@ -82,8 +83,14 @@ export default function Landing() {
     "linear(to-b, #f7faff, #eef3ff, #eaf0ff)",
     "linear(to-b, #0a0f1f, #0f172a, #0b1220)"
   );
+
   const subText = useColorModeValue("gray.600", "gray.300");
   const borderCol = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
+  const cardBg = useColorModeValue("whiteAlpha.800", "whiteAlpha.100");
+  const cardBorder = useColorModeValue("blackAlpha.200", "whiteAlpha.200");
+  const buttonBorder = useColorModeValue("blackAlpha.400", "whiteAlpha.400");
+  const buttonHoverBg = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
+  const buttonColor = useColorModeValue("gray.800", "white");
 
   const [metrics, setMetrics] = useState({
     total_transactions: 0,
@@ -376,7 +383,7 @@ useEffect(() => {
                 Product Demo
               </Heading>
               <Text mt={3} fontSize="lg" color={subText}>
-                See SwitchPay in action — routing payments in real time.
+                See switchpay in action, saving money in real time.
               </Text>
             </motion.div>
 
@@ -452,7 +459,9 @@ useEffect(() => {
               </AspectRatio>
             </ModalContent>
           </Modal>
-        </Section>
+
+        <Box h={{ base: "140px", md: "220px" }} /> 
+</Section>
 
         {/* WHY SWITCHPAY */}
         <Section id="why" bg={useColorModeValue("linear(to-b, gray.50, purple.50)", "linear(to-b, gray.800, gray.900)")}>
@@ -494,83 +503,83 @@ useEffect(() => {
               </GlowCard>
             </SimpleGrid>
           </VStack>
-        </Section>
-        {/* AI ASSISTANT SECTION */}
-<Section id="assistant" bg={useColorModeValue("linear(to-r, white, gray.50)", "linear(to-r, gray.900, gray.800)")}>
-  <VStack spacing={10} align="center" textAlign="center">
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      viewport={{ once: true }}
-    >
-      <Heading size="2xl" fontWeight="extrabold" bgGradient="linear(to-r, brand.500, brand.300)" bgClip="text">
-        Meet SwitchPay Assistant
-      </Heading>
-      <Text fontSize="lg" mt={3} color={subText} maxW="2xl">
-        Your personal AI copilot for payments. Ask anything about routing, PSPs, fees, or integrations —
-        and get instant, human-like answers.
-      </Text>
-    </motion.div>
-
-    <Box
-      w="100%"
-      maxW="4xl"
-      borderRadius="2xl"
-      shadow="2xl"
-      p={0}
-      overflow="hidden"
-      bgGradient="linear(to-r, rgba(35,104,245,0.9), rgba(123,63,252,0.9))"
-      backdropFilter="blur(16px) saturate(180%)"
-      border="1px solid rgba(255,255,255,0.15)"
-    >
-      {/* Chatbot intégré */}
-      <Box
-        h="500px"
-        display="flex"
-        flexDirection="column"
-        justifyContent="space-between"
-        bg="rgba(0,0,0,0.4)"
-      >
-        <VStack
-          flex="1"
-          spacing={3}
-          align="stretch"
-          px={4}
-          py={3}
-          overflowY="auto"
-          css={{
-            "&::-webkit-scrollbar": { display: "none" },
-            "-ms-overflow-style": "none",
-            "scrollbar-width": "none",
-          }}
-        >
-          {/* Exemple de messages initiaux */}
-          <Box alignSelf="flex-start" bg="whiteAlpha.200" px={4} py={2} borderRadius="xl" color="white">
-            👋 Hi! I’m SwitchPay Assistant. How can I help you today?
-          </Box>
-        </VStack>
-
-        {/* Input */}
-        <HStack p={3} spacing={2} bg="rgba(255,255,255,0.1)" backdropFilter="blur(8px)">
-          <Input
-            placeholder="Type your message..."
-            borderRadius="full"
-            bg="white"
-            _placeholder={{ color: "gray.500" }}
-          />
-          <IconButton
-            icon={<ArrowForwardIcon />}
-            borderRadius="full"
-            bgGradient="linear(to-r, brand.500, brand.300)"
-            color="white"
-            aria-label="Send message"
-          />
-        </HStack>
-      </Box>
-    </Box>
-  </VStack>
+        <Box h={{ base: "140px", md: "220px" }} /> 
 </Section>
+
+        {/* === AI ASSISTANT === */}
+<Section id="assistant" py={{ base: 20, md: 28 }} bg={pageBg}>
+  <VStack spacing={14} align="center" textAlign="center">
+    {/* Header */}
+    <Heading 
+  size="4xl" 
+  fontWeight="extrabold" 
+  bgGradient="linear(to-r, brand.500, brand.300)" 
+  bgClip="text"
+  mb={0}   // 👈 zéro marge en bas
+>
+  Meet switchpayAI
+</Heading>
+
+<Text 
+  fontSize="lg" 
+  color={subText} 
+  maxW="2xl" 
+  lineHeight="1.3"
+  mt={1}   // 👈 un petit espace fin (optionnel)
+>
+  Your AI copilot for payments. Ask about routing, PSPs, fees or integrations, 
+  and get instant answers powered by real-time data.
+</Text>
+
+
+    {/* Conversation animée avec ton composant */}
+    <AnimatedChat />
+
+    {/* 3 cartes SaaS */}
+    <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} maxW="6xl" w="100%">
+      {[
+        { title: "Interactive Docs", text: "Live API snippets you can copy-paste directly into your code." },
+        { title: "Real-time Data", text: "Up-to-date PSP fees & routing logic integrated into your workflow." },
+        { title: "Dev-Friendly", text: "Guides, examples & SDKs for a seamless integration journey." },
+      ].map((f, i) => (
+        <GlowCard
+          key={i}
+          p={8}
+          bg={cardBg}
+          border="1px solid"
+          borderColor={cardBorder}
+          shadow="md"
+        >
+          <Heading size="md" mb={3}>{f.title}</Heading>
+          <Text color={subText}>{f.text}</Text>
+        </GlowCard>
+      ))}
+    </SimpleGrid>
+
+    {/* Transparent Apple-style CTA */}
+    <Button
+      size="lg"
+      px={10}
+      py={6}
+      borderRadius="full"
+      bg="transparent"
+      border="1px solid"
+      borderColor={buttonBorder}
+      backdropFilter="blur(20px) saturate(180%)"
+      color={buttonColor}
+      fontWeight="semibold"
+      _hover={{ bg: buttonHoverBg, transform: "scale(1.05)" }}
+      transition="all .3s ease"
+      onClick={() => scrollTo("#pricing")}
+    >
+      🚀 Launch Assistant
+    </Button>
+  </VStack>
+
+        {/* Big spacing avant SECURITY */}
+  <Box h={{ base: "140px", md: "220px" }} /> 
+</Section>
+
 
 
         {/* SECURITY */}
@@ -704,7 +713,9 @@ useEffect(() => {
               <BrandButton onClick={() => navigate("/app")}>Make a transaction</BrandButton>
             </Magnetic>
           </GlowCard>
-        </Section>
+        {/* Big spacing avant SECURITY */}
+  <Box h={{ base: "140px", md: "220px" }} /> 
+</Section>
 
         {/* FAQ */}
         <Section id="faq" bg={useColorModeValue("linear(to-r, white, gray.50)", "linear(to-r, gray.800, gray.900)")}>
