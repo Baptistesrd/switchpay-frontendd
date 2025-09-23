@@ -4,9 +4,9 @@ import {
   Heading, Text, Badge, SimpleGrid, Stat, StatLabel, StatNumber, useColorMode,
   useColorModeValue, Link as ChakraLink, Divider, Icon, Tooltip,
   AspectRatio, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon,
-  Modal, ModalOverlay, ModalContent, useDisclosure
+  Modal, ModalOverlay, ModalContent, useDisclosure, Input
 } from "@chakra-ui/react";
-import { MoonIcon, SunIcon, LockIcon, CheckCircleIcon, TimeIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import { MoonIcon, SunIcon, LockIcon, CheckCircleIcon, TimeIcon, ExternalLinkIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import { FaLinkedin, FaTwitter } from "react-icons/fa";
 import { SiSubstack } from "react-icons/si";
 import { motion, useMotionValue, animate } from "framer-motion";
@@ -495,6 +495,83 @@ useEffect(() => {
             </SimpleGrid>
           </VStack>
         </Section>
+        {/* AI ASSISTANT SECTION */}
+<Section id="assistant" bg={useColorModeValue("linear(to-r, white, gray.50)", "linear(to-r, gray.900, gray.800)")}>
+  <VStack spacing={10} align="center" textAlign="center">
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true }}
+    >
+      <Heading size="2xl" fontWeight="extrabold" bgGradient="linear(to-r, brand.500, brand.300)" bgClip="text">
+        Meet SwitchPay Assistant
+      </Heading>
+      <Text fontSize="lg" mt={3} color={subText} maxW="2xl">
+        Your personal AI copilot for payments. Ask anything about routing, PSPs, fees, or integrations —
+        and get instant, human-like answers.
+      </Text>
+    </motion.div>
+
+    <Box
+      w="100%"
+      maxW="4xl"
+      borderRadius="2xl"
+      shadow="2xl"
+      p={0}
+      overflow="hidden"
+      bgGradient="linear(to-r, rgba(35,104,245,0.9), rgba(123,63,252,0.9))"
+      backdropFilter="blur(16px) saturate(180%)"
+      border="1px solid rgba(255,255,255,0.15)"
+    >
+      {/* Chatbot intégré */}
+      <Box
+        h="500px"
+        display="flex"
+        flexDirection="column"
+        justifyContent="space-between"
+        bg="rgba(0,0,0,0.4)"
+      >
+        <VStack
+          flex="1"
+          spacing={3}
+          align="stretch"
+          px={4}
+          py={3}
+          overflowY="auto"
+          css={{
+            "&::-webkit-scrollbar": { display: "none" },
+            "-ms-overflow-style": "none",
+            "scrollbar-width": "none",
+          }}
+        >
+          {/* Exemple de messages initiaux */}
+          <Box alignSelf="flex-start" bg="whiteAlpha.200" px={4} py={2} borderRadius="xl" color="white">
+            👋 Hi! I’m SwitchPay Assistant. How can I help you today?
+          </Box>
+        </VStack>
+
+        {/* Input */}
+        <HStack p={3} spacing={2} bg="rgba(255,255,255,0.1)" backdropFilter="blur(8px)">
+          <Input
+            placeholder="Type your message..."
+            borderRadius="full"
+            bg="white"
+            _placeholder={{ color: "gray.500" }}
+          />
+          <IconButton
+            icon={<ArrowForwardIcon />}
+            borderRadius="full"
+            bgGradient="linear(to-r, brand.500, brand.300)"
+            color="white"
+            aria-label="Send message"
+          />
+        </HStack>
+      </Box>
+    </Box>
+  </VStack>
+</Section>
+
 
         {/* SECURITY */}
         <Section id="security" bg={useColorModeValue("linear(to-r, gray.50, white)", "linear(to-r, gray.900, gray.800)")}>
