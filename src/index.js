@@ -3,23 +3,27 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { ChakraProvider, extendTheme, ColorModeScript } from "@chakra-ui/react";
-import { mode } from "@chakra-ui/theme-tools";
 import MainRouter from "./MainRouter";
 
-// 🎨 Thème custom Chakra
+// 🎨 Thème custom Chakra forcé en dark
 const theme = extendTheme({
-  config: { initialColorMode: "light", useSystemColorMode: false },
+  config: {
+    initialColorMode: "dark",   // ✅ toujours dark
+    useSystemColorMode: false,  // ✅ ignore les préférences système
+  },
   fonts: {
     heading: "'DM Sans', sans-serif",
     body: "'DM Sans', sans-serif",
   },
   styles: {
-    global: (props) => ({
-      body: {
-        bg: mode("gray.50", "gray.900")(props),
-        color: mode("gray.800", "gray.100")(props),
+    global: {
+      "html, body": {
+        bg: "gray.900",    // ✅ toujours dark background
+        color: "gray.100", // ✅ texte clair
+        overflowY: "auto", // ✅ réactive la scrollbar verticale
+        overflowX: "hidden", // (optionnel) pas de scroll horizontal
       },
-    }),
+    },
   },
   colors: {
     brand: {
@@ -41,9 +45,8 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
-      {/* 👇 Garde la config colorMode au mount */}
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      {/* 👇 Gestion des routes (Landing / App) */}
+      {/* ✅ Toujours dark mode dès le mount */}
+      <ColorModeScript initialColorMode="dark" />
       <MainRouter />
     </ChakraProvider>
   </React.StrictMode>

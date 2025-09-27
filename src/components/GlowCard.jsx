@@ -2,9 +2,9 @@
 import { Box, useColorModeValue } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
-const MotionBox = motion.create(Box);
+const MotionBox = motion(Box);
 
-export default function GlowCard({ children, ...props }) {
+export default function GlowCard({ children, interactive = true, ...props }) {
   const bg = useColorModeValue("rgba(255,255,255,0.7)", "rgba(20,24,38,0.6)");
   const borderCol = useColorModeValue("blackAlpha.200", "whiteAlpha.200");
   const hoverShadow = useColorModeValue(
@@ -22,9 +22,11 @@ export default function GlowCard({ children, ...props }) {
       borderRadius="2xl"
       p={6}
       shadow="xl"
-      whileHover={{ y: -4, scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ duration: 0.25, ease: "easeOut" }}
+      {...(interactive && {
+        whileHover: { y: -4, scale: 1.02 },
+        whileTap: { scale: 0.98 },
+        transition: { duration: 0.25, ease: "easeOut" },
+      })}
       _hover={{ boxShadow: hoverShadow }}
       _before={{
         content: '""',

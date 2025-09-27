@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
 import {
-  Box, Container, Flex, HStack, VStack, Stack, Spacer, Button, IconButton,
-  Heading, Text, Badge, SimpleGrid, Stat, StatLabel, StatNumber, useColorMode,
-  useColorModeValue, Link as ChakraLink, Divider, Icon, Tooltip,
-  AspectRatio, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon,
-  Modal, ModalOverlay, ModalContent, useDisclosure, Input
+  Box, Container, Flex, HStack, VStack, Stack, Spacer, Button,
+  Heading, Text, Badge, SimpleGrid, Stat, StatLabel, StatNumber,
+  useColorMode, useColorModeValue, Link as ChakraLink, Tooltip,
+  AspectRatio, Accordion, AccordionItem, AccordionButton,
+  AccordionPanel, AccordionIcon, Modal, ModalOverlay, ModalContent,
+  useDisclosure, Input, Icon
 } from "@chakra-ui/react";
-import { MoonIcon, SunIcon, LockIcon, CheckCircleIcon, TimeIcon, ExternalLinkIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+import {
+  MoonIcon, SunIcon, LockIcon, CheckCircleIcon,
+  TimeIcon, ExternalLinkIcon
+} from "@chakra-ui/icons";
 import { FaLinkedin, FaTwitter } from "react-icons/fa";
 import { SiSubstack } from "react-icons/si";
 import { motion, useMotionValue, animate } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import axios from "axios";
 
 import BackgroundFX from "../components/BackgroundFX";
@@ -21,12 +25,14 @@ import HowItWorksTimeline from "../components/HowItWorksTimeline";
 import ChatbotWidget from "../components/ChatbotWidget";
 import Layout from "../components/Layout";
 import AnimatedChat from "../components/AnimatedChat";
+import Counter from "../components/Counter";
 
 
-
+// === Motion wrappers ===
 const MotionBox = motion.create ? motion.create(Box) : motion(Box);
 const FloatingPlanet = motion(Box);
 
+// === Section wrapper ===
 const Section = ({ children, id, bg }) => (
   <Box as="section" id={id} py={{ base: 14, md: 18 }} bg={bg}>
     <Container maxW="6xl" position="relative" zIndex={1}>
@@ -35,6 +41,7 @@ const Section = ({ children, id, bg }) => (
   </Box>
 );
 
+// === Button brandé ===
 const BrandButton = ({ children, ...props }) => (
   <Button
     size="lg"
@@ -49,10 +56,10 @@ const BrandButton = ({ children, ...props }) => (
   </Button>
 );
 
+// === Effet magnétique (hover) ===
 function Magnetic({ children }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-
 
   const handleMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -79,11 +86,11 @@ export default function Landing() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  // 🎨 THEME HOOKS
   const pageBg = useColorModeValue(
     "linear(to-b, #f7faff, #eef3ff, #eaf0ff)",
     "linear(to-b, #0a0f1f, #0f172a, #0b1220)"
   );
-
   const subText = useColorModeValue("gray.600", "gray.300");
   const borderCol = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
   const cardBg = useColorModeValue("whiteAlpha.800", "whiteAlpha.100");
@@ -92,16 +99,24 @@ export default function Landing() {
   const buttonHoverBg = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
   const buttonColor = useColorModeValue("gray.800", "white");
 
+  // 🌟 Pricing-specific
+  const pricingBg = useColorModeValue(
+    "linear(to-b, white, gray.50)",
+    "linear(to-b, gray.900, gray.800)"
+  );
+  const premiumBg = useColorModeValue(
+    "linear(to-b, white, yellow.50)",
+    "linear(to-b, gray.900, yellow.900)"
+  );
+
+  // 📊 State
   const [metrics, setMetrics] = useState({
     total_transactions: 0,
     total_volume: 0,
     transactions_by_psp: {},
   });
   const [showFloatingCTA, setShowFloatingCTA] = useState(false);
-  //const [scrolled, setScrolled] = useState(false);
-  const [navOpacity, setNavOpacity] = useState(1);
-  const [navProgress, setNavProgress] = useState(0); // 0 = visible, 1 = cachée
-
+  const [navProgress, setNavProgress] = useState(0);
 
   // === Fetch metrics ===
   useEffect(() => {
@@ -119,53 +134,73 @@ export default function Landing() {
     return () => clearInterval(intervalId);
   }, []);
 
-  // === Handle scroll for navbar fade/slide on HERO ===
-  // === Handle scroll for navbar fade/slide on HERO ===
-useEffect(() => {
-  let raf = 0;
+  // === Scroll nav ===
+  useEffect(() => {
+    let raf = 0;
 
-  const handleScroll = () => {
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => {
-      const hero = document.getElementById("hero");
-      if (!hero) {
-        setNavProgress(0);
-        return;
-      }
+    const handleScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const hero = document.getElementById("hero");
+        if (!hero) {
+          setNavProgress(0);
+          return;
+        }
+        const rect = hero.getBoundingClientRect();
+        const height = rect.height || 1;
+        const progress = Math.min(1, Math.max(0, -rect.top / height));
+        setNavProgress(progress);
 
-      const rect = hero.getBoundingClientRect();
-      const height = rect.height || 1;
+        const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+        setShowFloatingCTA(scrollTop > 100);
+      });
+    };
 
-      // progress: 0 (haut du hero) -> 1 (après avoir passé toute la hauteur du hero)
-      const progress = Math.min(1, Math.max(0, -rect.top / height));
-      setNavProgress(progress);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+    handleScroll();
 
-      // Optionnel: garde ton CTA flottant
-      const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
-      setShowFloatingCTA(scrollTop > 100);
-    });
-  };
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
 
-  window.addEventListener("scroll", handleScroll, { passive: true });
-  window.addEventListener("resize", handleScroll);
-  handleScroll(); // init au chargement
-
-  return () => {
-    cancelAnimationFrame(raf);
-    window.removeEventListener("scroll", handleScroll);
-    window.removeEventListener("resize", handleScroll);
-  };
-}, []);
-
-
-
-  // === Smooth scroll helper ===
+  // === Smooth scroll ===
   const scrollTo = (hash) => {
     const el = document.querySelector(hash);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-
+  // === SECTION PRICING ===
+  const tiers = [
+    {
+      title: "Starter",
+      price: "Free",
+      desc: "For indie devs & startups testing payments.",
+      features: ["100 tx/month", "Sandbox PSPs", "Basic metrics"],
+      color: "gray",
+      gradient: "linear(to-r, brand.500, brand.300)",
+    },
+    {
+      title: "Growth",
+      price: "€99/mo",
+      desc: "For scaling teams optimizing conversion.",
+      features: ["10k tx/month", "Smart routing", "Failover & retries", "Advanced dashboard"],
+      color: "purple",
+      gradient: "linear(to-r, brand.500, brand.300)",
+    },
+    {
+      title: "Enterprise",
+      price: "Custom",
+      desc: "For global players needing reliability at scale.",
+      features: ["Unlimited tx", "Dedicated PSP mix", "24/7 support", "SLAs & compliance"],
+      color: "yellow",
+      gradient: "linear(to-r, yellow.400, yellow.600)",
+      premium: true,
+    },
+  ];
 
   return (
     <Layout>
@@ -174,21 +209,21 @@ useEffect(() => {
         <BackgroundFX />
 
         {/* NAVBAR */}
-        <Flex
+<Flex
   position="absolute"
   top="20px"
   left="50%"
   w="100%"
-  transform={`translateX(-50%) translateY(${(-navProgress * 140).toFixed(2)}px)`}
+  transform={`translateX(-50%) translateY(${(-navProgress * 140).toFixed(2)}px)`} 
   opacity={1 - navProgress}
   pointerEvents={navProgress >= 1 ? "none" : "auto"}
   transition="opacity .35s ease, transform .35s ease"
   willChange="transform, opacity"
   zIndex="100"
-  bg={useColorModeValue("rgba(255,255,255,0.65)", "rgba(20,25,45,0.65)")}
+  bg="rgba(20,25,45,0.65)"          // ✅ forcé dark
   backdropFilter="saturate(180%) blur(18px)"
   border="1px solid"
-  borderColor={useColorModeValue("rgba(200,200,200,0.3)", "rgba(255,255,255,0.1)")}
+  borderColor="rgba(255,255,255,0.1)" // ✅ léger border clair
   borderRadius="full"
   px={8}
   py={3}
@@ -196,17 +231,10 @@ useEffect(() => {
   maxW="6xl"
   mx="auto"
 >
-
-
   {/* Logo */}
-<Heading
-  fontSize="xl"
-  fontWeight="black"
-  color="white"
->
-  switchpay
-</Heading>
-
+  <Heading fontSize="xl" fontWeight="black" color="white">
+    switchpay
+  </Heading>
 
   <Spacer />
 
@@ -217,42 +245,19 @@ useEffect(() => {
     <ChakraLink as="button" onClick={() => scrollTo("#metrics")} _hover={{ color: "brand.500" }}>Live Metrics</ChakraLink>
     <ChakraLink as="button" onClick={() => scrollTo("#security")} _hover={{ color: "brand.500" }}>Security</ChakraLink>
     <ChakraLink as="button" onClick={() => scrollTo("#pricing")} _hover={{ color: "brand.500" }}>Pricing</ChakraLink>
-    <ChakraLink as="button" onClick={() => scrollTo("#contact")} _hover={{ color: "brand.500" }}>Contact</ChakraLink>
+    <ChakraLink as={RouterLink} to="/contact" _hover={{ color: "brand.500" }}>Contact</ChakraLink>
   </HStack>
 
   <Spacer />
 
-  {/* Actions */}
-  <HStack spacing={4}>
-    {/* Toggle clair/obscur custom */}
-    <Box
-      as="button"
-      w="50px"
-      h="24px"
-      borderRadius="full"
-      bg={useColorModeValue("gray.200", "gray.600")}
-      position="relative"
-      onClick={toggleColorMode}
-      transition="all 0.3s ease"
-    >
-      <Box
-        w="20px"
-        h="20px"
-        bgGradient="linear(to-br, brand.400, brand.600)"
-        borderRadius="full"
-        position="absolute"
-        top="2px"
-        left={colorMode === "light" ? "2px" : "calc(100% - 22px)"}
-        transition="all 0.3s ease"
-        boxShadow="0 2px 5px rgba(0,0,0,0.2)"
-      />
-    </Box>
-
-    <Magnetic>
-      <BrandButton onClick={() => navigate("/app")}>Make a transaction</BrandButton>
-    </Magnetic>
-  </HStack>
+  {/* CTA */}
+  <Magnetic>
+    <BrandButton onClick={() => navigate("/app")}>
+      Make a transaction
+    </BrandButton>
+  </Magnetic>
 </Flex>
+
 
 
         {/* HERO */}
@@ -475,36 +480,92 @@ useEffect(() => {
           </VStack>
         </Section>
 
-        {/* LIVE METRICS */}
-        <Section id="metrics" bg={useColorModeValue("linear(to-r, blue.50, white)", "linear(to-r, gray.800, gray.700)")}>
-          <VStack align="start" spacing={6}>
-            <Heading size="xl">Track the best KPIs</Heading>
-            <Text color={subText}>Real data from your local instance via <code>/metrics</code>.</Text>
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mt={2}>
-              <StatCard
-                label="Total Volume"
-                value={`${Number(metrics.total_volume ?? 0).toLocaleString("fr-FR", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })} €`}
-              />
-              <StatCard label="# Transactions" value={metrics.total_transactions ?? 0} />
-              <GlowCard>
-                <Stat>
-                  <StatLabel>By PSP</StatLabel>
-                  <StatNumber fontSize="lg">
-                    {Object.entries(metrics.transactions_by_psp || {}).map(([k, v]) => (
-                      <Badge key={k} mr={2} colorScheme="blue" variant="subtle">
-                        {k}:{v}
-                      </Badge>
-                    ))}
-                  </StatNumber>
-                </Stat>
-              </GlowCard>
-            </SimpleGrid>
-          </VStack>
-        <Box h={{ base: "140px", md: "220px" }} /> 
+        {/* LIVE METRICS (Demo KPIs) */}
+<Section id="metrics" position="relative" overflow="visible" bg="transparent">
+  {/* 🌄 Image stylisée en fond */}
+  <Box
+    position="absolute"
+    top="-5%"
+    left="50%"
+    transform="translateX(-50%)"
+    w="110vw"            // 👈 pas full, comme une carte immersive
+    h="100%"
+    zIndex={0}
+    borderRadius="3xl" // 👈 arrondi premium
+    overflow="hidden"
+    boxShadow="0 0 60px rgba(35,104,245,0.25)" // 👈 glow bleu subtil
+    _before={{
+      content: '""',
+      position: "absolute",
+      inset: 0,
+      bgImage:
+        "url('/banniere-41-paysage-montagne-aube-rayons-du-soleil-levant-illuminent-sommets-montagnes-couleur-rose-vif-inhabituelle_198208-1332.jpg')",
+      bgSize: "cover",
+      bgPosition: "center",
+      filter: "blur(2px) brightness(0.5)", // 👈 flou + sombre
+      maskImage:
+        "linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)", // ✅ fondu bas
+      WebkitMaskImage:
+        "linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)",
+    }}
+    _after={{
+      content: '""',
+      position: "absolute",
+      inset: 0,
+      bg: "linear-gradient(to-b, rgba(10,10,20,0.6), rgba(10,10,20,0.95))",
+    }}
+  />
+
+  {/* KPIs au-dessus */}
+  <VStack align="start" spacing={6} position="relative" zIndex={1}>
+    <Heading size="xl" color="white">
+      Track the best KPIs for better decision-making
+    </Heading>
+    <Text color="gray.200" maxW="2xl">
+      Demo KPIs powered by <code>SwitchPay</code>. These numbers show the kind
+      of insights you’ll get.
+    </Text>
+
+    <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mt={2}>
+      <StatCard
+        label="Total Volume"
+        value={
+          <>
+            <Counter to={12500000} duration={1800} decimals={2} isMoney /> €
+          </>
+        }
+      />
+      <StatCard
+        label="# Transactions"
+        value={<Counter to={487231} duration={2000} />}
+      />
+
+      <GlowCard>
+        <Stat>
+          <StatLabel color="gray.300">By PSP</StatLabel>
+          <StatNumber fontSize="lg" color="white">
+            <Badge mr={2} colorScheme="blue" variant="subtle">
+              Stripe: <Counter to={238121} duration={1500} />
+            </Badge>
+            <Badge mr={2} colorScheme="purple" variant="subtle">
+              Adyen: <Counter to={132893} duration={1800} />
+            </Badge>
+            <Badge mr={2} colorScheme="green" variant="subtle">
+              Rapyd: <Counter to={77320} duration={2100} />
+            </Badge>
+            <Badge mr={2} colorScheme="teal" variant="subtle">
+              Wise: <Counter to={3897} duration={2500} />
+            </Badge>
+          </StatNumber>
+        </Stat>
+      </GlowCard>
+    </SimpleGrid>
+  </VStack>
+
+  {/* espace bas */}
+  <Box h={{ base: "140px", md: "220px" }} />
 </Section>
+
 
         {/* === AI ASSISTANT === */}
 <Section id="assistant" py={{ base: 20, md: 28 }} bg={pageBg}>
@@ -606,100 +667,159 @@ useEffect(() => {
             </GlowCard>
           </SimpleGrid>
         </Section>
+ 
 
         {/* PRICING */}
-        <Section id="pricing"  bg={useColorModeValue("linear(to-b, white, gray.50)", "linear(to-b, gray.900, gray.800)")}>
-          <VStack spacing={10} align="center" textAlign="center">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              viewport={{ once: true }}
+<Section
+  id="pricing"
+  bg={useColorModeValue(
+    "linear(to-b, white, gray.50)",
+    "linear(to-b, gray.900, gray.800)"
+  )}
+>
+  <VStack spacing={10} align="center" textAlign="center">
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true }}
+    >
+      <Heading size="2xl" fontWeight="extrabold" mb={3} py={15}>
+        Simple, transparent pricing.
+      </Heading>
+      <Text fontSize="lg" color={subText}>
+        Start for free. Scale without limits. Only pay for real value.
+      </Text>
+    </motion.div>
+
+    <SimpleGrid
+      columns={{ base: 1, md: 3 }}
+      spacing={8}
+      w="100%"
+      maxW="6xl"
+    >
+      {[
+        {
+          title: "Starter",
+          price: "Free",
+          desc: "For indie devs & startups testing payments.",
+          features: ["100 tx/month", "Sandbox PSPs", "Basic metrics"],
+          highlight: false,
+          premium: false,
+        },
+        {
+          title: "Growth",
+          price: "€99/mo",
+          desc: "For scaling teams optimizing conversion.",
+          features: [
+            "10k tx/month",
+            "Smart routing",
+            "switchpayAI Assistant",
+            "Advanced dashboard",
+          ],
+          highlight: true,
+          premium: false,
+        },
+        {
+          title: "Enterprise",
+          price: "Custom",
+          desc: "For global players needing reliability at scale.",
+          features: [
+            "Unlimited tx",
+            "Dedicated PSP mix",
+            "24/7 support",
+            "SLAs & compliance",
+          ],
+          highlight: false,
+          premium: true,
+        },
+      ].map((tier, i) => (
+        <GlowCard
+          key={i}
+          p={8}
+          borderWidth={tier.highlight ? "2px" : "1px"}
+          borderColor={
+            tier.premium
+              ? "yellow.400"
+              : tier.highlight
+              ? "brand.400"
+              : borderCol
+          }
+          transition="all 0.35s ease"
+          _hover={{
+            transform: "scale(1.06)",
+            boxShadow: tier.premium
+              ? "0 0 50px rgba(255, 215, 0, 0.7), 0 0 100px rgba(255, 215, 0, 0.4)"
+              : tier.highlight
+              ? "0 0 40px rgba(123, 63, 252, 0.6), 0 0 80px rgba(123, 63, 252, 0.3)"
+              : "0 0 25px rgba(35,104,245,0.3)",
+          }}
+          display="flex"
+          flexDirection="column"
+          bg={tier.premium ? premiumBg : "inherit"} // ✅ premiumBg défini en haut
+        >
+          <VStack spacing={4} flex="1" align="stretch">
+            <Badge
+              alignSelf="center"
+              colorScheme={
+                tier.premium
+                  ? "yellow"
+                  : tier.highlight
+                  ? "purple"
+                  : "gray"
+              }
+              variant={
+                tier.premium ? "solid" : tier.highlight ? "solid" : "subtle"
+              }
+              px={3}
+              py={1}
+              borderRadius="full"
             >
-              <Heading size="2xl" fontWeight="extrabold" mb={3} py={15}>
-                Simple, transparent pricing.
-              </Heading>
-              <Text fontSize="lg" color={subText}>
-                Start for free. Scale without limits. Only pay for real value.
-              </Text>
-            </motion.div>
+              {tier.title}
+            </Badge>
 
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8} w="100%" maxW="6xl">
-              {[
-                {
-                  title: "Starter",
-                  price: "Free",
-                  desc: "For indie devs & startups testing payments.",
-                  features: ["100 tx/month", "Sandbox PSPs", "Basic metrics"],
-                  highlight: false,
-                },
-                {
-                  title: "Growth",
-                  price: "€99/mo",
-                  desc: "For scaling teams optimizing conversion.",
-                  features: ["10k tx/month", "Smart routing", "Failover & retries", "Advanced dashboard"],
-                  highlight: true,
-                },
-                {
-                  title: "Enterprise",
-                  price: "Custom",
-                  desc: "For global players needing reliability at scale.",
-                  features: ["Unlimited tx", "Dedicated PSP mix", "24/7 support", "SLAs & compliance"],
-                  highlight: false,
-                },
-              ].map((tier, i) => (
-                <GlowCard
-                  key={i}
-                  p={8}
-                  borderWidth={tier.highlight ? "2px" : "1px"}
-                  borderColor={tier.highlight ? "brand.400" : borderCol}
-                  transition="all 0.35s ease"
-                  _hover={{
-                    transform: "scale(1.06)",
-                    boxShadow:
-                      tier.highlight
-                        ? "0 0 40px rgba(123, 63, 252, 0.6), 0 0 80px rgba(123, 63, 252, 0.3)"
-                        : "0 0 25px rgba(35,104,245,0.3)",
-                  }}
-                  display="flex"
-                  flexDirection="column"
-                >
-                  <VStack spacing={4} flex="1" align="stretch">
-                    <Badge
-                      alignSelf="center"
-                      colorScheme={tier.highlight ? "purple" : "gray"}
-                      variant={tier.highlight ? "solid" : "subtle"}
-                      px={3}
-                      py={1}
-                      borderRadius="full"
-                    >
-                      {tier.title}
-                    </Badge>
-                    <Heading size="2xl" textAlign="center">{tier.price}</Heading>
-                    <Text color={subText} mb={4} textAlign="center">{tier.desc}</Text>
+            <Heading size="2xl" textAlign="center">
+              {tier.price}
+            </Heading>
+            <Text color={subText} mb={4} textAlign="center">
+              {tier.desc}
+            </Text>
 
-                    <VStack spacing={2} align="start" flex="1">
-                      {tier.features.map((f, idx) => (
-                        <HStack key={idx} spacing={2}>
-                          <CheckCircleIcon color="green.400" />
-                          <Text>{f}</Text>
-                        </HStack>
-                      ))}
-                    </VStack>
-
-                    <Spacer />
-
-                    <Magnetic>
-                      <BrandButton mt={6} w="100%">
-                        {tier.price === "Custom" ? "Contact us" : "Get started"}
-                      </BrandButton>
-                    </Magnetic>
-                  </VStack>
-                </GlowCard>
+            <VStack spacing={2} align="start" flex="1">
+              {tier.features.map((f, idx) => (
+                <HStack key={idx} spacing={2}>
+                  <CheckCircleIcon
+                    color={tier.premium ? "yellow.400" : "green.400"}
+                  />
+                  <Text>{f}</Text>
+                </HStack>
               ))}
-            </SimpleGrid>
+            </VStack>
+
+            <Spacer />
+
+            <Magnetic>
+              <BrandButton
+                as={RouterLink}   // ✅ navigation sans flash
+                to="/contact"
+                mt={6}
+                w="100%"
+                bgGradient={
+                  tier.premium
+                    ? "linear(to-r, yellow.400, yellow.600)"
+                    : "linear(to-r, brand.500, brand.300)"
+                }
+                _hover={{ filter: "brightness(1.08)" }}
+              >
+                {tier.price === "Custom" ? "Contact us" : "Get started"}
+              </BrandButton>
+            </Magnetic>
           </VStack>
-        </Section>
+        </GlowCard>
+      ))}
+    </SimpleGrid>
+  </VStack>
+</Section>
 
         {/* CTA */}
         <Section id="cta">
@@ -753,8 +873,8 @@ useEffect(() => {
           </VStack>
         </Section>
 
-        {/* CONTACT */}
-        <Section id="contact" bg={useColorModeValue("linear(to-r, white, gray.50)", "linear(to-r, gray.800, gray.900)")}>
+        {/* SOCIALS */}
+        <Section id="socials" bg={useColorModeValue("linear(to-r, white, gray.50)", "linear(to-r, gray.800, gray.900)")}>
           <GlowCard>
             <Flex align="center" gap={6} wrap="wrap" justify="space-between">
               <VStack align="start" spacing={1}>
@@ -794,7 +914,6 @@ useEffect(() => {
           </Container>
         </Box>
         {/* CHATBOT */}
-        <ChatbotWidget />
       </Box>
     </Layout>
   );

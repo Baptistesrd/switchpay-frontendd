@@ -16,15 +16,37 @@ code {
 html, body, #root {
   height: 100%;
   overflow-x: hidden;
+  overflow-y: auto; /* ✅ active bien la scrollbar */
 }
 
-/* ✅ Supprimer la scrollbar proprement */
-html, body {
-  scrollbar-width: none; /* Firefox */
+/* === Scrollbar Custom === */
+
+/* Firefox */
+html {
+  scrollbar-width: thin;              /* fine */
+  scrollbar-color: #4a5568 #1a202c;   /* pouce + track */
 }
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(26, 32, 44, 0.7);  /* gris foncé semi-transparent */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3385ff, #2368f5); /* brand blue */
+  border-radius: 10px;
+  border: 2px solid rgba(26, 32, 44, 0.9); /* effet glassy */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #4c9bff, #3385ff); /* plus lumineux au hover */
 }
 
 /* === Animations === */
@@ -57,4 +79,13 @@ body::-webkit-scrollbar {
 /* === Links === */
 a:hover {
   text-decoration: none; /* Supprime l'underline au hover */
+}
+
+@keyframes spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }

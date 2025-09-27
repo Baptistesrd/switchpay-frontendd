@@ -1,30 +1,20 @@
 import React, { useEffect, useState } from "react";
 import {
   VStack, HStack, FormControl, FormLabel, Input, Select, IconButton,
-  InputGroup, InputRightElement, useToast, Tooltip, Text
+  InputGroup, InputRightElement, useToast, Tooltip, Text, Box
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon, CopyIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import axios from "axios";
+import { motion } from "framer-motion";
 import MagneticButton from "./MagneticButton";
 
 const CURRENCIES = ["EUR","USD","GBP","JPY","CHF","CAD","AUD","CNY","INR","BRL","ZAR","SGD","MXN","TRY"];
 const DEVICES = ["web","mobile"];
 
 const CURRENCY_SYMBOLS = {
-  EUR: "€",
-  USD: "$",
-  GBP: "£",
-  JPY: "¥",
-  CHF: "₣",
-  CAD: "$",
-  AUD: "$",
-  CNY: "¥",
-  INR: "₹",
-  BRL: "R$",
-  ZAR: "R",
-  SGD: "$",
-  MXN: "$",
-  TRY: "₺"
+  EUR: "€", USD: "$", GBP: "£", JPY: "¥", CHF: "₣",
+  CAD: "$", AUD: "$", CNY: "¥", INR: "₹", BRL: "R$",
+  ZAR: "R", SGD: "$", MXN: "$", TRY: "₺"
 };
 
 export default function TransactionForm({ onNewTransaction }) {
@@ -55,7 +45,7 @@ export default function TransactionForm({ onNewTransaction }) {
       return;
     }
     const payload = {
-      montant: parseFloat(formData.montant.replace(/,/g, "")), // ✅ nettoyer les séparateurs
+      montant: parseFloat(formData.montant.replace(/,/g, "")),
       devise: formData.devise,
       pays: formData.pays.toUpperCase(),
       device: formData.device,
@@ -95,8 +85,15 @@ export default function TransactionForm({ onNewTransaction }) {
   return (
     <form onSubmit={handleSubmit}>
       <VStack spacing={8} align="stretch">
-        {/* API Key */}
-        <FormControl>
+        {/* API Key - glassmorphism */}
+        <Box
+          p={4}
+          borderRadius="lg"
+          backdropFilter="blur(10px)"
+          bg="whiteAlpha.100"
+          border="1px solid rgba(255,255,255,0.2)"
+          shadow="md"
+        >
           <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>
             API Key
           </FormLabel>
@@ -108,7 +105,6 @@ export default function TransactionForm({ onNewTransaction }) {
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
               borderRadius="lg"
-              shadow="sm"
             />
             <InputRightElement>
               <HStack spacing={1}>
@@ -127,7 +123,7 @@ export default function TransactionForm({ onNewTransaction }) {
               </HStack>
             </InputRightElement>
           </InputGroup>
-        </FormControl>
+        </Box>
 
         {/* Amount & Currency */}
         <HStack spacing={6} align="start">
@@ -140,7 +136,7 @@ export default function TransactionForm({ onNewTransaction }) {
                 placeholder="0.00"
                 value={formData.montant}
                 onChange={(e) => {
-                  const raw = e.target.value.replace(/[^\d.]/g, ""); // chiffres + .
+                  const raw = e.target.value.replace(/[^\d.]/g, "");
                   const parts = raw.split(".");
                   const formatted =
                     parts.length > 1
@@ -167,7 +163,9 @@ export default function TransactionForm({ onNewTransaction }) {
               placeholder="Select"
               value={formData.devise}
               onChange={handleChange}
-              borderRadius="lg"
+              borderRadius="full"
+              bg="blackAlpha.50"
+              _hover={{ bg: "blackAlpha.100" }}
             >
               {CURRENCIES.map((c) => (
                 <option key={c} value={c}>{c}</option>
@@ -198,7 +196,9 @@ export default function TransactionForm({ onNewTransaction }) {
               placeholder="Select"
               value={formData.device}
               onChange={handleChange}
-              borderRadius="lg"
+              borderRadius="full"
+              bg="blackAlpha.50"
+              _hover={{ bg: "blackAlpha.100" }}
             >
               {DEVICES.map((d) => (
                 <option key={d} value={d}>{capitalize(d)}</option>
@@ -210,19 +210,20 @@ export default function TransactionForm({ onNewTransaction }) {
         {/* Submit CTA */}
         <HStack justify="space-between">
           <Text fontSize="xs" opacity={0.6}>
-            An <b>Idempotency-Key</b> is auto-generated per request
+            <b>Idempotency-Key</b> auto-generated per request
           </Text>
           <MagneticButton
             type="submit"
             isLoading={loading}
             rightIcon={<ArrowForwardIcon />}
             borderRadius="full"
-            px={8}
-            py={5}
+            px={10}
+            py={6}
             fontWeight="bold"
-            colorScheme="brand"
-            shadow="md"
-            _hover={{ shadow: "xl", transform: "translateY(-1px)" }}
+            bgGradient="linear(to-r, brand.500, brand.300)"
+            color="white"
+            shadow="lg"
+            _hover={{ shadow: "xl", transform: "translateY(-2px)" }}
           >
             Send Transaction
           </MagneticButton>
