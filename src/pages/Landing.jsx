@@ -519,7 +519,7 @@ export default function Landing() {
   {/* KPIs au-dessus */}
   <VStack align="start" spacing={6} position="relative" zIndex={1}>
     <Heading size="xl" color="white">
-      Track the best KPIs for better decision-making
+      Track the best KPIs for better decision-making payments.
     </Heading>
     <Text color="gray.200" maxW="2xl">
       Demo KPIs powered by <code>SwitchPay</code>. These numbers show the kind
