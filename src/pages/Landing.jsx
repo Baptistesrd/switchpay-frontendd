@@ -5,11 +5,15 @@ import {
   useColorMode, useColorModeValue, Link as ChakraLink, Tooltip,
   AspectRatio, Accordion, AccordionItem, AccordionButton,
   AccordionPanel, AccordionIcon, Modal, ModalOverlay, ModalContent,
-  useDisclosure, Input, Icon
+  useDisclosure, Input, Icon,
+  Drawer, IconButton, DrawerOverlay, DrawerContent,
+  DrawerCloseButton, DrawerHeader, DrawerBody
 } from "@chakra-ui/react";
+
+
 import {
   MoonIcon, SunIcon, LockIcon, CheckCircleIcon,
-  TimeIcon, ExternalLinkIcon
+  TimeIcon, ExternalLinkIcon, HamburgerIcon
 } from "@chakra-ui/icons";
 import { FaLinkedin, FaTwitter } from "react-icons/fa";
 import { SiSubstack } from "react-icons/si";
@@ -210,6 +214,7 @@ export default function Landing() {
 
         {/* NAVBAR */}
 <Flex
+  as="nav"
   position="absolute"
   top="20px"
   left="50%"
@@ -220,25 +225,29 @@ export default function Landing() {
   transition="opacity .35s ease, transform .35s ease"
   willChange="transform, opacity"
   zIndex="100"
-  bg="rgba(20,25,45,0.65)"          // ✅ forcé dark
+  bg="rgba(20,25,45,0.65)"
   backdropFilter="saturate(180%) blur(18px)"
   border="1px solid"
-  borderColor="rgba(255,255,255,0.1)" // ✅ léger border clair
+  borderColor="rgba(255,255,255,0.1)"
   borderRadius="full"
-  px={8}
+  px={6}
   py={3}
   align="center"
   maxW="6xl"
   mx="auto"
 >
   {/* Logo */}
-  <Heading fontSize="xl" fontWeight="black" color="white">
+  <Heading
+    fontSize={{ base: "lg", md: "xl" }}
+    fontWeight="black"
+    color="white"
+  >
     switchpay
   </Heading>
 
   <Spacer />
 
-  {/* Menu Links */}
+  {/* Menu Links (desktop only) */}
   <HStack spacing={6} display={{ base: "none", md: "flex" }}>
     <ChakraLink as="button" onClick={() => scrollTo("#how")} _hover={{ color: "brand.500" }}>How it works</ChakraLink>
     <ChakraLink as="button" onClick={() => scrollTo("#why")} _hover={{ color: "brand.500" }}>Why SwitchPay</ChakraLink>
@@ -250,18 +259,56 @@ export default function Landing() {
 
   <Spacer />
 
-  {/* CTA */}
-  <Magnetic>
-    <BrandButton onClick={() => navigate("/app")}>
-      Make a transaction
-    </BrandButton>
-  </Magnetic>
+  {/* CTA desktop */}
+  <Box display={{ base: "none", md: "block" }}>
+    <Magnetic>
+      <BrandButton onClick={() => navigate("/app")}>
+        Make a transaction
+      </BrandButton>
+    </Magnetic>
+  </Box>
+
+  {/* Mobile Burger */}
+  <Box display={{ base: "block", md: "none" }}>
+    <IconButton
+      aria-label="Open Menu"
+      icon={<HamburgerIcon />}
+      variant="ghost"
+      color="white"
+      fontSize="2xl"
+      onClick={onOpen}
+    />
+  </Box>
+
+  {/* Drawer Mobile Menu */}
+  <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
+    <DrawerOverlay />
+    <DrawerContent bg={pageBg}>
+      <DrawerCloseButton />
+      <DrawerHeader fontWeight="bold">Menu</DrawerHeader>
+      <DrawerBody>
+        <VStack spacing={6} align="start" mt={4}>
+          <ChakraLink onClick={() => scrollTo("#how")}>How it works</ChakraLink>
+          <ChakraLink onClick={() => scrollTo("#why")}>Why SwitchPay</ChakraLink>
+          <ChakraLink onClick={() => scrollTo("#metrics")}>Live Metrics</ChakraLink>
+          <ChakraLink onClick={() => scrollTo("#security")}>Security</ChakraLink>
+          <ChakraLink onClick={() => scrollTo("#pricing")}>Pricing</ChakraLink>
+          <ChakraLink as={RouterLink} to="/contact">Contact</ChakraLink>
+          <BrandButton w="100%" onClick={() => navigate("/app")}>
+            🚀 Make a transaction
+          </BrandButton>
+        </VStack>
+      </DrawerBody>
+    </DrawerContent>
+  </Drawer>
 </Flex>
 
 
 
-        {/* HERO */}
-<Box as="header" position="relative" py={100}>
+
+       {/* HERO */}
+<Box as="header" position="relative" py={{ base: 20, md: 100 }}>
+  {/* Background FX */}
   <Box position="absolute" inset={0} zIndex={0}>
     <AnimatedParticles />
     <GlowBlob top="6%" left="65%" size="520px" delay={0.2} />
@@ -269,84 +316,104 @@ export default function Landing() {
   </Box>
 
   <Section id="hero">
-    <VStack spacing={9} align="center">
-      {/* Titre principal */}
-      <VStack align="center" spacing={6} w="100%" textAlign="center">
-  <Heading
-    as="h1"
-    w="100%"
-    fontSize={{ base: "5xl", md: "7xl", lg: "8xl" }}
-    lineHeight="1.1"
-    fontWeight="extrabold"
-    noOfLines={1}
-    textAlign="center"
-  >
-    Welcome to switchpay.
-  </Heading>
+    <VStack spacing={{ base: 8, md: 12 }} align="center" textAlign="center">
+      {/* Titres */}
+      <Heading
+        as="h1"
+        w="100%"
+        fontSize={{ base: "3xl", sm: "4xl", md: "6xl", lg: "8xl" }}
+        lineHeight={{ base: "1.2", md: "1.1" }}
+        fontWeight="extrabold"
+        whiteSpace="normal"
+      >
+        Welcome to <br /> switchpay.
+      </Heading>
 
-  <Heading
-    as="h2"
-    w="100%"
-    fontSize={{ base: "3xl", md: "5xl", lg: "6xl" }}
-    fontWeight="extrabold"
-    bgGradient="linear(to-r, brand.500, brand.300)"
-    bgClip="text"
-    className="shimmer"
-    textAlign="center"
-    mt={0}   
-    m={0}
-  lineHeight="1.05"
-  >
-    Your money matters.
-  </Heading>
+      <Heading
+        as="h2"
+        w="100%"
+        fontSize={{ base: "xl", sm: "2xl", md: "4xl", lg: "6xl" }}
+        fontWeight="extrabold"
+        bgGradient="linear(to-r, brand.500, brand.300)"
+        bgClip="text"
+        className="shimmer"
+        lineHeight="1.1"
+      >
+        Your money matters.
+      </Heading>
 
+      {/* Texte d’accroche */}
+      <Text
+        fontSize={{ base: "md", md: "lg" }}
+        color={subText}
+        maxW={{ base: "90%", md: "3xl" }}
+      >
+        Stand out from your competitors. Automatically route each payment
+        to the best payment service provider based on country,
+        currency, fees, and device. <b>More conversions. Lower costs.</b>
+      </Text>
 
-        <Text fontSize="lg" color={subText}>
-          Stand out from your competitors. Automatically route each payment to the best PSP (Stripe, Adyen, Wise, Rapyd) based on country,
-          currency, fees, and device. More conversions. Lower costs.
-        </Text>
-
-        <HStack spacing={6} pt={2} justify="center">
-          <HStack spacing={2}>
-            <CheckCircleIcon color="green.400" />
-            <Text color={subText}>95%+ success (simulated)</Text>
-          </HStack>
-          <HStack spacing={2}>
-            <TimeIcon color="blue.400" />
-            <Text color={subText}>Latency-aware routing</Text>
-          </HStack>
+      {/* Mini-features */}
+      <Stack
+        direction={{ base: "column", sm: "row" }}
+        spacing={{ base: 3, sm: 6 }}
+        pt={2}
+        justify="center"
+        align="center"
+      >
+        <HStack spacing={2}>
+          <CheckCircleIcon color="green.400" />
+          <Text color={subText}>95%+ success (simulated)</Text>
         </HStack>
-
-        <HStack spacing={4}>
-          <Magnetic>
-            <BrandButton onClick={() => navigate("/app")}>Get started</BrandButton>
-          </Magnetic>
-          <Button
-            variant="outline"
-            borderColor="brand.400"
-            color="brand.400"
-            rightIcon={<ExternalLinkIcon />}
-            onClick={() => scrollTo("#how")}
-            _hover={{ bg: "brand.50" }}
-          >
-            See how it works
-          </Button>
+        <HStack spacing={2}>
+          <TimeIcon color="blue.400" />
+          <Text color={subText}>Latency-aware routing</Text>
         </HStack>
-      </VStack>
-      
-      {/* Carte PSP + Features */}
-      <GlowCard flex="1" p={6} w="100%" maxW="4xl" mt={20}>
+      </Stack>
+
+      {/* CTA */}
+<Stack
+  spacing={{ base: 3, sm: 4 }}
+  direction={{ base: "column", sm: "row" }}
+  w="100%"
+  justify="center"
+  align="center"
+>
+  <Magnetic>
+    <BrandButton
+      w={{ base: "100%", sm: "auto" }}
+      onClick={() => navigate("/app")}
+    >
+      Get started for Free
+    </BrandButton>
+  </Magnetic>
+  <Button
+    variant="outline"
+    borderColor="brand.400"
+    color="brand.400"
+    rightIcon={<ExternalLinkIcon />}
+    onClick={() => scrollTo("#how")}
+    _hover={{ bg: "brand.50" }}
+    w={{ base: "100%", sm: "auto" }}
+  >
+    See how it works
+  </Button>
+</Stack>
+
+
+      {/* Carte PSP + Features (DANS le HERO) */}
+      <GlowCard flex="1" p={6} w="100%" maxW="4xl" mt={{ base: 10, md: 20 }}>
         <VStack align="stretch" spacing={6}>
           {/* Integrated PSPs */}
           <VStack spacing={3} align="center">
             <Text fontWeight="bold" fontSize="md">Integrated PSPs</Text>
-            <HStack spacing={8} wrap="wrap" justify="center">
-              <Box as="img" src="/Stripe_Logo,_revised_2016.svg.png" alt="Stripe" h="40px" maxW="100px" objectFit="contain" />
-              <Box as="img" src="/Adyen_Corporate_Logo.svg.png" alt="Adyen" h="40px" maxW="100px" objectFit="contain" />
-              <Box as="img" src="/Airwallex_Logo_-_Black.png" alt="Airwallex" h="40px" maxW="100px" objectFit="contain" />
-              <Box as="img" src="/Wise2020.svg" alt="Wise" h="40px" maxW="100px" objectFit="contain" />
-              <Box as="img" src="/Rapyd-logo-768x236.webp" alt="Rapyd" h="40px" maxW="100px" objectFit="contain" />
-              <Box as="img" src="/PayPal.svg.png" alt="PayPal" h="40px" maxW="100px" objectFit="contain" />
+            <HStack spacing={6} flexWrap="wrap" justify="center">
+              <Box as="img" src="/Stripe_Logo,_revised_2016.svg.png" alt="Stripe" maxW={{ base: "64px", md: "100px" }} h="auto" objectFit="contain" />
+              <Box as="img" src="/Adyen_Corporate_Logo.svg.png" alt="Adyen" maxW={{ base: "64px", md: "100px" }} h="auto" objectFit="contain" />
+              <Box as="img" src="/Airwallex_Logo_-_Black.png" alt="Airwallex" maxW={{ base: "64px", md: "100px" }} h="auto" objectFit="contain" />
+              <Box as="img" src="/Wise2020.svg" alt="Wise" maxW={{ base: "64px", md: "100px" }} h="auto" objectFit="contain" />
+              <Box as="img" src="/Rapyd-logo-768x236.webp" alt="Rapyd" maxW={{ base: "64px", md: "100px" }} h="auto" objectFit="contain" />
+              <Box as="img" src="/PayPal.svg.png" alt="PayPal" maxW={{ base: "64px", md: "100px" }} h="auto" objectFit="contain" />
             </HStack>
           </VStack>
 
@@ -354,7 +421,7 @@ export default function Landing() {
           <Heading size="md" textAlign="center">What SwitchPay optimizes</Heading>
 
           {/* Features */}
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={3}>
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 3, md: 4 }}>
             <Feature label="Higher auth rates" />
             <Feature label="Lower fees" />
             <Feature label="Geo coverage" />
@@ -376,80 +443,108 @@ export default function Landing() {
         </Section>
 
         {/* PRODUCT DEMO */}
-        <Section id="demo" bg={useColorModeValue("linear(to-r, white, blue.50)", "linear(to-r, gray.900, gray.800)")} pt={32} pb={20} >
-          <VStack spacing={8} align="center" textAlign="center">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              viewport={{ once: true }}
-            >
-              <Heading size="2xl" bgGradient="linear(to-r, brand.500, brand.300)" bgClip="text">
-                Product Demo
-              </Heading>
-              <Text mt={3} fontSize="lg" color={subText}>
-                See switchpay in action, saving money in real time.
-              </Text>
-            </motion.div>
+<Section
+  id="demo"
+  bg={useColorModeValue(
+    "linear(to-r, white, blue.50)",
+    "linear(to-r, gray.900, gray.800)"
+  )}
+  pt={32}
+  pb={32}
+>
+  <VStack spacing={16} align="center" textAlign="center" position="relative">
+    {/* Titre animé */}
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true }}
+    >
+      <Heading
+        size="2xl"
+        bgGradient="linear(to-r, brand.500, brand.300)"
+        bgClip="text"
+      >
+        Product Demo
+      </Heading>
+      <Text mt={3} fontSize="lg" color={subText} maxW="2xl" mx="auto">
+        See SwitchPay in action. Real-time routing. Real savings.
+      </Text>
+    </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.02, rotateX: 3, rotateY: -3 }}
-              style={{
-                width: "100%",
-                maxWidth: "900px",
-                borderRadius: "20px",
-                overflow: "hidden",
-                boxShadow: "0 0 40px rgba(35, 104, 245, 0.4)",
-                position: "relative",
-              }}
-            >
-              <AspectRatio ratio={16 / 9} w="100%">
-                <iframe
-                  src="https://www.youtube.com/embed/JE_LsFrjcAA?controls=0"
-                  title="SwitchPay Demo"
-                  allowFullScreen
-                  style={{ borderRadius: "20px", zIndex: 1 }}
-                />
-              </AspectRatio>
+    {/* Vidéo intégrée avec effet glassmorphism */}
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.7, ease: "easeOut" }}
+      viewport={{ once: true }}
+      whileHover={{ scale: 1.02 }}
+      style={{
+        width: "100%",
+        maxWidth: "1000px",
+        borderRadius: "24px",
+        overflow: "hidden",
+        boxShadow: "0 0 60px rgba(35, 104, 245, 0.45)",
+        position: "relative",
+        background: "rgba(255,255,255,0.08)",
+        backdropFilter: "blur(12px) saturate(180%)",
+        border: "1px solid rgba(255,255,255,0.15)",
+      }}
+    >
+      <AspectRatio ratio={16 / 9} w="100%">
+        <video
+          src="/Streamlining Payments for SMBs with SwitchPay 🚀.mp4"
+          title="SwitchPay Demo"
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+      </AspectRatio>
 
-              <Flex
-                position="absolute"
-                inset={0}
-                justify="center"
-                align="center"
-                bg="blackAlpha.500"
-                opacity={0}
-                _hover={{ opacity: 1 }}
-                transition="all 0.3s ease"
-                zIndex={2}
-                direction="column"
-              >
-                <Button
-                  size="lg"
-                  mb={3}
-                  bgGradient="linear(to-r, brand.500, brand.300)"
-                  color="white"
-                  _hover={{ filter: "brightness(1.1)" }}
-                  onClick={onOpen}
-                >
-                  ▶ Play Demo
-                </Button>
-                <Button
-                  variant="outline"
-                  color="white"
-                  borderColor="whiteAlpha.600"
-                  leftIcon={<ExternalLinkIcon />}
-                  onClick={() => window.open("https://www.youtube.com/watch?v=JE_LsFrjcAA", "_blank")}
-                >
-                  Open on YouTube
-                </Button>
-              </Flex>
-            </motion.div>
-          </VStack>
+      {/* Glow effect autour */}
+      <Box
+        position="absolute"
+        inset={-1}
+        borderRadius="24px"
+        pointerEvents="none"
+        boxShadow="0 0 80px rgba(35, 104, 245, 0.6)"
+      />
+    </motion.div>
+
+    {/* CTA sous la vidéo */}
+    <Stack direction={{ base: "column", sm: "row" }} spacing={6} pt={6}>
+      <Button
+        size="lg"
+        bgGradient="linear(to-r, brand.500, brand.300)"
+        color="white"
+        _hover={{ filter: "brightness(1.15)" }}
+        onClick={() => navigate("/app")}
+      >
+        Try SwitchPay now
+      </Button>
+      <Button
+        variant="outline"
+        size="lg"
+        borderColor="brand.400"
+        color="brand.400"
+        rightIcon={<ExternalLinkIcon />}
+        onClick={() =>
+          window.open("https://youtu.be/IjdUfmRmKAo", "_blank")
+        }
+        _hover={{ bg: "brand.50" }}
+      >
+        Watch full demo on YouTube
+      </Button>
+    </Stack>
+  </VStack>
+
+
 
           {/* Modal video */}
           <Modal isOpen={isOpen} onClose={onClose} size="4xl" isCentered>
@@ -517,7 +612,7 @@ export default function Landing() {
   />
 
   {/* KPIs au-dessus */}
-  <VStack align="start" spacing={6} position="relative" zIndex={1}>
+  <VStack align="start" spacing={10} position="relative" zIndex={1}>
     <Heading size="xl" color="white">
       Track the best KPIs for better decision-making payments.
     </Heading>

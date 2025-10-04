@@ -114,11 +114,12 @@ export default function Contact() {
               bgGradient="linear(to-r, brand.500, brand.300)"
               bgClip="text"
             >
-              Let’s build the future of payments
+              Let’s save you money.
             </Heading>
             <Text fontSize="lg" color={textColor}>
               Drop us your email and message. A member of our team will get back
               within <b>24 hours</b>.
+              We won't spmam you, promise.
             </Text>
           </VStack>
 

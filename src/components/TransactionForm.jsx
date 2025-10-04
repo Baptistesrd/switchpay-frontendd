@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
   VStack, HStack, FormControl, FormLabel, Input, Select, IconButton,
-  InputGroup, InputRightElement, useToast, Tooltip, Text, Box
+  InputGroup, InputRightElement, useToast, Tooltip, Text, Box, Divider
 } from "@chakra-ui/react";
-import { ViewIcon, ViewOffIcon, CopyIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+import {
+  ViewIcon, ViewOffIcon, CopyIcon, ArrowForwardIcon
+} from "@chakra-ui/icons";
 import axios from "axios";
 import { motion } from "framer-motion";
 import MagneticButton from "./MagneticButton";
@@ -24,8 +26,10 @@ export default function TransactionForm({ onNewTransaction }) {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
+  // 🔐 Persist API Key
   useEffect(() => { localStorage.setItem("apiKey", apiKey); }, [apiKey]);
 
+  // 🛠 Handlers
   const handleChange = (e) => setFormData((f) => ({ ...f, [e.target.name]: e.target.value }));
 
   const validate = () => {
@@ -44,6 +48,7 @@ export default function TransactionForm({ onNewTransaction }) {
       toast({ title: "Form error", description: err, status: "warning", duration: 2500, isClosable: true });
       return;
     }
+
     const payload = {
       montant: parseFloat(formData.montant.replace(/,/g, "")),
       devise: formData.devise,
@@ -57,12 +62,24 @@ export default function TransactionForm({ onNewTransaction }) {
 
     setLoading(true);
     try {
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/transaction`, payload, {
+      const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/transaction`, payload, {
         headers: { "x-api-key": apiKey, "Idempotency-Key": idempotencyKey },
       });
-      toast({ title: "Transaction sent", status: "success", duration: 2000, isClosable: true });
-      onNewTransaction?.();
+
+      toast({
+        title: "Transaction sent ✅",
+        description: `Transaction ID: ${res.data?.id || idempotencyKey}`,
+        status: "success",
+        duration: 2500,
+        isClosable: true,
+      });
+
+      // Call parent callback → refresh dashboard/history
+      onNewTransaction?.(res.data);
+
+      // Reset form
       setFormData({ montant: "", devise: "", pays: "", device: "" });
+
     } catch (err) {
       console.error("❌ API Error:", err);
       toast({
@@ -79,53 +96,64 @@ export default function TransactionForm({ onNewTransaction }) {
 
   const copyApi = () => {
     navigator.clipboard.writeText(apiKey || "");
-    toast({ title: "API Key copied", status: "info", duration: 1200, isClosable: true });
+    toast({ title: "API Key copied 📋", status: "info", duration: 1200, isClosable: true });
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <VStack spacing={8} align="stretch">
-        {/* API Key - glassmorphism */}
+      <VStack spacing={10} align="stretch">
+        
+        {/* 🔑 API Key */}
         <Box
-          p={4}
-          borderRadius="lg"
-          backdropFilter="blur(10px)"
-          bg="whiteAlpha.100"
-          border="1px solid rgba(255,255,255,0.2)"
-          shadow="md"
-        >
-          <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>
-            API Key
-          </FormLabel>
-          <InputGroup>
-            <Input
-              name="apiKey"
-              type={showApi ? "text" : "password"}
-              placeholder="Paste your API Key here"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              borderRadius="lg"
-            />
-            <InputRightElement>
-              <HStack spacing={1}>
-                <Tooltip label={showApi ? "Hide" : "Show"} hasArrow>
-                  <IconButton
-                    aria-label="toggle api"
-                    size="sm"
-                    variant="ghost"
-                    icon={showApi ? <ViewOffIcon /> : <ViewIcon />}
-                    onClick={() => setShowApi((s) => !s)}
-                  />
-                </Tooltip>
-                <Tooltip label="Copy Key" hasArrow>
-                  <IconButton aria-label="copy api" size="sm" variant="ghost" icon={<CopyIcon />} onClick={copyApi} />
-                </Tooltip>
-              </HStack>
-            </InputRightElement>
-          </InputGroup>
-        </Box>
+  p={4}
+  borderRadius="lg"
+  backdropFilter="blur(10px)"
+  bg="whiteAlpha.100"
+  border="1px solid rgba(255,255,255,0.2)"
+  shadow="md"
+>
+  <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>
+    Auto-generated API Key
+  </FormLabel>
+  <InputGroup>
+    <Input
+      name="apiKey"
+      type={showApi ? "text" : "password"}
+      placeholder="Paste your API Key here"
+      value={apiKey}
+      onChange={(e) => setApiKey(e.target.value)}
+      borderRadius="lg"
+      pr="5rem" // espace réservé pour les boutons
+    />
+    <InputRightElement width="5rem">
+      <HStack spacing={1}>
+        <Tooltip label={showApi ? "Hide" : "Show"} hasArrow>
+          <IconButton
+            aria-label="toggle api"
+            size="sm"
+            variant="ghost"
+            icon={showApi ? <ViewOffIcon /> : <ViewIcon />}
+            onClick={() => setShowApi((s) => !s)}
+          />
+        </Tooltip>
+        <Tooltip label="Copy Key" hasArrow>
+          <IconButton
+            aria-label="copy api"
+            size="sm"
+            variant="ghost"
+            icon={<CopyIcon />}
+            onClick={copyApi}
+          />
+        </Tooltip>
+      </HStack>
+    </InputRightElement>
+  </InputGroup>
+</Box>
 
-        {/* Amount & Currency */}
+
+        <Divider />
+
+        {/* 💵 Amount + Currency */}
         <HStack spacing={6} align="start">
           <FormControl isRequired>
             <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Amount</FormLabel>
@@ -148,9 +176,7 @@ export default function TransactionForm({ onNewTransaction }) {
               />
               {formData.devise && (
                 <InputRightElement width="3rem">
-                  <Text fontWeight="semibold">
-                    {CURRENCY_SYMBOLS[formData.devise] || ""}
-                  </Text>
+                  <Text fontWeight="semibold">{CURRENCY_SYMBOLS[formData.devise] || ""}</Text>
                 </InputRightElement>
               )}
             </InputGroup>
@@ -175,39 +201,61 @@ export default function TransactionForm({ onNewTransaction }) {
         </HStack>
 
         {/* Country & Device */}
-        <HStack spacing={6} align="start">
-          <FormControl isRequired>
-            <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Country</FormLabel>
-            <Input
-              name="pays"
-              placeholder="FR"
-              maxLength={2}
-              value={formData.pays}
-              onChange={handleChange}
-              textTransform="uppercase"
-              borderRadius="lg"
-            />
-          </FormControl>
+<HStack spacing={6} align="start">
+  {/* Country */}
+  <FormControl isRequired>
+    <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Country</FormLabel>
+    <Select
+      name="pays"
+      placeholder="Select country"
+      value={formData.pays}
+      onChange={handleChange}
+      borderRadius="full"
+      bg="blackAlpha.50"
+      _hover={{ bg: "blackAlpha.100" }}
+    >
+      <option value="FR">🇫🇷 France (FR)</option>
+      <option value="US">🇺🇸 United States (US)</option>
+      <option value="GB">🇬🇧 United Kingdom (GB)</option>
+      <option value="DE">🇩🇪 Germany (DE)</option>
+      <option value="IT">🇮🇹 Italy (IT)</option>
+      <option value="ES">🇪🇸 Spain (ES)</option>
+      <option value="CA">🇨🇦 Canada (CA)</option>
+      <option value="JP">🇯🇵 Japan (JP)</option>
+      <option value="CN">🇨🇳 China (CN)</option>
+      <option value="IN">🇮🇳 India (IN)</option>
+      <option value="BR">🇧🇷 Brazil (BR)</option>
+      <option value="SG">🇸🇬 Singapore (SG)</option>
+      <option value="MX">🇲🇽 Mexico (MX)</option>
+      <option value="ZA">🇿🇦 South Africa (ZA)</option>
+      <option value="TR">🇹🇷 Turkey (TR)</option>
+    </Select>
+  </FormControl>
 
-          <FormControl isRequired>
-            <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Device</FormLabel>
-            <Select
-              name="device"
-              placeholder="Select"
-              value={formData.device}
-              onChange={handleChange}
-              borderRadius="full"
-              bg="blackAlpha.50"
-              _hover={{ bg: "blackAlpha.100" }}
-            >
-              {DEVICES.map((d) => (
-                <option key={d} value={d}>{capitalize(d)}</option>
-              ))}
-            </Select>
-          </FormControl>
-        </HStack>
+  {/* Device */}
+  <FormControl isRequired>
+    <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Device</FormLabel>
+    <Select
+      name="device"
+      placeholder="Select"
+      value={formData.device}
+      onChange={handleChange}
+      borderRadius="full"
+      bg="blackAlpha.50"
+      _hover={{ bg: "blackAlpha.100" }}
+    >
+      {DEVICES.map((d) => (
+        <option key={d} value={d}>
+          {capitalize(d)}
+        </option>
+      ))}
+    </Select>
+  </FormControl>
+</HStack>
 
-        {/* Submit CTA */}
+
+
+        {/* 🚀 Submit CTA */}
         <HStack justify="space-between">
           <Text fontSize="xs" opacity={0.6}>
             <b>Idempotency-Key</b> auto-generated per request

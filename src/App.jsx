@@ -12,7 +12,6 @@ import {
   StatLabel,
   StatNumber,
   SimpleGrid,
-  useColorModeValue,
   Divider,
   HStack,
   Badge,
@@ -37,14 +36,7 @@ export default function App() {
   const [transactions, setTransactions] = useState([]);
   const API_KEY = process.env.REACT_APP_API_KEY;
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const navigate = useNavigate(); // ✅ navigation React Router
-
-  const boxBg = useColorModeValue(
-    "rgba(255,255,255,0.8)",
-    "rgba(15,23,42,0.8)"
-  );
-  const borderCol = useColorModeValue("blackAlpha.200", "whiteAlpha.200");
-  const tabSelectedBg = useColorModeValue("white", "gray.800");
+  const navigate = useNavigate();
 
   const fetchTransactions = async () => {
     try {
@@ -62,34 +54,48 @@ export default function App() {
   }, []);
 
   const totalAmount = useMemo(
-    () =>
-      transactions.reduce((acc, tx) => acc + Number(tx.montant || 0), 0),
+    () => transactions.reduce((acc, tx) => acc + Number(tx.montant || 0), 0),
     [transactions]
   );
 
   const count = transactions.length;
-  const successCount = transactions.filter(
-    (tx) => tx.status === "success"
-  ).length;
+  const successCount = transactions.filter((tx) => tx.status === "success").length;
   const failCount = count - successCount;
-  const successRate =
-    count > 0 ? Math.round((successCount / count) * 100) : 0;
+  const successRate = count > 0 ? Math.round((successCount / count) * 100) : 0;
 
   return (
     <Box position="relative" minH="100vh" overflow="hidden">
+      {/* --- Background premium --- */}
+      <Box
+        position="absolute"
+        inset={0}
+        bgGradient="linear(to-br, #0f172a, #1e1b4b, #312e81)"
+        _before={{
+          content: '""',
+          position: "absolute",
+          inset: 0,
+          bg: "radial-gradient(circle at 20% 30%, rgba(99,102,241,0.25), transparent 40%)",
+        }}
+        _after={{
+          content: '""',
+          position: "absolute",
+          inset: 0,
+          bg: "radial-gradient(circle at 80% 70%, rgba(236,72,153,0.2), transparent 50%)",
+        }}
+      />
       <BackgroundFX fixed />
+
       <Navbar />
 
-      <Box
-        position="relative"
-        zIndex={1}
-        maxW="7xl"
-        mx="auto"
-        px={6}
-        py={16}
-      >
-        {/* Hero */}
-        <Box textAlign="center" mb={16}>
+      <Box position="relative" zIndex={1} maxW="7xl" mx="auto" px={6} py={16}>
+        {/* --- Hero section --- */}
+        <MotionBox
+          textAlign="center"
+          mb={16}
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
           <Heading
             as="h1"
             fontSize={{ base: "5xl", md: "7xl", lg: "8xl" }}
@@ -97,73 +103,53 @@ export default function App() {
             lineHeight="1.1"
           >
             Start a transaction{" "}
-            <Box as="span" color="brand.500">
+            <Box as="span" bgGradient="linear(to-r, brand.500, brand.300)" bgClip="text">
               now.
             </Box>
           </Heading>
-          <Heading
-            as="h2"
-            mt={4}
-            fontSize={{ base: "2xl", md: "4xl", lg: "5xl" }}
-            fontWeight="bold"
-            bgGradient="linear(to-r, brand.500, brand.300)"
-            bgClip="text"
-          ></Heading>
-          <HStack spacing={4} justify="center" mt={8}>
-            <MagneticButton type="button">Get Started</MagneticButton>
-            <GhostMagneticButton
-              type="button"
-              onClick={() => navigate("/contact")}
-            >
-              Contact us
+          <HStack spacing={4} justify="center" mt={10}>
+            <GhostMagneticButton type="button" onClick={() => navigate("/contact")}>
+              Contact Us
             </GhostMagneticButton>
           </HStack>
-        </Box>
+        </MotionBox>
 
-        {/* Tabs */}
-        <Tabs variant="enclosed" colorScheme="purple" isFitted>
-          <TabList mb={6} borderColor={borderCol}>
-            {["New Transaction", "Transaction History", "Dashboard"].map(
-              (label) => (
-                <Tab
-                  key={label}
-                  fontWeight="semibold"
-                  _selected={{
-                    color: "brand.500",
-                    borderColor: borderCol,
-                    bg: tabSelectedBg,
-                    borderTop: "3px solid",
-                    borderTopColor: "brand.500",
-                  }}
-                >
-                  {label}
-                </Tab>
-              )
-            )}
+        {/* --- Tabs navigation --- */}
+        <Tabs variant="soft-rounded" colorScheme="purple" isFitted>
+          <TabList mb={8}>
+            {["New Transaction", "Transaction History", "Dashboard"].map((label) => (
+              <Tab
+                key={label}
+                fontWeight="semibold"
+                _selected={{
+                  color: "white",
+                  bgGradient: "linear(to-r, brand.500, brand.300)",
+                }}
+                _hover={{ bg: "whiteAlpha.100" }}
+              >
+                {label}
+              </Tab>
+            ))}
           </TabList>
 
           <TabPanels>
+            {/* --- New Transaction --- */}
             <TabPanel>
               <GlowCard p={8} interactive={false}>
                 <Heading size="md" mb={2}>
                   New Transaction
                 </Heading>
-                <Text mb={6} color={useColorModeValue("gray.600", "gray.300")}>
+                <Text mb={6} color="gray.400">
                   Fill the form and send — routing happens in your FastAPI backend.
                 </Text>
                 <TransactionForm onNewTransaction={fetchTransactions} />
               </GlowCard>
-
             </TabPanel>
 
+            {/* --- Transaction History --- */}
             <TabPanel>
               <GlowCard p={6}>
-                <HStack
-                  justify="space-between"
-                  mb={4}
-                  wrap="wrap"
-                  spacing={3}
-                >
+                <HStack justify="space-between" mb={4} wrap="wrap" spacing={3}>
                   <HStack spacing={3}>
                     <Badge colorScheme="blue">Total: {count}</Badge>
                     <Badge colorScheme="green">Success: {successCount}</Badge>
@@ -175,6 +161,7 @@ export default function App() {
               </GlowCard>
             </TabPanel>
 
+            {/* --- Dashboard --- */}
             <TabPanel>
               <SimpleGrid columns={[1, 2, 4]} spacing={6} mb={8}>
                 <KpiCard label="Total Volume">
@@ -212,11 +199,14 @@ export default function App() {
   );
 }
 
+/* --- KPI Card --- */
 function KpiCard({ label, children }) {
   return (
     <GlowCard p={6}>
       <Stat>
-        <StatLabel>{label}</StatLabel>
+        <StatLabel color="gray.400" fontWeight="medium">
+          {label}
+        </StatLabel>
         {children}
       </Stat>
     </GlowCard>
