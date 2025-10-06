@@ -29,6 +29,8 @@ import DashCharts from "./components/DashCharts";
 import GlowCard from "./components/GlowCard";
 import BackgroundFX from "./components/BackgroundFX";
 import Navbar from "./components/Navbar";
+import FeatureChip from "./components/FeatureChip";
+import Landing from "./pages/Landing";
 
 const MotionBox = motion(Box);
 
@@ -62,6 +64,8 @@ export default function App() {
   const successCount = transactions.filter((tx) => tx.status === "success").length;
   const failCount = count - successCount;
   const successRate = count > 0 ? Math.round((successCount / count) * 100) : 0;
+  console.log("Components:", { FeatureChip, GlowCard, Landing });
+
 
   return (
     <Box position="relative" minH="100vh" overflow="hidden">

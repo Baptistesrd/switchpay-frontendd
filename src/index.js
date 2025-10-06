@@ -2,14 +2,24 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import { ChakraProvider, extendTheme, ColorModeScript } from "@chakra-ui/react";
-import MainRouter from "./MainRouter";
+import {
+  ChakraProvider,
+  extendTheme,
+  ColorModeScript,
+} from "@chakra-ui/react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-// 🎨 Thème custom Chakra forcé en dark
+// 🧩 Pages
+import Landing from "./pages/Landing";
+import Contact from "./pages/Contact";
+import DocsPage from "./pages/DocsPage";
+import App from "./App";
+
+// 🎨 Thème Chakra (dark forcé)
 const theme = extendTheme({
   config: {
-    initialColorMode: "dark",   // ✅ toujours dark
-    useSystemColorMode: false,  // ✅ ignore les préférences système
+    initialColorMode: "dark",
+    useSystemColorMode: false,
   },
   fonts: {
     heading: "'DM Sans', sans-serif",
@@ -18,10 +28,10 @@ const theme = extendTheme({
   styles: {
     global: {
       "html, body": {
-        bg: "gray.900",    // ✅ toujours dark background
-        color: "gray.100", // ✅ texte clair
-        overflowY: "auto", // ✅ réactive la scrollbar verticale
-        overflowX: "hidden", // (optionnel) pas de scroll horizontal
+        bg: "gray.900",
+        color: "gray.100",
+        overflowX: "hidden",
+        overflowY: "auto",
       },
     },
   },
@@ -41,13 +51,23 @@ const theme = extendTheme({
   },
 });
 
+// 🏁 Point d’entrée React
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
-      {/* ✅ Toujours dark mode dès le mount */}
-      <ColorModeScript initialColorMode="dark" />
-      <MainRouter />
+      {/* Force le dark mode au démarrage */}
+      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+      <Router>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/app" element={<App />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/docs" element={<DocsPage />} /> {/* ✅ route claire */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
     </ChakraProvider>
   </React.StrictMode>
 );

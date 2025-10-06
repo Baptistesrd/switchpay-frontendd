@@ -33,7 +33,7 @@ import Counter from "../components/Counter";
 
 
 // === Motion wrappers ===
-const MotionBox = motion.create ? motion.create(Box) : motion(Box);
+const MotionBox = motion(Box);
 const FloatingPlanet = motion(Box);
 
 // === Section wrapper ===
@@ -249,12 +249,35 @@ export default function Landing() {
 
   {/* Menu Links (desktop only) */}
   <HStack spacing={6} display={{ base: "none", md: "flex" }}>
-    <ChakraLink as="button" onClick={() => scrollTo("#how")} _hover={{ color: "brand.500" }}>How it works</ChakraLink>
-    <ChakraLink as="button" onClick={() => scrollTo("#why")} _hover={{ color: "brand.500" }}>Why SwitchPay</ChakraLink>
-    <ChakraLink as="button" onClick={() => scrollTo("#metrics")} _hover={{ color: "brand.500" }}>Live Metrics</ChakraLink>
-    <ChakraLink as="button" onClick={() => scrollTo("#security")} _hover={{ color: "brand.500" }}>Security</ChakraLink>
-    <ChakraLink as="button" onClick={() => scrollTo("#pricing")} _hover={{ color: "brand.500" }}>Pricing</ChakraLink>
-    <ChakraLink as={RouterLink} to="/contact" _hover={{ color: "brand.500" }}>Contact</ChakraLink>
+    <ChakraLink as="button" onClick={() => scrollTo("#how")} _hover={{ color: "brand.500" }}>
+  How it works
+</ChakraLink>
+<ChakraLink as="button" onClick={() => scrollTo("#why")} _hover={{ color: "brand.500" }}>
+  Why SwitchPay
+</ChakraLink>
+<ChakraLink as="button" onClick={() => scrollTo("#metrics")} _hover={{ color: "brand.500" }}>
+  Live Metrics
+</ChakraLink>
+<ChakraLink as="button" onClick={() => scrollTo("#security")} _hover={{ color: "brand.500" }}>
+  Security
+</ChakraLink>
+<ChakraLink as="button" onClick={() => scrollTo("#pricing")} _hover={{ color: "brand.500" }}>
+  Pricing
+</ChakraLink>
+
+{/* 🚀 New Docs link */}
+<ChakraLink
+  as={RouterLink}
+  to="/docs"
+  _hover={{ color: "brand.500" }}
+>
+  Docs
+</ChakraLink>
+
+<ChakraLink as={RouterLink} to="/contact" _hover={{ color: "brand.500" }}>
+  Contact
+</ChakraLink>
+
   </HStack>
 
   <Spacer />
@@ -393,7 +416,6 @@ export default function Landing() {
     color="brand.400"
     rightIcon={<ExternalLinkIcon />}
     onClick={() => scrollTo("#how")}
-    _hover={{ bg: "brand.50" }}
     w={{ base: "100%", sm: "auto" }}
   >
     See how it works
@@ -537,7 +559,6 @@ export default function Landing() {
         onClick={() =>
           window.open("https://youtu.be/IjdUfmRmKAo", "_blank")
         }
-        _hover={{ bg: "brand.50" }}
       >
         Watch full demo on YouTube
       </Button>
@@ -546,19 +567,6 @@ export default function Landing() {
 
 
 
-          {/* Modal video */}
-          <Modal isOpen={isOpen} onClose={onClose} size="4xl" isCentered>
-            <ModalOverlay />
-            <ModalContent borderRadius="lg" overflow="hidden">
-              <AspectRatio ratio={16 / 9} w="100%">
-                <iframe
-                  src="https://www.youtube.com/embed/JE_LsFrjcAA?autoplay=1"
-                  title="SwitchPay Demo"
-                  allowFullScreen
-                />
-              </AspectRatio>
-            </ModalContent>
-          </Modal>
 
         <Box h={{ base: "140px", md: "220px" }} /> 
 </Section>

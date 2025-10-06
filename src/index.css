@@ -13,18 +13,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+/* ✅ correction ici : retirer overflow-y:auto → Lenis gère ça */
 html, body, #root {
   height: 100%;
   overflow-x: hidden;
-  overflow-y: auto; /* ✅ active bien la scrollbar */
+  overflow-y: visible; /* ⚠️ important : pas de overflow:auto sinon Lenis bloque */
+  scroll-behavior: auto; /* ✅ pas de "smooth" sinon conflit avec Lenis */
 }
 
 /* === Scrollbar Custom === */
 
 /* Firefox */
 html {
-  scrollbar-width: thin;              /* fine */
-  scrollbar-color: #4a5568 #1a202c;   /* pouce + track */
+  scrollbar-width: thin;
+  scrollbar-color: #4a5568 #1a202c;
 }
 
 /* Chrome, Edge, Safari */
@@ -33,20 +35,20 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(26, 32, 44, 0.7);  /* gris foncé semi-transparent */
+  background: rgba(26, 32, 44, 0.7);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #3385ff, #2368f5); /* brand blue */
+  background: linear-gradient(180deg, #3385ff, #2368f5);
   border-radius: 10px;
-  border: 2px solid rgba(26, 32, 44, 0.9); /* effet glassy */
+  border: 2px solid rgba(26, 32, 44, 0.9);
   box-shadow: 0 2px 6px rgba(0,0,0,0.4);
   transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #4c9bff, #3385ff); /* plus lumineux au hover */
+  background: linear-gradient(180deg, #4c9bff, #3385ff);
 }
 
 /* === Animations === */
@@ -78,7 +80,7 @@ html {
 
 /* === Links === */
 a:hover {
-  text-decoration: none; /* Supprime l'underline au hover */
+  text-decoration: none;
 }
 
 @keyframes spin {
