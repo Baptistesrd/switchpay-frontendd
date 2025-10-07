@@ -1,13 +1,12 @@
-// src/components/Navbar.jsx
 import {
   Box,
   Flex,
   Heading,
   Spacer,
   HStack,
-  useColorMode,
   IconButton,
   Tooltip,
+  useColorMode,
   useColorModeValue,
   Drawer,
   DrawerOverlay,
@@ -17,140 +16,149 @@ import {
   DrawerBody,
   VStack,
   useDisclosure,
+  Button,
+  Text,
 } from "@chakra-ui/react";
-import {
-  SunIcon,
-  MoonIcon,
-  RepeatIcon,
-  HamburgerIcon,
-} from "@chakra-ui/icons";
+import { SunIcon, MoonIcon, RepeatIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function Navbar({ onRefresh }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // 🎨 Couleurs selon mode
-  const bg = useColorModeValue("rgba(255,255,255,0.92)", "rgba(15,23,42,0.7)");
-  const borderCol = useColorModeValue("gray.300", "whiteAlpha.200");
+  // 🎨 Thème
+  const bg = useColorModeValue("rgba(255,255,255,0.9)", "rgba(17,24,39,0.85)");
+  const border = useColorModeValue("gray.200", "whiteAlpha.200");
   const shadow = useColorModeValue(
-    "0 2px 6px rgba(0,0,0,0.08)",
-    "0 1px 3px rgba(0,0,0,0.5)"
+    "0 2px 10px rgba(0,0,0,0.06)",
+    "0 2px 10px rgba(0,0,0,0.4)"
   );
 
+  const MotionBox = motion(Box);
+
   return (
-    <Box
+    <MotionBox
       position="sticky"
       top="0"
       zIndex="1000"
       bg={bg}
-      backdropFilter="saturate(200%) blur(15px)"
+      backdropFilter="saturate(200%) blur(20px)"
       borderBottom="1px solid"
-      borderColor={borderCol}
-      boxShadow={shadow} // ✅ Ombre subtile pour démarquer en clair
+      borderColor={border}
+      boxShadow={shadow}
+      initial={{ y: -60 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      <Flex align="center" px={6} py={4} maxW="7xl" mx="auto">
-        {/* Logo / Title */}
-        <Heading size="md" fontWeight="black">
-          switchpay.&nbsp;
-          <Box
+      <Flex align="center" px={{ base: 4, md: 8 }} py={4} maxW="7xl" mx="auto">
+        {/* Logo */}
+        <Heading
+          as={Link}
+          to="/"
+          size="md"
+          fontWeight="extrabold"
+          _hover={{ textDecoration: "none" }}
+        >
+          <Text
             as="span"
             bgGradient="linear(to-r, brand.500, brand.300)"
             bgClip="text"
           >
-            Your Money Matters.
-          </Box>
+            switchpay
+          </Text>{" "}
         </Heading>
 
         <Spacer />
 
         {/* Desktop actions */}
-        <HStack spacing={3} display={{ base: "none", md: "flex" }}>
-          <Tooltip label="Refresh">
+        <HStack spacing={4} display={{ base: "none", md: "flex" }}>
+          <Tooltip label="Refresh data">
             <IconButton
               aria-label="refresh"
               icon={<RepeatIcon />}
               onClick={onRefresh}
               variant="ghost"
+              size="md"
             />
           </Tooltip>
-          <IconButton
-            aria-label="toggle theme"
-            icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-            onClick={toggleColorMode}
-            variant="outline"
-            borderRadius="full"
-          />
-          <Link to="/">
-            <Box
-              as="button"
-              px={6}
-              py={2}
-              borderRadius="full"
-              bgGradient="linear(to-r, brand.500, brand.300)"
-              color="white"
-              fontWeight="bold"
-              _hover={{ filter: "brightness(1.08)" }}
-            >
-              Home
-            </Box>
-          </Link>
+
+          <Button
+  as={Link}
+  to="/"
+  borderRadius="full"
+  px={6}
+  py={2.5}
+  fontWeight="medium"
+  fontSize="sm"
+  bg="#007aff" // Apple system blue
+  color="white"
+  _hover={{
+    bg: "#0a84ff", // un peu plus clair au survol
+  }}
+  _active={{
+    bg: "#0066d6", // ton plus profond à la pression
+    transform: "scale(0.98)",
+  }}
+  transition="background 0.15s ease, transform 0.1s ease"
+>
+  Home
+</Button>
+
+
         </HStack>
 
-        {/* Mobile hamburger */}
+        {/* Mobile */}
         <IconButton
-          display={{ base: "flex", md: "none" }}
           aria-label="Open menu"
           icon={<HamburgerIcon />}
           variant="ghost"
+          display={{ base: "flex", md: "none" }}
           onClick={onOpen}
         />
       </Flex>
 
-      {/* Drawer mobile */}
+      {/* Drawer (mobile) */}
       <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Menu</DrawerHeader>
+          <DrawerHeader
+            bgGradient="linear(to-r, brand.500, brand.300)"
+            color="white"
+            borderTopRadius="md"
+          >
+            Menu
+          </DrawerHeader>
           <DrawerBody>
-            <VStack spacing={4} align="stretch">
-              <Link to="/" onClick={onClose}>
-                <Box
-                  as="button"
-                  px={6}
-                  py={2}
-                  w="full"
-                  borderRadius="full"
-                  bgGradient="linear(to-r, brand.500, brand.300)"
-                  color="white"
-                  fontWeight="bold"
-                  textAlign="center"
-                  _hover={{ filter: "brightness(1.08)" }}
-                >
-                  Home
-                </Box>
-              </Link>
-              <Tooltip label="Refresh">
-                <IconButton
-                  aria-label="refresh"
-                  icon={<RepeatIcon />}
-                  onClick={onRefresh}
-                  variant="outline"
-                  w="full"
-                />
-              </Tooltip>
-              <IconButton
-                aria-label="toggle theme"
-                icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-                onClick={toggleColorMode}
+            <VStack spacing={4} align="stretch" mt={4}>
+              <Button
+                as={Link}
+                to="/"
+                onClick={onClose}
+                borderRadius="full"
+                bgGradient="linear(to-r, brand.500, brand.300)"
+                color="white"
+                fontWeight="semibold"
+                _hover={{ filter: "brightness(1.1)" }}
+              >
+                Home
+              </Button>
+
+              <Button
+                leftIcon={<RepeatIcon />}
                 variant="outline"
-                w="full"
-              />
+                onClick={() => {
+                  onRefresh();
+                  onClose();
+                }}
+              >
+                Refresh
+              </Button>
             </VStack>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </Box>
+    </MotionBox>
   );
 }

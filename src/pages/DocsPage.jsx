@@ -54,8 +54,8 @@ export default function DocsPage() {
   const textColor = useColorModeValue("gray.700", "gray.200");
 
   const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+    hidden: { opacity: 0,},
+    visible: { opacity: 1, transition: { duration: 0.6 } },
   };
 
   return (
@@ -100,7 +100,6 @@ export default function DocsPage() {
                 <Button
                   as={RouterLink}
                   to="/"
-                  leftIcon={<ArrowLeftIcon />}
                   colorScheme="brand"
                   variant="outline"
                   _hover={{
@@ -157,89 +156,186 @@ export default function DocsPage() {
     </Tr>
   </Thead>
   <Tbody>
+    {/* 🌍 Global & Developer-first */}
     <Tr>
       <Td>Stripe</Td>
-      <Td>Developer-first, SaaS integration, strong APIs</Td>
+      <Td>Developer-first APIs, SaaS billing, embedded payments</Td>
       <Td>US, Western Europe</Td>
     </Tr>
     <Tr>
       <Td>Adyen</Td>
-      <Td>Enterprise-grade platform, unified commerce, bank license</Td>
+      <Td>Enterprise-grade, unified commerce, direct acquiring</Td>
       <Td>Europe, North America</Td>
     </Tr>
     <Tr>
       <Td>Checkout.com</Td>
-      <Td>Digital-native PSP for scale-ups, crypto, gaming</Td>
+      <Td>Digital-native, crypto & marketplace support</Td>
       <Td>UK, Global</Td>
     </Tr>
     <Tr>
       <Td>Rapyd</Td>
-      <Td>Global payments network, 900+ local methods, fintech-as-a-service</Td>
+      <Td>Global local-payment network, 900+ methods, fintech-as-a-service</Td>
       <Td>LATAM, APAC, MENA</Td>
     </Tr>
     <Tr>
       <Td>Airwallex</Td>
-      <Td>Multi-currency accounts, FX optimization, global payouts</Td>
+      <Td>FX optimization, global accounts, payouts</Td>
       <Td>APAC, expanding in EU & US</Td>
     </Tr>
     <Tr>
       <Td>Wise</Td>
-      <Td>Transparent FX, cross-border payments, B2B wallets</Td>
+      <Td>Cross-border FX, transparent B2B transfers</Td>
       <Td>Global</Td>
     </Tr>
+
+    {/* 🌎 Emerging Market Specialists */}
     <Tr>
       <Td>dLocal</Td>
-      <Td>Emerging market payments, local rails & compliance</Td>
-      <Td>LATAM, Africa, South-East Asia</Td>
+      <Td>Local payment rails & compliance for emerging markets</Td>
+      <Td>LATAM, Africa, SEA</Td>
     </Tr>
     <Tr>
       <Td>PayU</Td>
-      <Td>Local acquirer, alternative methods, BNPL integrations</Td>
+      <Td>Alternative methods, BNPL, strong local acquiring</Td>
       <Td>India, LATAM, Eastern Europe</Td>
     </Tr>
     <Tr>
-      <Td>Nuvei</Td>
-      <Td>Unified payments, gaming, crypto-friendly onboarding</Td>
-      <Td>North America, Europe</Td>
+      <Td>Flutterwave</Td>
+      <Td>Mobile money & cards infrastructure</Td>
+      <Td>Africa</Td>
     </Tr>
     <Tr>
-      <Td>Paddle</Td>
-      <Td>B2B SaaS billing & tax compliance, recurring payments</Td>
-      <Td>UK, EU, North America</Td>
+      <Td>Interswitch</Td>
+      <Td>Domestic card rails, POS & online acquiring</Td>
+      <Td>Nigeria, Africa</Td>
     </Tr>
+    <Tr>
+      <Td>Paystack</Td>
+      <Td>SME online payments, developer-friendly APIs</Td>
+      <Td>West Africa</Td>
+    </Tr>
+    <Tr>
+      <Td>CCAvenue</Td>
+      <Td>Local PSP with 200+ payment methods</Td>
+      <Td>India</Td>
+    </Tr>
+    <Tr>
+      <Td>Mollie</Td>
+      <Td>SME & eCommerce focus, easy onboarding</Td>
+      <Td>Benelux, DACH</Td>
+    </Tr>
+
+    {/* 💳 Enterprise & Retail Legacy PSPs */}
     <Tr>
       <Td>Worldpay (FIS)</Td>
-      <Td>Legacy PSP, retail & enterprise infrastructure</Td>
+      <Td>Legacy PSP, retail acquiring, enterprise infra</Td>
       <Td>North America, Europe</Td>
     </Tr>
     <Tr>
-      <Td>Payoneer</Td>
-      <Td>Cross-border B2B payments, marketplace payouts</Td>
-      <Td>Global (freelancers & SMEs)</Td>
+      <Td>Fiserv / Clover</Td>
+      <Td>POS & merchant acquiring, legacy infra</Td>
+      <Td>US, Global</Td>
     </Tr>
+    <Tr>
+      <Td>Global Payments</Td>
+      <Td>Omnichannel acquiring, merchant network</Td>
+      <Td>North America, EU</Td>
+    </Tr>
+    <Tr>
+      <Td>Network International</Td>
+      <Td>Acquiring + processing for GCC markets</Td>
+      <Td>MENA</Td>
+    </Tr>
+
+    {/* 💡 New Orchestrators & Meta-Layers */}
+    <Tr>
+      <Td>Primer</Td>
+      <Td>No-code orchestration, routing logic, analytics</Td>
+      <Td>Europe, expanding US</Td>
+    </Tr>
+    <Tr>
+      <Td>CellPoint Digital</Td>
+      <Td>Airline/travel orchestration, FX optimization</Td>
+      <Td>EMEA, Global</Td>
+    </Tr>
+    <Tr>
+      <Td>BR-DGE</Td>
+      <Td>Payment orchestration for retail</Td>
+      <Td>UK, EU</Td>
+    </Tr>
+    <Tr>
+      <Td>Rebilly</Td>
+      <Td>Subscription & recurring payment orchestration</Td>
+      <Td>North America</Td>
+    </Tr>
+
+    {/* 📱 Device- & Method-specific PSPs */}
+    <Tr>
+      <Td>Apple Pay / Google Pay</Td>
+      <Td>Device-native tokenized payments</Td>
+      <Td>Global, consumer-centric</Td>
+    </Tr>
+    <Tr>
+      <Td>Alipay / WeChat Pay</Td>
+      <Td>Mobile superapps, QR & social payments</Td>
+      <Td>China, expanding APAC</Td>
+    </Tr>
+    <Tr>
+      <Td>Paytm</Td>
+      <Td>QR payments, wallet, merchant services</Td>
+      <Td>India</Td>
+    </Tr>
+    <Tr>
+      <Td>GrabPay / GCash</Td>
+      <Td>Superapp wallets, BNPL integrations</Td>
+      <Td>SEA (Singapore, Philippines)</Td>
+    </Tr>
+    <Tr>
+      <Td>M-Pesa</Td>
+      <Td>Telco-led mobile money ecosystem</Td>
+      <Td>East Africa</Td>
+    </Tr>
+
+    {/* 🪙 Crypto & Alt-Rail PSPs */}
+    <Tr>
+      <Td>Unlimint</Td>
+      <Td>Multi-rail PSP, cards + crypto + alt payments</Td>
+      <Td>Global</Td>
+    </Tr>
+    <Tr>
+      <Td>MoonPay</Td>
+      <Td>Crypto on-ramp/off-ramp for fintechs</Td>
+      <Td>Global</Td>
+    </Tr>
+    <Tr>
+      <Td>Transak</Td>
+      <Td>Fiat-crypto gateway for dApps</Td>
+      <Td>Global</Td>
+    </Tr>
+
+    {/* 🧱 Infrastructure & Settlement */}
     <Tr>
       <Td>Thunes</Td>
       <Td>Cross-border settlement layer, mobile wallets</Td>
       <Td>Africa, APAC, Middle East</Td>
     </Tr>
     <Tr>
-      <Td>Primer</Td>
-      <Td>Payment orchestration, no-code integration, analytics</Td>
-      <Td>Europe, expanding in US</Td>
-    </Tr>
-    <Tr>
-      <Td>CellPoint Digital</Td>
-      <Td>Airline & travel payment orchestration, FX management</Td>
-      <Td>EMEA, Global</Td>
-    </Tr>
-    <Tr>
-      <Td>Unlimint</Td>
-      <Td>Multi-rail payment infra, cards, crypto & alternative methods</Td>
+      <Td>Payoneer</Td>
+      <Td>Marketplace payouts, SME cross-border B2B</Td>
       <Td>Global</Td>
+    </Tr>
+    <Tr>
+      <Td>Nuvei</Td>
+      <Td>Unified payments, gaming, high-risk sectors</Td>
+      <Td>North America, EU</Td>
+    </Tr>
+    <Tr>
+      <Td>Paddle</Td>
+      <Td>SaaS billing, tax compliance, recurring payments</Td>
+      <Td>UK, EU, North America</Td>
     </Tr>
   </Tbody>
 </Table>
-
 
                 <Text color={textColor}>
                   Each PSP offers distinct advantages — but no single one can
@@ -308,8 +404,8 @@ export default function DocsPage() {
                   </Code>
                 </Box>
 
-                <Accordion mt={5} allowToggle>
-                  <AccordionItem>
+                <Accordion mt={5} allowToggle reduceMotion>
+                  <AccordionItem border="none">
                     <AccordionButton>
                       <Box flex="1" textAlign="left">
                         🔍 Key Types & Security
@@ -386,7 +482,7 @@ export default function DocsPage() {
                 </Tabs>
 
                 <Accordion allowToggle mt={6}>
-                  <AccordionItem>
+                  <AccordionItem border="none">
                     <AccordionButton>
                       <Box flex="1" textAlign="left">
                         ⚙️ Use Cases
@@ -446,7 +542,7 @@ export default function DocsPage() {
                 </Box>
 
                 <Accordion mt={5} allowToggle>
-                  <AccordionItem>
+                  <AccordionItem border="none">
                     <AccordionButton>
                       <Box flex="1" textAlign="left">
                         📘 Field Definitions
@@ -486,7 +582,7 @@ export default function DocsPage() {
                   ⚡ Advanced Features
                 </Heading>
                 <Accordion allowMultiple>
-                  <AccordionItem>
+                  <AccordionItem border="none">
                     <AccordionButton>
                       <Box flex="1" textAlign="left">
                         Idempotency Keys
@@ -504,7 +600,7 @@ export default function DocsPage() {
                     </AccordionPanel>
                   </AccordionItem>
 
-                  <AccordionItem>
+                  <AccordionItem border="none">
                     <AccordionButton>
                       <Box flex="1" textAlign="left">
                         Webhooks
@@ -526,7 +622,7 @@ export default function DocsPage() {
                     </AccordionPanel>
                   </AccordionItem>
 
-                  <AccordionItem>
+                  <AccordionItem border="none">
                     <AccordionButton>
                       <Box flex="1" textAlign="left">
                         Smart Routing Logic
@@ -560,21 +656,6 @@ export default function DocsPage() {
 
             {/* ===== FOOTER ===== */}
             <Divider />
-            <VStack align="start" spacing={3}>
-              <Text color={textColor}>
-                Explore the full API spec at{" "}
-                <ChakraLink
-                  href="https://docs.switchpay.dev"
-                  color="brand.400"
-                  isExternal
-                >
-                  docs.switchpay.dev <Icon as={ExternalLinkIcon} ml={1} />
-                </ChakraLink>
-              </Text>
-              <Badge colorScheme="green" p={2} borderRadius="md">
-                v1.0.0 — Sandbox Ready
-              </Badge>
-            </VStack>
           </VStack>
         </Container>
       </Box>

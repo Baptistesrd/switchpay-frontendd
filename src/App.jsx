@@ -15,10 +15,14 @@ import {
   Divider,
   HStack,
   Badge,
+  Button, 
+  useColorModeValue 
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
+
 
 import TransactionForm from "./components/TransactionForm";
 import TransactionTable from "./components/TransactionTable";
@@ -112,9 +116,33 @@ export default function App() {
             </Box>
           </Heading>
           <HStack spacing={4} justify="center" mt={10}>
-            <GhostMagneticButton type="button" onClick={() => navigate("/contact")}>
-              Contact Us
-            </GhostMagneticButton>
+            <Button
+  type="button"
+  onClick={() => navigate("/contact")}
+  variant="outline"
+  borderRadius="full"
+  px={6}
+  py={2.5}
+  fontWeight="medium"
+  fontSize="sm"
+  borderColor={useColorModeValue("gray.300", "whiteAlpha.300")}
+  color={useColorModeValue("gray.800", "gray.100")}
+  rightIcon={<ExternalLinkIcon />}
+  _hover={{
+    bg: useColorModeValue("gray.50", "whiteAlpha.100"),
+    transform: "translateY(-1px)",
+    borderColor: useColorModeValue("gray.400", "whiteAlpha.400"),
+  }}
+  _active={{
+    transform: "translateY(0)",
+    bg: useColorModeValue("gray.100", "whiteAlpha.200"),
+  }}
+  transition="all 0.15s ease"
+  w={{ base: "100%", sm: "auto" }}
+>
+  Contact Us
+</Button>
+
           </HStack>
         </MotionBox>
 

@@ -32,7 +32,7 @@ const links = [
   },
 ];
 
-const MotionIconButton = motion.create(IconButton);
+const MotionIconButton = motion(IconButton);
 
 export default function SocialLinks() {
   return (

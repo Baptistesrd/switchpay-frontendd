@@ -15,10 +15,10 @@ code {
 
 /* ✅ correction ici : retirer overflow-y:auto → Lenis gère ça */
 html, body, #root {
-  height: 100%;
+  min-height: 100%;
   overflow-x: hidden;
-  overflow-y: visible; /* ⚠️ important : pas de overflow:auto sinon Lenis bloque */
-  scroll-behavior: auto; /* ✅ pas de "smooth" sinon conflit avec Lenis */
+  overflow-y: visible;
+  scroll-behavior: auto;
 }
 
 /* === Scrollbar Custom === */

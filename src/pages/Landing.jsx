@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Box, Container, Flex, HStack, VStack, Stack, Spacer, Button,
   Heading, Text, Badge, SimpleGrid, Stat, StatLabel, StatNumber,
@@ -7,7 +7,7 @@ import {
   AccordionPanel, AccordionIcon, Modal, ModalOverlay, ModalContent,
   useDisclosure, Input, Icon,
   Drawer, IconButton, DrawerOverlay, DrawerContent,
-  DrawerCloseButton, DrawerHeader, DrawerBody
+  DrawerCloseButton, DrawerHeader, DrawerBody, 
 } from "@chakra-ui/react";
 
 
@@ -35,6 +35,8 @@ import Counter from "../components/Counter";
 // === Motion wrappers ===
 const MotionBox = motion(Box);
 const FloatingPlanet = motion(Box);
+
+
 
 // === Section wrapper ===
 const Section = ({ children, id, bg }) => (
@@ -89,6 +91,9 @@ export default function Landing() {
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const videoRef = useRef(null);
+  const [isMuted, setIsMuted] = useState(true);
+  
 
   // 🎨 THEME HOOKS
   const pageBg = useColorModeValue(
@@ -249,6 +254,13 @@ export default function Landing() {
 
   {/* Menu Links (desktop only) */}
   <HStack spacing={6} display={{ base: "none", md: "flex" }}>
+    <ChakraLink
+  as={RouterLink}
+  to="/docs"
+  _hover={{ color: "brand.500" }}
+>
+  Documentation
+</ChakraLink>
     <ChakraLink as="button" onClick={() => scrollTo("#how")} _hover={{ color: "brand.500" }}>
   How it works
 </ChakraLink>
@@ -263,15 +275,6 @@ export default function Landing() {
 </ChakraLink>
 <ChakraLink as="button" onClick={() => scrollTo("#pricing")} _hover={{ color: "brand.500" }}>
   Pricing
-</ChakraLink>
-
-{/* 🚀 New Docs link */}
-<ChakraLink
-  as={RouterLink}
-  to="/docs"
-  _hover={{ color: "brand.500" }}
->
-  Docs
 </ChakraLink>
 
 <ChakraLink as={RouterLink} to="/contact" _hover={{ color: "brand.500" }}>
@@ -475,7 +478,7 @@ export default function Landing() {
   pb={32}
 >
   <VStack spacing={16} align="center" textAlign="center" position="relative">
-    {/* Titre animé */}
+    {/* === Titre animé === */}
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -494,7 +497,7 @@ export default function Landing() {
       </Text>
     </motion.div>
 
-    {/* Vidéo intégrée avec effet glassmorphism */}
+    {/* === Vidéo améliorée === */}
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       whileInView={{ opacity: 1, scale: 1 }}
@@ -506,30 +509,14 @@ export default function Landing() {
         maxWidth: "1000px",
         borderRadius: "24px",
         overflow: "hidden",
-        boxShadow: "0 0 60px rgba(35, 104, 245, 0.45)",
         position: "relative",
         background: "rgba(255,255,255,0.08)",
         backdropFilter: "blur(12px) saturate(180%)",
         border: "1px solid rgba(255,255,255,0.15)",
+        boxShadow: "0 0 60px rgba(35, 104, 245, 0.45)",
       }}
     >
-      <AspectRatio ratio={16 / 9} w="100%">
-        <video
-          src="/Streamlining Payments for SMBs with SwitchPay 🚀.mp4"
-          title="SwitchPay Demo"
-          autoPlay
-          loop
-          muted
-          playsInline
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-          }}
-        />
-      </AspectRatio>
-
-      {/* Glow effect autour */}
+      {/* Glow effect */}
       <Box
         position="absolute"
         inset={-1}
@@ -537,9 +524,100 @@ export default function Landing() {
         pointerEvents="none"
         boxShadow="0 0 80px rgba(35, 104, 245, 0.6)"
       />
+
+      <AspectRatio ratio={16 / 9} w="100%">
+        <Box position="relative">
+          <video
+            ref={videoRef}
+            src="/Streamlining Payments for SMBs with SwitchPay 🚀.mp4"
+            poster="/demo-thumbnail.jpg" // image d’attente
+            title="SwitchPay Demo"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="none" // lazy load
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              filter: "brightness(1.1) contrast(1.05)", // rendu cinématique
+              borderRadius: "24px",
+            }}
+          />
+
+          {/* Overlay player effect */}
+          <MotionBox
+            position="absolute"
+            top="0"
+            left="0"
+            right="0"
+            bottom="0"
+            bgGradient="linear(to-t, rgba(0,0,0,0.3), rgba(0,0,0,0))"
+            opacity={0}
+            whileHover={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            color="white"
+            fontSize="4xl"
+            fontWeight="bold"
+          >
+            ▶
+          </MotionBox>
+
+          {/* Bouton Sound On/Off */}
+          {/* Bouton Sound On/Off premium */}
+<motion.button
+  onClick={() => {
+    const video = videoRef.current;
+    video.muted = !isMuted;
+    setIsMuted(!isMuted);
+  }}
+  initial={{ opacity: 0, scale: 0.8 }}
+  whileInView={{ opacity: 1, scale: 1 }}
+  whileHover={{
+    scale: 1.1,
+    boxShadow: "0 0 15px rgba(35, 104, 245, 0.6)",
+  }}
+  whileTap={{ scale: 0.95 }}
+  transition={{ duration: 0.25, ease: "easeOut" }}
+  style={{
+    position: "absolute",
+    bottom: "1rem",
+    right: "1rem",
+    width: "48px",
+    height: "48px",
+    borderRadius: "50%",
+    backdropFilter: "blur(10px) saturate(180%)",
+    background: "rgba(35, 104, 245, 0.15)",
+    border: "1px solid rgba(255,255,255,0.25)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    color: "white",
+    fontSize: "20px",
+    transition: "all 0.25s ease",
+  }}
+>
+  <motion.span
+    key={isMuted ? "off" : "on"}
+    initial={{ opacity: 0, scale: 0.6 }}
+    animate={{ opacity: 1, scale: 1 }}
+    exit={{ opacity: 0, scale: 0.6 }}
+    transition={{ duration: 0.2 }}
+  >
+    {isMuted ? "🔇" : "🔊"}
+  </motion.span>
+</motion.button>
+
+        </Box>
+      </AspectRatio>
     </motion.div>
 
-    {/* CTA sous la vidéo */}
+    {/* === CTA sous la vidéo === */}
     <Stack direction={{ base: "column", sm: "row" }} spacing={6} pt={6}>
       <Button
         size="lg"
@@ -564,11 +642,6 @@ export default function Landing() {
       </Button>
     </Stack>
   </VStack>
-
-
-
-
-        <Box h={{ base: "140px", md: "220px" }} /> 
 </Section>
 
         {/* WHY SWITCHPAY */}

@@ -1,7 +1,7 @@
 import { Box, useColorModeValue } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
-const MotionBox = motion.create(Box);
+const MotionBox = motion(Box);
 
 /** Chip avec hover bleu + glow + léger lift */
 export default function FeatureChip({ label }) {
