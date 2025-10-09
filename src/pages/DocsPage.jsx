@@ -98,19 +98,34 @@ export default function DocsPage() {
                   SwitchPay Developer Docs
                 </Heading>
                 <Button
-                  as={RouterLink}
-                  to="/"
-                  colorScheme="brand"
-                  variant="outline"
-                  _hover={{
-                    bg: "brand.500",
-                    color: "white",
-                    transform: "translateY(-2px)",
-                  }}
-                  transition="all 0.25s ease-in-out"
-                >
-                  Back to Home
-                </Button>
+  as={RouterLink}
+  to="/"
+  px={8}
+  py={5}
+  fontSize="md"
+  fontWeight="600"
+  letterSpacing="0.02em"
+  borderRadius="full"
+  color="whiteAlpha.900"
+  bg="rgba(255, 255, 255, 0.05)"
+  backdropFilter="blur(12px)"
+  border="1px solid"
+  borderColor="whiteAlpha.200"
+  boxShadow="inset 0 0 12px rgba(255,255,255,0.05)"
+  transition="all 0.35s ease"
+  _hover={{
+    bg: "rgba(255, 255, 255, 0.12)",
+    boxShadow: "0 0 25px rgba(255, 255, 255, 0.2)",
+    transform: "translateY(-2px) scale(1.03)",
+  }}
+  _active={{
+    transform: "translateY(-1px) scale(1.01)",
+    boxShadow: "0 0 20px rgba(255, 255, 255, 0.15)",
+  }}
+>
+  ← Back to Home
+</Button>
+
               </HStack>
 
               <Text
@@ -148,13 +163,6 @@ export default function DocsPage() {
                 </Text>
 
                 <Table variant="striped" color={textColor} mb={6} size="sm">
-  <Thead>
-    <Tr>
-      <Th>PSP</Th>
-      <Th>Core Strength</Th>
-      <Th>Regional Dominance</Th>
-    </Tr>
-  </Thead>
   <Tbody>
     {/* 🌍 Global & Developer-first */}
     <Tr>

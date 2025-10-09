@@ -17,15 +17,11 @@ function ThinkingPulse() {
         width: "14px",
         height: "14px",
         borderRadius: "50%",
-        background:
-          "linear-gradient(135deg, #63b3ed, #805ad5, #f687b3)",
+        background: "linear-gradient(135deg, #63b3ed, #805ad5, #f687b3)",
         boxShadow: "0 0 15px rgba(128,90,213,0.6)",
         marginTop: 6,
       }}
-      animate={{
-        scale: [1, 1.15, 1],
-        opacity: [0.6, 1, 0.6],
-      }}
+      animate={{ scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }}
       transition={{ duration: 1.2, repeat: Infinity }}
     />
   );
@@ -34,7 +30,10 @@ function ThinkingPulse() {
 export default function SwitchPayAIPremiumChat() {
   const [messages, setMessages] = useState([]);
   const [aiThinking, setAiThinking] = useState(false);
-  const hasRun = useRef(false); // 👈 empêche double exécution
+  const [hasPlayed, setHasPlayed] = useState(false);
+
+  const chatRef = useRef(null);
+  const hasRun = useRef(false);
 
   const assistantBg = useColorModeValue("whiteAlpha.700", "whiteAlpha.100");
   const userBg = useColorModeValue("blue.500", "blue.600");
@@ -60,33 +59,54 @@ export default function SwitchPayAIPremiumChat() {
     },
   ];
 
-  useEffect(() => {
-    if (hasRun.current) return; // ✅ bloque la 2e exécution
-    hasRun.current = true;
-
+  const showConversation = async () => {
     let i = 0;
-    const showConversation = async () => {
-      while (i < conversation.length) {
-        const msg = conversation[i];
-        if (msg.sender === "user") {
-          setMessages((prev) => [...prev, msg]);
-          i++;
-          await new Promise((res) => setTimeout(res, 1000));
-        } else {
-          setAiThinking(true);
-          await new Promise((res) => setTimeout(res, 1800));
-          setAiThinking(false);
-          setMessages((prev) => [...prev, msg]);
-          i++;
-          await new Promise((res) => setTimeout(res, 800));
-        }
+    while (i < conversation.length) {
+      const msg = conversation[i];
+      if (msg.sender === "user") {
+        setMessages((prev) => [...prev, msg]);
+        i++;
+        await new Promise((res) => setTimeout(res, 1000));
+      } else {
+        setAiThinking(true);
+        await new Promise((res) => setTimeout(res, 1800));
+        setAiThinking(false);
+        setMessages((prev) => [...prev, msg]);
+        i++;
+        await new Promise((res) => setTimeout(res, 800));
       }
+    }
+  };
+
+  useEffect(() => {
+    // ✅ Crée un observer qui détecte si la démo entre dans le viewport
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && !hasPlayed) {
+          setHasPlayed(true);
+        }
+      },
+      { threshold: 0.4 } // le chat doit être visible à 40% pour déclencher
+    );
+
+    if (chatRef.current) observer.observe(chatRef.current);
+
+    return () => {
+      if (chatRef.current) observer.unobserve(chatRef.current);
     };
-    showConversation();
-  }, []);
+  }, [hasPlayed]);
+
+  useEffect(() => {
+    if (hasPlayed && !hasRun.current) {
+      hasRun.current = true;
+      showConversation();
+    }
+  }, [hasPlayed]);
 
   return (
     <Box
+      ref={chatRef} // 👈 on observe ce conteneur
       position="relative"
       w="100%"
       maxW="4xl"
@@ -101,7 +121,7 @@ export default function SwitchPayAIPremiumChat() {
       backdropFilter="blur(20px) saturate(180%)"
       fontFamily="Inter, sans-serif"
     >
-      {/* Animated gradient background */}
+      {/* Gradient background */}
       <Box
         position="absolute"
         top={0}
@@ -124,22 +144,24 @@ export default function SwitchPayAIPremiumChat() {
 
       {/* Header */}
       <HStack
-        spacing={2}
-        mb={4}
-        px={2}
-        py={1}
-        borderBottom="1px solid"
-        borderColor={borderCol}
-      >
-        <Box w={3} h={3} rounded="full" bg="red.400" />
-        <Box w={3} h={3} rounded="full" bg="yellow.400" />
-        <Box w={3} h={3} rounded="full" bg="green.400" />
-        <Text fontSize="sm" ml={3} fontWeight="semibold" color="whiteAlpha.900">
-          switchpayAI
-        </Text>
-      </HStack>
+  spacing={2}
+  px={3}
+  py={1}
+  position="absolute"
+  top="10px"
+  left="0"
+  right="0"
+  justifyContent="flex-start"
+  alignItems="center"
+>
+  <Box w={3} h={3} rounded="full" bg="red.400" ml={3} />
+  <Box w={3} h={3} rounded="full" bg="yellow.400" />
+  <Box w={3} h={3} rounded="full" bg="green.400" />
+  <Text fontSize="sm" ml={3} fontWeight="semibold" color="whiteAlpha.900">
+    switchpayAI
+  </Text>
+</HStack>
 
-      
 
       {/* Conversation */}
       <VStack spacing={4} align="stretch">
@@ -162,7 +184,6 @@ export default function SwitchPayAIPremiumChat() {
           </MotionBox>
         ))}
 
-        {/* AI thinking pulse */}
         {aiThinking && (
           <HStack alignSelf="flex-start" spacing={3}>
             <ThinkingPulse />

@@ -16,7 +16,7 @@ import {
   TimeIcon, ExternalLinkIcon, HamburgerIcon
 } from "@chakra-ui/icons";
 import { FaLinkedin, FaTwitter } from "react-icons/fa";
-import { SiSubstack } from "react-icons/si";
+import { SiInstagram } from "react-icons/si";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import axios from "axios";
@@ -182,35 +182,7 @@ export default function Landing() {
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  // === SECTION PRICING ===
-  const tiers = [
-    {
-      title: "Starter",
-      price: "Free",
-      desc: "For indie devs & startups testing payments.",
-      features: ["100 tx/month", "Sandbox PSPs", "Basic metrics"],
-      color: "gray",
-      gradient: "linear(to-r, brand.500, brand.300)",
-    },
-    {
-      title: "Growth",
-      price: "€99/mo",
-      desc: "For scaling teams optimizing conversion.",
-      features: ["10k tx/month", "Smart routing", "Failover & retries", "Advanced dashboard"],
-      color: "purple",
-      gradient: "linear(to-r, brand.500, brand.300)",
-    },
-    {
-      title: "Enterprise",
-      price: "Custom",
-      desc: "For global players needing reliability at scale.",
-      features: ["Unlimited tx", "Dedicated PSP mix", "24/7 support", "SLAs & compliance"],
-      color: "yellow",
-      gradient: "linear(to-r, yellow.400, yellow.600)",
-      premium: true,
-    },
-  ];
-
+  
   return (
     <Layout>
       <Box position="relative" overflowX="hidden" bgGradient={pageBg} minH="100vh">
@@ -288,10 +260,31 @@ export default function Landing() {
   {/* CTA desktop */}
   <Box display={{ base: "none", md: "block" }}>
     <Magnetic>
-      <BrandButton onClick={() => navigate("/app")}>
-        Make a transaction
-      </BrandButton>
-    </Magnetic>
+  <Button
+    onClick={() => navigate("/app")}
+    px={7}
+    py={3.5}
+    fontSize="md"
+    fontWeight="700"
+    letterSpacing="0.02em"
+    textTransform="none"   // 👈 garde la casse naturelle ("Make a transaction")
+    bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)"
+    bgSize="200% 200%"
+    color="white"
+    borderRadius="full"
+    transition="all 0.25s ease"
+    _hover={{
+      backgroundPosition: "100% 50%",
+      transform: "translateY(-2px) scale(1.03)",
+      boxShadow: "0 0 18px rgba(236, 72, 153, 0.25)",
+    }}
+  >
+    Make a transaction
+  </Button>
+</Magnetic>
+
+
+
   </Box>
 
   {/* Mobile Burger */}
@@ -345,28 +338,50 @@ export default function Landing() {
     <VStack spacing={{ base: 8, md: 12 }} align="center" textAlign="center">
       {/* Titres */}
       <Heading
-        as="h1"
-        w="100%"
-        fontSize={{ base: "3xl", sm: "4xl", md: "6xl", lg: "8xl" }}
-        lineHeight={{ base: "1.2", md: "1.1" }}
-        fontWeight="extrabold"
-        whiteSpace="normal"
-      >
-        Welcome to <br /> switchpay.
-      </Heading>
+  as="h1"
+  textAlign="center"
+  fontWeight="extrabold"
+  lineHeight="1.05"
+  letterSpacing="-0.03em"
+  fontSize={{ base: "3xl", sm: "5xl", md: "7xl", lg: "9xl" }}
+>
+  Welcome to <br />
+  <Box
+    as="span"
+    bgGradient="linear(to-r, cyan.400, purple.500, pink.400)"
+    bgClip="text"
+    animation="gradientShift 6s ease infinite"
+    backgroundSize="200% 200%"
+    display="inline-block"
+  >
+    switchpay.
+  </Box>
+</Heading>
+
+<style>
+{`
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+`}
+</style>
+
 
       <Heading
-        as="h2"
-        w="100%"
-        fontSize={{ base: "xl", sm: "2xl", md: "4xl", lg: "6xl" }}
-        fontWeight="extrabold"
-        bgGradient="linear(to-r, brand.500, brand.300)"
-        bgClip="text"
-        className="shimmer"
-        lineHeight="1.1"
-      >
-        Your money matters.
-      </Heading>
+  as="h1"
+  fontSize={{ base: "2xl", sm: "4xl", md: "6xl", lg: "7xl" }}
+  fontWeight="800"
+  lineHeight="1.05"
+  bgGradient="linear(to-r, whiteAlpha.900, gray.400)"
+  bgClip="text"
+  letterSpacing="-0.02em"
+  textAlign="center"
+>
+  Your money matters.
+</Heading>
+
 
       {/* Texte d’accroche */}
       <Text
@@ -383,7 +398,7 @@ export default function Landing() {
       <Stack
         direction={{ base: "column", sm: "row" }}
         spacing={{ base: 3, sm: 6 }}
-        pt={2}
+        mt={-8}
         justify="center"
         align="center"
       >
@@ -406,13 +421,31 @@ export default function Landing() {
   align="center"
 >
   <Magnetic>
-    <BrandButton
-      w={{ base: "100%", sm: "auto" }}
-      onClick={() => navigate("/app")}
-    >
-      Get started for Free
-    </BrandButton>
-  </Magnetic>
+  <Button
+  onClick={() => navigate("/app")}
+  px={12}
+  py={6}
+  fontSize="lg"
+  fontWeight="700"
+  letterSpacing="0.03em"
+  textTransform="none"     // 👈 garde la casse normale (seul le G majuscule)
+  bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)"
+  bgSize="200% 200%"
+  color="white"
+  borderRadius="full"
+  transition="all 0.3s ease"
+  _hover={{
+    backgroundPosition: "100% 50%",
+    transform: "translateY(-3px) scale(1.05)",
+    boxShadow: "0 0 25px rgba(236, 72, 153, 0.4)",
+  }}
+>
+  Get started for free
+</Button>
+
+</Magnetic>
+
+
   <Button
     variant="outline"
     borderColor="brand.400"
@@ -426,46 +459,190 @@ export default function Landing() {
 </Stack>
 
 
-      {/* Carte PSP + Features (DANS le HERO) */}
-      <GlowCard flex="1" p={6} w="100%" maxW="4xl" mt={{ base: 10, md: 20 }}>
-        <VStack align="stretch" spacing={6}>
-          {/* Integrated PSPs */}
-          <VStack spacing={3} align="center">
-            <Text fontWeight="bold" fontSize="md">Integrated PSPs</Text>
-            <HStack spacing={6} flexWrap="wrap" justify="center">
-              <Box as="img" src="/Stripe_Logo,_revised_2016.svg.png" alt="Stripe" maxW={{ base: "64px", md: "100px" }} h="auto" objectFit="contain" />
-              <Box as="img" src="/Adyen_Corporate_Logo.svg.png" alt="Adyen" maxW={{ base: "64px", md: "100px" }} h="auto" objectFit="contain" />
-              <Box as="img" src="/Airwallex_Logo_-_Black.png" alt="Airwallex" maxW={{ base: "64px", md: "100px" }} h="auto" objectFit="contain" />
-              <Box as="img" src="/Wise2020.svg" alt="Wise" maxW={{ base: "64px", md: "100px" }} h="auto" objectFit="contain" />
-              <Box as="img" src="/Rapyd-logo-768x236.webp" alt="Rapyd" maxW={{ base: "64px", md: "100px" }} h="auto" objectFit="contain" />
-              <Box as="img" src="/PayPal.svg.png" alt="PayPal" maxW={{ base: "64px", md: "100px" }} h="auto" objectFit="contain" />
-            </HStack>
-          </VStack>
+      <GlowCard
+  flex="1"
+  p={{ base: 6, md: 10 }}
+  w="100%"
+  maxW="5xl"
+  mt={{ base: 10, md: 20 }}
+  position="relative"
+  borderRadius="2xl"
+  bg="rgba(255,255,255,0.04)"
+  backdropFilter="blur(20px)"
+  overflow="hidden"
+  border="1px solid rgba(255,255,255,0.08)"
+  boxShadow="0 0 60px rgba(0,0,0,0.1)"
+  _hover={{ transform: "translateY(-3px)", transition: "all 0.4s ease" }}
+>
 
-          {/* Titre Features */}
-          <Heading size="md" textAlign="center">What SwitchPay optimizes</Heading>
+  {/* halo dynamique derrière */}
+  <Box
+    position="absolute"
+    top="-20%"
+    left="-10%"
+    w="150%"
+    h="150%"
+    bgGradient="radial(circle at center, rgba(0,255,255,0.12), transparent 70%)"
+    animation="pulse 6s ease-in-out infinite"
+    filter="blur(80px)"
+    zIndex={0}
+  />
 
-          {/* Features */}
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 3, md: 4 }}>
-            <Feature label="Higher auth rates" />
-            <Feature label="Lower fees" />
-            <Feature label="Geo coverage" />
-            <Feature label="Failover routing" />
-          </SimpleGrid>
-        </VStack>
-      </GlowCard>
+  <VStack align="stretch" spacing={3} position="relative" zIndex={1}>
+
+    {/* Integrated PSPs */}
+    <VStack spacing={4} align="center">
+      <Text
+        fontWeight="semibold"
+        fontSize="md"
+        color="gray.400"
+        textTransform="uppercase"
+        letterSpacing="0.08em"
+      >
+        Integrated Payment Service Providers
+      </Text>
+
+      <HStack
+        spacing={{ base: 6, md: 10 }}
+        flexWrap="wrap"
+        justify="center"
+        opacity={0.9}
+      >
+        {[
+          { src: "/Stripe_Logo,_revised_2016.svg.png", alt: "Stripe" },
+          { src: "/Adyen_Corporate_Logo.svg.png", alt: "Adyen" },
+          { src: "/Airwallex_Logo_-_Black.png", alt: "Airwallex" },
+          { src: "/Wise2020.svg", alt: "Wise" },
+          { src: "/Rapyd-logo-768x236.webp", alt: "Rapyd" },
+          { src: "/PayPal.svg.png", alt: "PayPal" },
+        ].map((psp, i) => (
+          <Box
+            key={i}
+            as="img"
+            src={psp.src}
+            alt={psp.alt}
+            maxW={{ base: "60px", md: "90px" }}
+            h="auto"
+            objectFit="contain"
+            opacity={0.75}
+            transition="all 0.3s ease"
+            filter="drop-shadow(0 0 6px rgba(0,255,255,0.1))"
+            _hover={{
+              opacity: 1,
+              transform: "translateY(-4px) scale(1.05)",
+              filter: "drop-shadow(0 0 10px rgba(0,255,255,0.3))",
+            }}
+          />
+        ))}
+      </HStack>
+    </VStack>
+
+    {/* Titre + halo */}
+    <Box textAlign="center" position="relative">
+      <Box
+        position="absolute"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+        w="250px"
+        h="250px"
+        bgGradient="radial(circle, rgba(100,100,255,0.12), transparent 70%)"
+        filter="blur(90px)"
+        zIndex={-1}
+        animation="pulseColor 8s ease-in-out infinite"
+      />
+    </Box>
+
+    {/* Features */}
+    <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 4, md: 6 }}>
+      <Feature label="Higher auth rates" icon="🚀" />
+      <Feature label="Lower fees" icon="💰" />
+      <Feature label="Geo coverage" icon="🌍" />
+      <Feature label="Failover routing" icon="🔁" />
+    </SimpleGrid>
+  </VStack>
+
+  {/* animations CSS */}
+  <style>
+    {`
+      @keyframes pulse {
+        0%,100% { opacity: 0.5; transform: scale(1); }
+        50% { opacity: 0.9; transform: scale(1.05); }
+      }
+      @keyframes pulseColor {
+        0% { background: radial-gradient(circle, rgba(100,100,255,0.12), transparent 70%); }
+        50% { background: radial-gradient(circle, rgba(0,255,255,0.18), transparent 70%); }
+        100% { background: radial-gradient(circle, rgba(255,100,255,0.12), transparent 70%); }
+      }
+    `}
+  </style>
+</GlowCard>
     </VStack>
   </Section>
-</Box>
+</Box>  
 
 
         {/* HOW IT WORKS */}
-        <Section id="how" pb={32}>
-          <VStack align="start" spacing={8}>
-            <Heading size="xl">How it works</Heading>
-            <HowItWorksTimeline />
-          </VStack>
-        </Section>
+        <Section
+  id="how"
+  position="relative"
+  pb={32}
+  pt={{ base: 16, md: 24 }}
+  overflow="hidden"
+>
+  {/* halo subtil derrière la section */}
+  <Box
+    position="absolute"
+    top="10%"
+    left="50%"
+    transform="translateX(-50%)"
+    w="500px"
+    h="500px"
+    bgGradient="radial(circle at center, rgba(0,255,255,0.06), transparent 70%)"
+    filter="blur(120px)"
+    opacity={0.5}
+    zIndex={0}
+  />
+
+  <VStack
+    align="center"
+    spacing={6}   // 👈 spacing réduit (10 → 6)
+    position="relative"
+    zIndex={1}
+    w="100%"
+  >
+    {/* Titre sobre et premium */}
+    <Heading
+      as="h2"
+      size="2xl"
+      fontWeight="extrabold"
+      textAlign="center"
+      color="white"   // 👈 blanc pur
+      letterSpacing="-0.02em"
+    >
+      How it works
+    </Heading>
+
+    {/* Texte d'accroche (optionnel, plus compact) */}
+    <Text
+      fontSize={{ base: "md", md: "lg" }}
+      color="gray.400"
+      textAlign="center"
+      maxW="2xl"
+      px={6}
+      mt={-2}  // 👈 rapproche encore la timeline
+    >
+      SwitchPay routes your payments intelligently, instantly, and with precision.
+    </Text>
+
+    {/* Timeline resserrée */}
+    <Box w="100%" mt={-5}>  {/* 👈 avant c'était 8 */}
+      <HowItWorksTimeline />
+    </Box>
+  </VStack>
+</Section>
+
+
 
         {/* PRODUCT DEMO */}
 <Section
@@ -618,16 +795,29 @@ export default function Landing() {
     </motion.div>
 
     {/* === CTA sous la vidéo === */}
-    <Stack direction={{ base: "column", sm: "row" }} spacing={6} pt={6}>
+    <Stack direction={{ base: "column", sm: "row" }} spacing={6} pt={-6}>
       <Button
-        size="lg"
-        bgGradient="linear(to-r, brand.500, brand.300)"
-        color="white"
-        _hover={{ filter: "brightness(1.15)" }}
-        onClick={() => navigate("/app")}
-      >
-        Try SwitchPay now
-      </Button>
+  onClick={() => navigate("/app")}
+  px={12}
+  py={6}
+  fontSize="lg"
+  fontWeight="700"
+  letterSpacing="0.03em"
+  textTransform="none"  // 👈 Garde seulement le T majuscule
+  bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)"
+  bgSize="200% 200%"
+  color="white"
+  borderRadius="full"
+  transition="all 0.3s ease"
+  _hover={{
+    backgroundPosition: "100% 50%",
+    transform: "translateY(-3px) scale(1.05)",
+    boxShadow: "0 0 25px rgba(236, 72, 153, 0.4)",
+  }}
+>
+  Try SwitchPay now
+</Button>
+
       <Button
         variant="outline"
         size="lg"
@@ -644,6 +834,10 @@ export default function Landing() {
   </VStack>
 </Section>
 
+ {/* espace bas */}
+  <Box h={{ base: "140px", md: "220px" }} />
+
+
         {/* WHY SWITCHPAY */}
         <Section id="why" bg={useColorModeValue("linear(to-b, gray.50, purple.50)", "linear(to-b, gray.800, gray.900)")}>
           <VStack align="start" spacing={8}>
@@ -656,103 +850,21 @@ export default function Landing() {
           </VStack>
         </Section>
 
-        {/* LIVE METRICS (Demo KPIs) */}
-<Section id="metrics" position="relative" overflow="visible" bg="transparent">
-  {/* 🌄 Image stylisée en fond */}
-  <Box
-    position="absolute"
-    top="-5%"
-    left="50%"
-    transform="translateX(-50%)"
-    w="110vw"            // 👈 pas full, comme une carte immersive
-    h="100%"
-    zIndex={0}
-    borderRadius="3xl" // 👈 arrondi premium
-    overflow="hidden"
-    boxShadow="0 0 60px rgba(35,104,245,0.25)" // 👈 glow bleu subtil
-    _before={{
-      content: '""',
-      position: "absolute",
-      inset: 0,
-      bgImage:
-        "url('/banniere-41-paysage-montagne-aube-rayons-du-soleil-levant-illuminent-sommets-montagnes-couleur-rose-vif-inhabituelle_198208-1332.jpg')",
-      bgSize: "cover",
-      bgPosition: "center",
-      filter: "blur(2px) brightness(0.5)", // 👈 flou + sombre
-      maskImage:
-        "linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)", // ✅ fondu bas
-      WebkitMaskImage:
-        "linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)",
-    }}
-    _after={{
-      content: '""',
-      position: "absolute",
-      inset: 0,
-      bg: "linear-gradient(to-b, rgba(10,10,20,0.6), rgba(10,10,20,0.95))",
-    }}
-  />
-
-  {/* KPIs au-dessus */}
-  <VStack align="start" spacing={10} position="relative" zIndex={1}>
-    <Heading size="xl" color="white">
-      Track the best KPIs for better decision-making payments.
-    </Heading>
-    <Text color="gray.200" maxW="2xl">
-      Demo KPIs powered by <code>SwitchPay</code>. These numbers show the kind
-      of insights you’ll get.
-    </Text>
-
-    <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mt={2}>
-      <StatCard
-        label="Total Volume"
-        value={
-          <>
-            <Counter to={12500000} duration={1800} decimals={2} isMoney /> €
-          </>
-        }
-      />
-      <StatCard
-        label="# Transactions"
-        value={<Counter to={487231} duration={2000} />}
-      />
-
-      <GlowCard>
-        <Stat>
-          <StatLabel color="gray.300">By PSP</StatLabel>
-          <StatNumber fontSize="lg" color="white">
-            <Badge mr={2} colorScheme="blue" variant="subtle">
-              Stripe: <Counter to={238121} duration={1500} />
-            </Badge>
-            <Badge mr={2} colorScheme="purple" variant="subtle">
-              Adyen: <Counter to={132893} duration={1800} />
-            </Badge>
-            <Badge mr={2} colorScheme="green" variant="subtle">
-              Rapyd: <Counter to={77320} duration={2100} />
-            </Badge>
-            <Badge mr={2} colorScheme="teal" variant="subtle">
-              Wise: <Counter to={3897} duration={2500} />
-            </Badge>
-          </StatNumber>
-        </Stat>
-      </GlowCard>
-    </SimpleGrid>
-  </VStack>
-
-  {/* espace bas */}
-  <Box h={{ base: "140px", md: "220px" }} />
-</Section>
 
 
         {/* === AI ASSISTANT === */}
 <Section id="assistant" py={{ base: 20, md: 28 }} bg={pageBg}>
   <VStack spacing={14} align="center" textAlign="center">
     {/* Header */}
-    <Heading 
-  size="4xl" 
-  fontWeight="extrabold" 
-  bgGradient="linear(to-r, brand.500, brand.300)" 
+    <Heading
+  as="h1"
+  fontSize={{ base: "2xl", sm: "4xl", md: "6xl", lg: "7xl" }}
+  fontWeight="800"
+  lineHeight="1.05"
+  bgGradient="linear(to-r, whiteAlpha.900, gray.400)"
   bgClip="text"
-  mb={0}   // 👈 zéro marge en bas
+  letterSpacing="-0.02em"
+  textAlign="center"
 >
   Meet switchpayAI
 </Heading>
@@ -823,7 +935,8 @@ export default function Landing() {
         <Section id="security" bg={useColorModeValue("linear(to-r, gray.50, white)", "linear(to-r, gray.900, gray.800)")}>
           <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10} alignItems="center">
             <VStack align="start" spacing={6}>
-              <Heading size="xl">Security & Reliability</Heading>
+              <Heading size="xl">
+                Security & Reliability</Heading>
               <Text color={subText}>
                 Start with simulated PSPs and switch seamlessly to real providers (Stripe, Adyen, Wise…) when you’re ready.
               </Text>
@@ -860,9 +973,19 @@ export default function Landing() {
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true }}
     >
-      <Heading size="2xl" fontWeight="extrabold" mb={3} py={15}>
-        Simple, transparent pricing.
-      </Heading>
+      <Heading
+  as="h2"
+  fontSize={{ base: "xl", sm: "3xl", md: "4xl", lg: "5xl" }}
+  fontWeight="800"
+  lineHeight="1.1"
+  bgGradient="linear(to-r, whiteAlpha.900, gray.400)"
+  bgClip="text"
+  letterSpacing="-0.02em"
+  textAlign="center"
+>
+  Simple and transparent pricing.
+</Heading>
+
       <Text fontSize="lg" color={subText}>
         Start for free. Scale without limits. Only pay for real value.
       </Text>
@@ -975,21 +1098,45 @@ export default function Landing() {
             <Spacer />
 
             <Magnetic>
-              <BrandButton
-                as={RouterLink}   // ✅ navigation sans flash
-                to="/contact"
-                mt={6}
-                w="100%"
-                bgGradient={
-                  tier.premium
-                    ? "linear(to-r, yellow.400, yellow.600)"
-                    : "linear(to-r, brand.500, brand.300)"
-                }
-                _hover={{ filter: "brightness(1.08)" }}
-              >
-                {tier.price === "Custom" ? "Contact us" : "Get started"}
-              </BrandButton>
-            </Magnetic>
+  <Button
+    as={RouterLink}
+    to={tier.price === "Custom" ? "/contact" : "/app"}
+    mt={6}
+    w="100%"
+    px={10}
+    py={5}
+    fontSize="md"
+    fontWeight="700"
+    textTransform="none"
+    letterSpacing="0.02em"
+    borderRadius="full"
+    color="white"
+    bgGradient={
+      tier.premium
+        ? "linear(to-r, #facc15, #f59e0b, #d97706)" // gold → amber → honey
+        : "linear(to-r, #06b6d4, #7c3aed, #ec4899)" // cyan → violet → pink
+    }
+    bgSize="200% 200%"
+    transition="all 0.35s ease"
+    boxShadow={
+      tier.premium
+        ? "0 0 25px rgba(245, 158, 11, 0.45)"
+        : "0 0 25px rgba(236, 72, 153, 0.35)"
+    }
+    _hover={{
+      backgroundPosition: "100% 50%",
+      transform: "translateY(-3px) scale(1.05)",
+      boxShadow:
+        tier.premium
+          ? "0 0 40px rgba(245, 158, 11, 0.6)"
+          : "0 0 40px rgba(236, 72, 153, 0.5)",
+      filter: "brightness(1.08)",
+    }}
+  >
+    {tier.price === "Custom" ? "Contact us" : "Get started"}
+  </Button>
+</Magnetic>
+
           </VStack>
         </GlowCard>
       ))}
@@ -1006,7 +1153,28 @@ export default function Landing() {
             </VStack>
             <Spacer />
             <Magnetic>
-              <BrandButton onClick={() => navigate("/app")}>Make a transaction</BrandButton>
+              <Button
+    onClick={() => navigate("/app")}
+    px={7}
+    py={3.5}
+    fontSize="md"
+    fontWeight="700"
+    letterSpacing="0.02em"
+    textTransform="none"   // 👈 garde la casse naturelle ("Make a transaction")
+    bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)"
+    bgSize="200% 200%"
+    color="white"
+    borderRadius="full"
+    transition="all 0.25s ease"
+    _hover={{
+      backgroundPosition: "100% 50%",
+      transform: "translateY(-2px) scale(1.03)",
+      boxShadow: "0 0 18px rgba(236, 72, 153, 0.25)",
+    }}
+  >
+    Make a transaction
+  </Button>
+
             </Magnetic>
           </GlowCard>
         {/* Big spacing avant SECURITY */}
@@ -1064,9 +1232,19 @@ export default function Landing() {
                 <Tooltip label="X / Twitter">
                   <Button as="a" href="https://x.com/baptiste_sardou" target="_blank" rel="noreferrer" leftIcon={<Icon as={FaTwitter} />} variant="outline">X</Button>
                 </Tooltip>
-                <Tooltip label="Substack">
-                  <Button as="a" href="https://substack.com/@baptistesardou?utm_source=user-menu" target="_blank" rel="noreferrer" leftIcon={<Icon as={SiSubstack} />} variant="outline">Substack</Button>
-                </Tooltip>
+                <Tooltip label="Instagram">
+  <Button
+    as="a"
+    href="https://www.instagram.com/baptistesardou/"
+    target="_blank"
+    rel="noreferrer"
+    leftIcon={<Icon as={SiInstagram} />}
+    variant="outline"
+  >
+    Instagram
+  </Button>
+</Tooltip>
+
               </HStack>
             </Flex>
           </GlowCard>

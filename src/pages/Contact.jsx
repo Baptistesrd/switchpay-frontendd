@@ -1,4 +1,3 @@
-// src/pages/Contact.jsx
 import { useState } from "react";
 import {
   Box,
@@ -12,7 +11,6 @@ import {
   useToast,
   useColorModeValue,
   SimpleGrid,
-  Divider,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { FaPaperPlane, FaLock, FaGlobe, FaUsers } from "react-icons/fa";
@@ -47,7 +45,7 @@ export default function Contact() {
 
       toast({
         title: "Message sent 🎉",
-        description: "We’ll get back to you within 24h.",
+        description: "We’ll get back to you within 24 hours.",
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -69,17 +67,14 @@ export default function Contact() {
     }
   };
 
-  // 🎨 THEME COLORS
-  const cardBg = useColorModeValue("whiteAlpha.900", "blackAlpha.700");
+  const cardBg = useColorModeValue("rgba(255,255,255,0.08)", "rgba(20,20,30,0.75)");
   const textColor = useColorModeValue("gray.600", "gray.300");
 
   return (
     <Box
       position="relative"
       minH="100vh"
-      bgImage="url('/mid-shot-woman-talking-phone-table.jpg')" // ✅ ta photo
-      bgSize="cover"
-      bgPos="center"
+      bg="radial-gradient(circle at 30% 20%, rgba(255,255,255,0.08), rgba(0,0,0,0.85) 80%)"
       display="flex"
       alignItems="center"
       justifyContent="center"
@@ -89,65 +84,77 @@ export default function Contact() {
         content: '""',
         position: "absolute",
         inset: 0,
-        bg: "blackAlpha.600", // ✅ overlay sombre pour lisibilité
+        bgImage: "url('/mid-shot-woman-talking-phone-table.jpg')",
+        bgSize: "cover",
+        bgPos: "center",
+        filter: "blur(4px) brightness(0.35)",
+        zIndex: 0,
       }}
     >
       <MotionBox
         position="relative"
         maxW="4xl"
         w="100%"
-        p={12}
+        p={{ base: 8, md: 12 }}
         borderRadius="3xl"
-        shadow="2xl"
         bg={cardBg}
-        backdropFilter="blur(10px) saturate(140%)" // ✅ effet glassmorphism
+        backdropFilter="blur(16px) saturate(120%)"
+        boxShadow="inset 0 0 1px rgba(255,255,255,0.1)"
+        zIndex={1}
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
       >
-        <VStack spacing={10} align="stretch">
+        <VStack spacing={8} align="stretch">
           {/* HEADER */}
           <VStack spacing={3} textAlign="center">
             <Heading
               size="2xl"
               fontWeight="extrabold"
-              bgGradient="linear(to-r, brand.500, brand.300)"
-              bgClip="text"
+              color="whiteAlpha.900"
+              letterSpacing="-0.03em"
             >
-              Let’s save you money.
+              Losing conversions because your payments fail?
             </Heading>
-            <Text fontSize="lg" color={textColor}>
-              Drop us your email and message. A member of our team will get back
-              within <b>24 hours</b>.
-              We won't spmam you, promise.
+            <Text fontSize="lg" color={textColor} maxW="lg">
+              Reach out: we’ll help you fix your routing strategy and improve
+              your success rate instantly.
             </Text>
           </VStack>
 
           {/* FORM */}
-          <VStack spacing={6} align="stretch">
+          <VStack spacing={5} align="stretch">
             <Input
               placeholder="Your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               size="lg"
               borderRadius="xl"
-              shadow="sm"
+              border="1px solid"
+              borderColor="whiteAlpha.200"
+              bg="rgba(255,255,255,0.04)"
+              color="whiteAlpha.900"
+              _placeholder={{ color: "whiteAlpha.600" }}
               _focus={{
-                borderColor: "brand.500",
-                boxShadow: "0 0 0 2px #2368f5",
+                borderColor: "whiteAlpha.400",
+                boxShadow: "0 0 15px rgba(255,255,255,0.1)",
               }}
             />
             <Textarea
-              placeholder="Tell us how we can help..."
+              placeholder="Your message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              rows={6}
+              rows={5}
               size="lg"
               borderRadius="xl"
-              shadow="sm"
+              border="1px solid"
+              borderColor="whiteAlpha.200"
+              bg="rgba(255,255,255,0.04)"
+              color="whiteAlpha.900"
+              _placeholder={{ color: "whiteAlpha.600" }}
               _focus={{
-                borderColor: "brand.500",
-                boxShadow: "0 0 0 2px #2368f5",
+                borderColor: "whiteAlpha.400",
+                boxShadow: "0 0 15px rgba(255,255,255,0.1)",
               }}
             />
             <Button
@@ -155,51 +162,54 @@ export default function Contact() {
               borderRadius="full"
               px={10}
               py={6}
-              color="white"
+              color="whiteAlpha.900"
               fontWeight="bold"
-              bgGradient="linear(to-r, brand.500, brand.300)"
-              rightIcon={<FaPaperPlane />}
+              bg="rgba(255,255,255,0.1)"
+              backdropFilter="blur(10px)"
+              border="1px solid rgba(255,255,255,0.15)"
               _hover={{
-                filter: "brightness(1.1)",
-                transform: "translateY(-2px)",
+                bg: "rgba(255,255,255,0.18)",
+                transform: "translateY(-2px) scale(1.02)",
+                boxShadow: "0 0 20px rgba(255,255,255,0.1)",
               }}
+              _active={{
+                transform: "translateY(-1px)",
+              }}
+              rightIcon={<FaPaperPlane />}
               onClick={handleSubmit}
               isLoading={loading}
               loadingText="Sending..."
             >
-              Send Message
+              Start the conversation
             </Button>
-          </VStack>
 
-          {/* TRUST SIGNALS */}
-          <Divider my={6} />
-          <SimpleGrid
-            columns={{ base: 1, md: 3 }}
-            spacing={8}
-            textAlign="center"
-          >
-            <VStack>
-              <Icon as={FaLock} boxSize={6} color="brand.500" />
-              <Text fontWeight="semibold">Secure by design</Text>
-              <Text fontSize="sm" color={textColor}>
-                Messages stored safely in our database.
-              </Text>
-            </VStack>
-            <VStack>
-              <Icon as={FaGlobe} boxSize={6} color="brand.500" />
-              <Text fontWeight="semibold">Global coverage</Text>
-              <Text fontSize="sm" color={textColor}>
-                Supporting merchants worldwide with top PSPs.
-              </Text>
-            </VStack>
-            <VStack>
-              <Icon as={FaUsers} boxSize={6} color="brand.500" />
-              <Text fontWeight="semibold">Human-first support</Text>
-              <Text fontSize="sm" color={textColor}>
-                Talk directly to our product team.
-              </Text>
-            </VStack>
-          </SimpleGrid>
+            {/* TRUST SIGNALS (resserrés juste sous le bouton) */}
+            <SimpleGrid
+              columns={{ base: 1, md: 3 }}
+              spacing={2}
+              pt={2}
+              textAlign="center"
+            >
+              <VStack spacing={1}>
+                <Icon as={FaLock} boxSize={5} color="whiteAlpha.700" />
+                <Text fontSize="sm" color="whiteAlpha.900">
+                  Secure by design
+                </Text>
+              </VStack>
+              <VStack spacing={1}>
+                <Icon as={FaGlobe} boxSize={5} color="whiteAlpha.700" />
+                <Text fontSize="sm" color="whiteAlpha.900">
+                  Global coverage
+                </Text>
+              </VStack>
+              <VStack spacing={1}>
+                <Icon as={FaUsers} boxSize={5} color="whiteAlpha.700" />
+                <Text fontSize="sm" color="whiteAlpha.900">
+                  Human-first support
+                </Text>
+              </VStack>
+            </SimpleGrid>
+          </VStack>
         </VStack>
       </MotionBox>
     </Box>
