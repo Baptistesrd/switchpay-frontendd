@@ -1,3 +1,4 @@
+// src/App.jsx
 import { useEffect, useMemo, useState } from "react";
 import {
   Box,
@@ -15,49 +16,98 @@ import {
   Divider,
   HStack,
   Badge,
-  Button, 
-  useColorModeValue 
+  Button,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 
-
 import TransactionForm from "./components/TransactionForm";
 import TransactionTable from "./components/TransactionTable";
 import MagneticButton from "./components/MagneticButton";
-import GhostMagneticButton from "./components/GhostMagneticButton";
 import Counter from "./components/Counter";
 import DashCharts from "./components/DashCharts";
 import GlowCard from "./components/GlowCard";
 import BackgroundFX from "./components/BackgroundFX";
 import Navbar from "./components/Navbar";
-import FeatureChip from "./components/FeatureChip";
-import Landing from "./pages/Landing";
 
 const MotionBox = motion(Box);
 
 export default function App() {
   const [transactions, setTransactions] = useState([]);
-  const API_KEY = process.env.REACT_APP_API_KEY;
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "");
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://127.0.0.1:8000";
   const navigate = useNavigate();
 
-  const fetchTransactions = async () => {
+  // Helper : persist key and set axios default header for convenience
+  const setAndUseApiKey = (key) => {
+    if (!key) return;
+    localStorage.setItem("apiKey", key);
+    setApiKey(key);
+    // set default for axios GETs (fetchTransactions uses axios)
+    axios.defaults.headers.common["x-api-key"] = key;
+  };
+
+  // Generate a fresh temporary API key on each page load/refresh
+  useEffect(() => {
+    async function createTempKey() {
+      try {
+        // always generate a fresh key on mount so that refresh => new key
+        const res = await axios.get(`${BACKEND_URL}/generate-temp-key`);
+        const key = res.data?.api_key;
+        if (key) {
+          setAndUseApiKey(key);
+          // fetch transactions after setting key
+          await fetchTransactions(key);
+          console.log("🔑 Temp key generated:", key);
+        } else {
+          console.warn("No key returned from /generate-temp-key, falling back to localStorage if present.");
+          const fallback = localStorage.getItem("apiKey");
+          if (fallback) setAndUseApiKey(fallback);
+          else {
+            // optional: fallback to an env key (if you kept one for dev)
+            // const devKey = process.env.REACT_APP_API_KEY;
+            // if (devKey) setAndUseApiKey(devKey);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to generate temp key:", err);
+        // fallback to existing localStorage key if any
+        const fallback = localStorage.getItem("apiKey");
+        if (fallback) setAndUseApiKey(fallback);
+      }
+    }
+
+    createTempKey();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run once on mount (so refresh -> rerun)
+
+  // Fetch transactions using the current API key
+  const fetchTransactions = async (explicitKey) => {
     try {
+      const keyToUse = explicitKey || apiKey || localStorage.getItem("apiKey");
+      if (!keyToUse) {
+        console.warn("No api key present, skipping fetchTransactions");
+        setTransactions([]);
+        return;
+      }
       const res = await axios.get(`${BACKEND_URL}/transactions`, {
-        headers: { "x-api-key": API_KEY },
+        headers: { "x-api-key": keyToUse },
       });
       setTransactions(res.data || []);
     } catch (err) {
       console.error("❌ Error fetching transactions:", err);
+      setTransactions([]); // clear or keep previous depending on taste
     }
   };
 
   useEffect(() => {
-    fetchTransactions();
-  }, []);
+    // If apiKey changes (e.g. user pasted another key), refresh transactions
+    if (apiKey) fetchTransactions(apiKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiKey]);
 
   const totalAmount = useMemo(
     () => transactions.reduce((acc, tx) => acc + Number(tx.montant || 0), 0),
@@ -68,12 +118,10 @@ export default function App() {
   const successCount = transactions.filter((tx) => tx.status === "success").length;
   const failCount = count - successCount;
   const successRate = count > 0 ? Math.round((successCount / count) * 100) : 0;
-  console.log("Components:", { FeatureChip, GlowCard, Landing });
-
 
   return (
     <Box position="relative" minH="100vh" overflow="hidden">
-      {/* --- Background premium --- */}
+      {/* Background */}
       <Box
         position="absolute"
         inset={0}
@@ -96,76 +144,31 @@ export default function App() {
       <Navbar />
 
       <Box position="relative" zIndex={1} maxW="7xl" mx="auto" px={6} py={16}>
-        {/* --- Hero section --- */}
-        <MotionBox
-          textAlign="center"
-          mb={16}
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          <Heading
-            as="h1"
-            fontSize={{ base: "5xl", md: "7xl", lg: "8xl" }}
-            fontWeight="extrabold"
-            lineHeight="1.1"
-          >
+        {/* Hero */}
+        <MotionBox textAlign="center" mb={16} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+          <Heading as="h1" fontSize={{ base: "5xl", md: "7xl", lg: "8xl" }} fontWeight="extrabold" lineHeight="1.1">
             Start a transaction{" "}
             <Box as="span" bgGradient="linear(to-r, brand.500, brand.300)" bgClip="text">
               now.
             </Box>
           </Heading>
           <HStack spacing={4} justify="center" mt={10}>
-            <Button
-  type="button"
-  onClick={() => navigate("/contact")}
-  variant="outline"
-  borderRadius="full"
-  px={6}
-  py={2.5}
-  fontWeight="medium"
-  fontSize="sm"
-  borderColor={useColorModeValue("gray.300", "whiteAlpha.300")}
-  color={useColorModeValue("gray.800", "gray.100")}
-  rightIcon={<ExternalLinkIcon />}
-  _hover={{
-    bg: useColorModeValue("gray.50", "whiteAlpha.100"),
-    transform: "translateY(-1px)",
-    borderColor: useColorModeValue("gray.400", "whiteAlpha.400"),
-  }}
-  _active={{
-    transform: "translateY(0)",
-    bg: useColorModeValue("gray.100", "whiteAlpha.200"),
-  }}
-  transition="all 0.15s ease"
-  w={{ base: "100%", sm: "auto" }}
->
-  Contact Us
-</Button>
-
+            <Button type="button" onClick={() => navigate("/contact")} variant="outline" borderRadius="full" px={6} py={2.5} fontWeight="medium" fontSize="sm" rightIcon={<ExternalLinkIcon />} w={{ base: "100%", sm: "auto" }}>
+              Contact Us
+            </Button>
           </HStack>
         </MotionBox>
 
-        {/* --- Tabs navigation --- */}
         <Tabs variant="soft-rounded" colorScheme="purple" isFitted>
           <TabList mb={8}>
             {["New Transaction", "Transaction History", "Dashboard"].map((label) => (
-              <Tab
-                key={label}
-                fontWeight="semibold"
-                _selected={{
-                  color: "white",
-                  bgGradient: "linear(to-r, brand.500, brand.300)",
-                }}
-                _hover={{ bg: "whiteAlpha.100" }}
-              >
+              <Tab key={label} fontWeight="semibold" _selected={{ color: "white", bgGradient: "linear(to-r, brand.500, brand.300)" }} _hover={{ bg: "whiteAlpha.100" }}>
                 {label}
               </Tab>
             ))}
           </TabList>
 
           <TabPanels>
-            {/* --- New Transaction --- */}
             <TabPanel>
               <GlowCard p={8} interactive={false}>
                 <Heading size="md" mb={2}>
@@ -174,11 +177,12 @@ export default function App() {
                 <Text mb={6} color="gray.400">
                   Fill the form and send — routing happens in your FastAPI backend.
                 </Text>
-                <TransactionForm onNewTransaction={fetchTransactions} />
+
+                {/* TransactionForm reads localStorage("apiKey") so no prop needed, but we keep fetch callback */}
+                <TransactionForm onNewTransaction={() => fetchTransactions(apiKey)} />
               </GlowCard>
             </TabPanel>
 
-            {/* --- Transaction History --- */}
             <TabPanel>
               <GlowCard p={6}>
                 <HStack justify="space-between" mb={4} wrap="wrap" spacing={3}>
@@ -193,7 +197,6 @@ export default function App() {
               </GlowCard>
             </TabPanel>
 
-            {/* --- Dashboard --- */}
             <TabPanel>
               <SimpleGrid columns={[1, 2, 4]} spacing={6} mb={8}>
                 <KpiCard label="Total Volume">
@@ -231,7 +234,6 @@ export default function App() {
   );
 }
 
-/* --- KPI Card --- */
 function KpiCard({ label, children }) {
   return (
     <GlowCard p={6}>

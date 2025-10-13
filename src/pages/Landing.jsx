@@ -239,9 +239,6 @@ export default function Landing() {
 <ChakraLink as="button" onClick={() => scrollTo("#why")} _hover={{ color: "brand.500" }}>
   Why SwitchPay
 </ChakraLink>
-<ChakraLink as="button" onClick={() => scrollTo("#metrics")} _hover={{ color: "brand.500" }}>
-  Live Metrics
-</ChakraLink>
 <ChakraLink as="button" onClick={() => scrollTo("#security")} _hover={{ color: "brand.500" }}>
   Security
 </ChakraLink>
@@ -741,7 +738,6 @@ export default function Landing() {
             fontSize="4xl"
             fontWeight="bold"
           >
-            ▶
           </MotionBox>
 
           {/* Bouton Sound On/Off */}

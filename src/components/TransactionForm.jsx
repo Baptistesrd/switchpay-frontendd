@@ -7,7 +7,6 @@ import {
   ViewIcon, ViewOffIcon, CopyIcon, ArrowForwardIcon
 } from "@chakra-ui/icons";
 import axios from "axios";
-import { motion } from "framer-motion";
 import MagneticButton from "./MagneticButton";
 
 const CURRENCIES = ["EUR","USD","GBP","JPY","CHF","CAD","AUD","CNY","INR","BRL","ZAR","SGD","MXN","TRY"];
@@ -26,7 +25,37 @@ export default function TransactionForm({ onNewTransaction }) {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
-  // 🔐 Persist API Key
+  // ✅ Génère une API key temporaire à chaque refresh si absente
+  useEffect(() => {
+    const fetchTempKey = async () => {
+      try {
+        const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/generate-temp-key`);
+        const newKey = res.data.api_key;
+        setApiKey(newKey);
+        localStorage.setItem("apiKey", newKey);
+        toast({
+          title: "New API Key generated 🔑",
+          description: "Sandbox mode active (auto-refresh resets key)",
+          status: "info",
+          duration: 2500,
+          isClosable: true,
+        });
+      } catch (err) {
+        console.error("❌ Failed to generate temp key:", err);
+        toast({
+          title: "Backend unreachable",
+          description: "Unable to fetch test API key.",
+          status: "error",
+          duration: 2500,
+          isClosable: true,
+        });
+      }
+    };
+
+    if (!apiKey) fetchTempKey();
+  }, []);
+
+  // 🔐 Persist API Key locally
   useEffect(() => { localStorage.setItem("apiKey", apiKey); }, [apiKey]);
 
   // 🛠 Handlers
@@ -74,10 +103,8 @@ export default function TransactionForm({ onNewTransaction }) {
         isClosable: true,
       });
 
-      // Call parent callback → refresh dashboard/history
+      // Refresh dashboard/history
       onNewTransaction?.(res.data);
-
-      // Reset form
       setFormData({ montant: "", devise: "", pays: "", device: "" });
 
     } catch (err) {
@@ -105,51 +132,50 @@ export default function TransactionForm({ onNewTransaction }) {
         
         {/* 🔑 API Key */}
         <Box
-  p={4}
-  borderRadius="lg"
-  backdropFilter="blur(10px)"
-  bg="whiteAlpha.100"
-  border="1px solid rgba(255,255,255,0.2)"
-  shadow="md"
->
-  <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>
-    Auto-generated API Key
-  </FormLabel>
-  <InputGroup>
-    <Input
-      name="apiKey"
-      type={showApi ? "text" : "password"}
-      placeholder="Paste your API Key here"
-      value={apiKey}
-      onChange={(e) => setApiKey(e.target.value)}
-      borderRadius="lg"
-      pr="5rem" // espace réservé pour les boutons
-    />
-    <InputRightElement width="5rem">
-      <HStack spacing={1}>
-        <Tooltip label={showApi ? "Hide" : "Show"} hasArrow>
-          <IconButton
-            aria-label="toggle api"
-            size="sm"
-            variant="ghost"
-            icon={showApi ? <ViewOffIcon /> : <ViewIcon />}
-            onClick={() => setShowApi((s) => !s)}
-          />
-        </Tooltip>
-        <Tooltip label="Copy Key" hasArrow>
-          <IconButton
-            aria-label="copy api"
-            size="sm"
-            variant="ghost"
-            icon={<CopyIcon />}
-            onClick={copyApi}
-          />
-        </Tooltip>
-      </HStack>
-    </InputRightElement>
-  </InputGroup>
-</Box>
-
+          p={4}
+          borderRadius="lg"
+          backdropFilter="blur(10px)"
+          bg="whiteAlpha.100"
+          border="1px solid rgba(255,255,255,0.2)"
+          shadow="md"
+        >
+          <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>
+            Auto-generated API Key
+          </FormLabel>
+          <InputGroup>
+            <Input
+              name="apiKey"
+              type={showApi ? "text" : "password"}
+              placeholder="Fetching temporary key..."
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              borderRadius="lg"
+              pr="5rem"
+            />
+            <InputRightElement width="5rem">
+              <HStack spacing={1}>
+                <Tooltip label={showApi ? "Hide" : "Show"} hasArrow>
+                  <IconButton
+                    aria-label="toggle api"
+                    size="sm"
+                    variant="ghost"
+                    icon={showApi ? <ViewOffIcon /> : <ViewIcon />}
+                    onClick={() => setShowApi((s) => !s)}
+                  />
+                </Tooltip>
+                <Tooltip label="Copy Key" hasArrow>
+                  <IconButton
+                    aria-label="copy api"
+                    size="sm"
+                    variant="ghost"
+                    icon={<CopyIcon />}
+                    onClick={copyApi}
+                  />
+                </Tooltip>
+              </HStack>
+            </InputRightElement>
+          </InputGroup>
+        </Box>
 
         <Divider />
 
@@ -200,60 +226,56 @@ export default function TransactionForm({ onNewTransaction }) {
           </FormControl>
         </HStack>
 
-        {/* Country & Device */}
-<HStack spacing={6} align="start">
-  {/* Country */}
-  <FormControl isRequired>
-    <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Country</FormLabel>
-    <Select
-      name="pays"
-      placeholder="Select country"
-      value={formData.pays}
-      onChange={handleChange}
-      borderRadius="full"
-      bg="blackAlpha.50"
-      _hover={{ bg: "blackAlpha.100" }}
-    >
-      <option value="FR">🇫🇷 France (FR)</option>
-      <option value="US">🇺🇸 United States (US)</option>
-      <option value="GB">🇬🇧 United Kingdom (GB)</option>
-      <option value="DE">🇩🇪 Germany (DE)</option>
-      <option value="IT">🇮🇹 Italy (IT)</option>
-      <option value="ES">🇪🇸 Spain (ES)</option>
-      <option value="CA">🇨🇦 Canada (CA)</option>
-      <option value="JP">🇯🇵 Japan (JP)</option>
-      <option value="CN">🇨🇳 China (CN)</option>
-      <option value="IN">🇮🇳 India (IN)</option>
-      <option value="BR">🇧🇷 Brazil (BR)</option>
-      <option value="SG">🇸🇬 Singapore (SG)</option>
-      <option value="MX">🇲🇽 Mexico (MX)</option>
-      <option value="ZA">🇿🇦 South Africa (ZA)</option>
-      <option value="TR">🇹🇷 Turkey (TR)</option>
-    </Select>
-  </FormControl>
+        {/* 🌍 Country + Device */}
+        <HStack spacing={6} align="start">
+          <FormControl isRequired>
+            <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Country</FormLabel>
+            <Select
+              name="pays"
+              placeholder="Select country"
+              value={formData.pays}
+              onChange={handleChange}
+              borderRadius="full"
+              bg="blackAlpha.50"
+              _hover={{ bg: "blackAlpha.100" }}
+            >
+              <option value="FR">🇫🇷 France (FR)</option>
+              <option value="US">🇺🇸 United States (US)</option>
+              <option value="GB">🇬🇧 United Kingdom (GB)</option>
+              <option value="DE">🇩🇪 Germany (DE)</option>
+              <option value="IT">🇮🇹 Italy (IT)</option>
+              <option value="ES">🇪🇸 Spain (ES)</option>
+              <option value="CA">🇨🇦 Canada (CA)</option>
+              <option value="JP">🇯🇵 Japan (JP)</option>
+              <option value="CN">🇨🇳 China (CN)</option>
+              <option value="IN">🇮🇳 India (IN)</option>
+              <option value="BR">🇧🇷 Brazil (BR)</option>
+              <option value="SG">🇸🇬 Singapore (SG)</option>
+              <option value="MX">🇲🇽 Mexico (MX)</option>
+              <option value="ZA">🇿🇦 South Africa (ZA)</option>
+              <option value="TR">🇹🇷 Turkey (TR)</option>
+            </Select>
+          </FormControl>
 
-  {/* Device */}
-  <FormControl isRequired>
-    <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Device</FormLabel>
-    <Select
-      name="device"
-      placeholder="Select"
-      value={formData.device}
-      onChange={handleChange}
-      borderRadius="full"
-      bg="blackAlpha.50"
-      _hover={{ bg: "blackAlpha.100" }}
-    >
-      {DEVICES.map((d) => (
-        <option key={d} value={d}>
-          {capitalize(d)}
-        </option>
-      ))}
-    </Select>
-  </FormControl>
-</HStack>
-
-
+          <FormControl isRequired>
+            <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Device</FormLabel>
+            <Select
+              name="device"
+              placeholder="Select"
+              value={formData.device}
+              onChange={handleChange}
+              borderRadius="full"
+              bg="blackAlpha.50"
+              _hover={{ bg: "blackAlpha.100" }}
+            >
+              {DEVICES.map((d) => (
+                <option key={d} value={d}>
+                  {capitalize(d)}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+        </HStack>
 
         {/* 🚀 Submit CTA */}
         <HStack justify="space-between">

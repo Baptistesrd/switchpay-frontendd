@@ -14,7 +14,6 @@ import { AtSignIcon, RepeatIcon, CheckCircleIcon } from "@chakra-ui/icons";
 import GlowCard from "./GlowCard";
 
 const MotionBox = motion(Box);
-const MotionHStack = motion(HStack);
 
 export default function HowItWorksTimeline() {
   const brandFrom = useColorModeValue("#06b6d4", "#7aa2ff");
@@ -128,6 +127,8 @@ function StepCard({ index, icon, title, desc, labelCol }) {
           textAlign="center"
           boxShadow={brandShadow}
           transition="all 0.3s ease"
+          w={{ base: "250px", md: "280px" }}  // 👈 largeur uniforme pour tous
+          minH={{ base: "200px", md: "220px" }} // 👈 hauteur uniforme aussi
         >
           <Badge
             colorScheme="blue"
