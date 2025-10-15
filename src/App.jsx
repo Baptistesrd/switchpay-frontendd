@@ -38,7 +38,7 @@ const MotionBox = motion(Box);
 export default function App() {
   const [transactions, setTransactions] = useState([]);
   const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "");
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://127.0.0.1:8000";
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://switchpay-backend.onrender.com";
   const navigate = useNavigate();
 
   // Helper : persist key and set axios default header for convenience
