@@ -583,7 +583,7 @@ export default function Landing() {
   <Button
   onClick={() => navigate("/app")}
   px={12}
-  py={6}
+  py={-5}
   fontSize="lg"
   fontWeight="700"
   letterSpacing="0.03em"
