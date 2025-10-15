@@ -44,22 +44,26 @@ export default function HowItWorksTimeline() {
 
   return (
     <Box position="relative" py={{ base: 8, md: 16 }} overflowX="auto">
-      {/* Animated flow line */}
+      {/* === Animated line — GPU-optimized === */}
       <MotionBox
         position="absolute"
         top="50%"
         left="0"
         right="0"
         height="3px"
+        borderRadius="full"
         bgGradient={`linear(to-r, ${brandFrom}, ${brandTo})`}
         bgSize="200% 100%"
-        borderRadius="full"
+        filter={`drop-shadow(0 0 8px ${glow})`}
+        style={{
+          willChange: "background-position, transform",
+          transform: "translateZ(0)", // ⚡️ GPU compositing
+        }}
         animate={{ backgroundPosition: ["0% 50%", "100% 50%"] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-        filter={`drop-shadow(0 0 10px ${glow})`}
+        transition={{ duration: 5.5, repeat: Infinity, ease: "linear" }}
       />
 
-      {/* Steps horizontally */}
+      {/* === Steps === */}
       <HStack
         spacing={{ base: 6, md: 16 }}
         align="flex-start"
@@ -78,25 +82,32 @@ export default function HowItWorksTimeline() {
 
 function StepCard({ index, icon, title, desc, labelCol }) {
   const brandShadow = useColorModeValue(
-    "0 8px 30px rgba(35,104,245,0.2)",
-    "0 8px 30px rgba(122,162,255,0.25)"
+    "0 8px 24px rgba(35,104,245,0.15)",
+    "0 8px 24px rgba(122,162,255,0.2)"
   );
-  const delay = index * 0.2;
+  const delay = index * 0.15;
 
   return (
     <MotionBox
-      initial={{ opacity: 0, y: 40, rotateX: 8 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{
         opacity: 1,
         y: 0,
-        rotateX: 0,
-        transition: { delay, duration: 0.5, ease: "easeOut" },
+        transition: { delay, duration: 0.4, ease: "easeOut" },
       }}
-      whileHover={{ y: -4, scale: 1.02 }}
-      viewport={{ once: true, amount: 0.4 }}
+      whileHover={{
+        y: -4,
+        scale: 1.015,
+        transition: { duration: 0.25, ease: "easeOut" },
+      }}
+      viewport={{ once: true, amount: 0.3 }}
+      style={{
+        willChange: "transform, opacity",
+        transform: "translateZ(0)",
+      }}
     >
       <VStack spacing={4} align="center" textAlign="center" maxW="sm">
-        {/* Icon circle */}
+        {/* === Icon circle === */}
         <Box
           position="relative"
           w={{ base: "50px", md: "64px" }}
@@ -109,26 +120,28 @@ function StepCard({ index, icon, title, desc, labelCol }) {
           bgGradient="linear(to-r, cyan.400, purple.500)"
           backgroundClip="padding-box"
           boxShadow="0 0 0 4px rgba(255,255,255,0.05)"
-          _after={{
-            content: '""',
-            position: "absolute",
-            inset: 0,
-            borderRadius: "full",
-            background:
-              "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), transparent 70%)",
+          transition="transform 0.3s ease, box-shadow 0.3s ease"
+          style={{ willChange: "transform" }}
+          _hover={{
+            transform: "scale(1.05)",
+            boxShadow: "0 0 20px rgba(122,162,255,0.35)",
           }}
         >
           <Icon as={icon} boxSize={6} color="white" zIndex="1" />
         </Box>
 
-        {/* GlowCard for content */}
+        {/* === Content === */}
         <GlowCard
           p={{ base: 4, md: 6 }}
           textAlign="center"
           boxShadow={brandShadow}
-          transition="all 0.3s ease"
-          w={{ base: "250px", md: "280px" }}  // 👈 largeur uniforme pour tous
-          minH={{ base: "200px", md: "220px" }} // 👈 hauteur uniforme aussi
+          transition="transform 0.3s ease, box-shadow 0.3s ease"
+          w={{ base: "250px", md: "280px" }}
+          minH={{ base: "200px", md: "220px" }}
+          style={{
+            willChange: "transform, opacity",
+            transform: "translateZ(0)",
+          }}
         >
           <Badge
             colorScheme="blue"
@@ -139,6 +152,7 @@ function StepCard({ index, icon, title, desc, labelCol }) {
           >
             Step {index + 1}
           </Badge>
+
           <Heading
             size={{ base: "md", md: "lg" }}
             bgGradient="linear(to-r, cyan.400, purple.400)"
@@ -146,6 +160,7 @@ function StepCard({ index, icon, title, desc, labelCol }) {
           >
             {title}
           </Heading>
+
           <Text color={labelCol} fontSize={{ base: "sm", md: "md" }}>
             {desc}
           </Text>

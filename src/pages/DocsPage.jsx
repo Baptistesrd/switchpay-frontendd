@@ -19,33 +19,21 @@ import {
   TabPanels,
   TabPanel,
   SimpleGrid,
-  Badge,
   List,
   ListItem,
   ListIcon,
-  Link as ChakraLink,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
   Button,
   HStack,
-  Icon,
 } from "@chakra-ui/react";
 import {
   CheckCircleIcon,
   WarningIcon,
   InfoIcon,
-  ArrowLeftIcon,
-  ExternalLinkIcon,
 } from "@chakra-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import Layout from "../components/Layout";
 import GlowCard from "../components/GlowCard";
-import EarthBackground from "../components/EarthBackground";
 
 const MotionBox = motion(Box);
 
@@ -54,7 +42,7 @@ export default function DocsPage() {
   const textColor = useColorModeValue("gray.700", "gray.200");
 
   const fadeIn = {
-    hidden: { opacity: 0,},
+    hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.6 } },
   };
 
@@ -62,33 +50,13 @@ export default function DocsPage() {
     <Layout>
       <Box
         py={24}
-        position="relative"
-        overflow="hidden"
         bg="linear-gradient(to-b, #030712, #0a1123, #0b1429)"
+        minH="100vh"
       >
-        {/* === 3D Earth Background === */}
-        <Box
-          position="absolute"
-          top="0"
-          left="0"
-          w="100%"
-          h="100%"
-          zIndex={0}
-          opacity={0.3}
-        >
-          <EarthBackground />
-        </Box>
-
-        {/* ===== Main Container ===== */}
-        <Container maxW="6xl" position="relative" zIndex={2}>
+        <Container maxW="6xl">
           <VStack align="start" spacing={16}>
             {/* ===== HEADER ===== */}
-            <MotionBox
-              initial="hidden"
-              animate="visible"
-              variants={fadeIn}
-              w="full"
-            >
+            <MotionBox initial="hidden" animate="visible" variants={fadeIn} w="full">
               <HStack justify="space-between" w="full">
                 <Heading
                   size="2xl"
@@ -98,51 +66,37 @@ export default function DocsPage() {
                   SwitchPay Developer Docs
                 </Heading>
                 <Button
-  as={RouterLink}
-  to="/"
-  px={8}
-  py={5}
-  fontSize="md"
-  fontWeight="600"
-  letterSpacing="0.02em"
-  borderRadius="full"
-  color="whiteAlpha.900"
-  bg="rgba(255, 255, 255, 0.05)"
-  backdropFilter="blur(12px)"
-  border="1px solid"
-  borderColor="whiteAlpha.200"
-  boxShadow="inset 0 0 12px rgba(255,255,255,0.05)"
-  transition="all 0.35s ease"
-  _hover={{
-    bg: "rgba(255, 255, 255, 0.12)",
-    boxShadow: "0 0 25px rgba(255, 255, 255, 0.2)",
-    transform: "translateY(-2px) scale(1.03)",
-  }}
-  _active={{
-    transform: "translateY(-1px) scale(1.01)",
-    boxShadow: "0 0 20px rgba(255, 255, 255, 0.15)",
-  }}
->
-  ← Back to Home
-</Button>
-
+                  as={RouterLink}
+                  to="/"
+                  px={8}
+                  py={5}
+                  fontSize="md"
+                  fontWeight="600"
+                  borderRadius="full"
+                  color="whiteAlpha.900"
+                  bg="rgba(255, 255, 255, 0.05)"
+                  border="1px solid"
+                  borderColor="whiteAlpha.200"
+                  backdropFilter="blur(12px)"
+                  transition="all 0.35s ease"
+                  _hover={{
+                    bg: "rgba(255, 255, 255, 0.12)",
+                    boxShadow: "0 0 25px rgba(255, 255, 255, 0.2)",
+                    transform: "translateY(-2px) scale(1.03)",
+                  }}
+                >
+                  ← Back to Home
+                </Button>
               </HStack>
 
-              <Text
-                fontSize="lg"
-                color={textColor}
-                maxW="3xl"
-                mt={6}
-                lineHeight="1.8"
-              >
-                Integrate SwitchPay’s <b>smart payment routing engine</b> in
-                minutes. Build resilient payment systems powered by intelligent
-                routing across global PSPs. Below you’ll find every API endpoint,
-                real-world context, and the philosophy behind our architecture.
+              <Text fontSize="lg" color={textColor} maxW="3xl" mt={6} lineHeight="1.8">
+                Build resilient, borderless payment systems with <b>SwitchPay’s Routing API</b>.
+                This documentation covers every endpoint, architectural concept, and real-world
+                use case you need to scale from <b>0 → global</b>.
               </Text>
             </MotionBox>
 
-            {/* ===== WHY SWITCHPAY ===== */}
+            {/* ===== GLOBAL CONTEXT ===== */}
             <MotionBox
               initial="hidden"
               whileInView="visible"
@@ -152,238 +106,229 @@ export default function DocsPage() {
             >
               <GlowCard p={10}>
                 <Heading size="lg" mb={4}>
-                  🌍 The Global Payment Fragmentation Problem
+                  🌍 Why Payment Routing Matters
                 </Heading>
                 <Text color={textColor} mb={4}>
-                  The global payment ecosystem is divided between dozens of PSPs
-                  (Payment Service Providers), each dominating specific
-                  geographies, industries, or currencies. This fragmentation
-                  leads to technical overhead, poor optimization, and lost
-                  revenue opportunities.
+                  The payment stack is a maze of APIs, acquirers, and local constraints. SwitchPay abstracts the complexity into one adaptive, intelligent routing layer.
                 </Text>
 
-                <Table variant="striped" color={textColor} mb={6} size="sm">
-  <Tbody>
-    {/* 🌍 Global & Developer-first */}
-    <Tr>
-      <Td>Stripe</Td>
-      <Td>Developer-first APIs, SaaS billing, embedded payments</Td>
-      <Td>US, Western Europe</Td>
-    </Tr>
-    <Tr>
-      <Td>Adyen</Td>
-      <Td>Enterprise-grade, unified commerce, direct acquiring</Td>
-      <Td>Europe, North America</Td>
-    </Tr>
-    <Tr>
-      <Td>Checkout.com</Td>
-      <Td>Digital-native, crypto & marketplace support</Td>
-      <Td>UK, Global</Td>
-    </Tr>
-    <Tr>
-      <Td>Rapyd</Td>
-      <Td>Global local-payment network, 900+ methods, fintech-as-a-service</Td>
-      <Td>LATAM, APAC, MENA</Td>
-    </Tr>
-    <Tr>
-      <Td>Airwallex</Td>
-      <Td>FX optimization, global accounts, payouts</Td>
-      <Td>APAC, expanding in EU & US</Td>
-    </Tr>
-    <Tr>
-      <Td>Wise</Td>
-      <Td>Cross-border FX, transparent B2B transfers</Td>
-      <Td>Global</Td>
-    </Tr>
-
-    {/* 🌎 Emerging Market Specialists */}
-    <Tr>
-      <Td>dLocal</Td>
-      <Td>Local payment rails & compliance for emerging markets</Td>
-      <Td>LATAM, Africa, SEA</Td>
-    </Tr>
-    <Tr>
-      <Td>PayU</Td>
-      <Td>Alternative methods, BNPL, strong local acquiring</Td>
-      <Td>India, LATAM, Eastern Europe</Td>
-    </Tr>
-    <Tr>
-      <Td>Flutterwave</Td>
-      <Td>Mobile money & cards infrastructure</Td>
-      <Td>Africa</Td>
-    </Tr>
-    <Tr>
-      <Td>Interswitch</Td>
-      <Td>Domestic card rails, POS & online acquiring</Td>
-      <Td>Nigeria, Africa</Td>
-    </Tr>
-    <Tr>
-      <Td>Paystack</Td>
-      <Td>SME online payments, developer-friendly APIs</Td>
-      <Td>West Africa</Td>
-    </Tr>
-    <Tr>
-      <Td>CCAvenue</Td>
-      <Td>Local PSP with 200+ payment methods</Td>
-      <Td>India</Td>
-    </Tr>
-    <Tr>
-      <Td>Mollie</Td>
-      <Td>SME & eCommerce focus, easy onboarding</Td>
-      <Td>Benelux, DACH</Td>
-    </Tr>
-
-    {/* 💳 Enterprise & Retail Legacy PSPs */}
-    <Tr>
-      <Td>Worldpay (FIS)</Td>
-      <Td>Legacy PSP, retail acquiring, enterprise infra</Td>
-      <Td>North America, Europe</Td>
-    </Tr>
-    <Tr>
-      <Td>Fiserv / Clover</Td>
-      <Td>POS & merchant acquiring, legacy infra</Td>
-      <Td>US, Global</Td>
-    </Tr>
-    <Tr>
-      <Td>Global Payments</Td>
-      <Td>Omnichannel acquiring, merchant network</Td>
-      <Td>North America, EU</Td>
-    </Tr>
-    <Tr>
-      <Td>Network International</Td>
-      <Td>Acquiring + processing for GCC markets</Td>
-      <Td>MENA</Td>
-    </Tr>
-
-    {/* 💡 New Orchestrators & Meta-Layers */}
-    <Tr>
-      <Td>Primer</Td>
-      <Td>No-code orchestration, routing logic, analytics</Td>
-      <Td>Europe, expanding US</Td>
-    </Tr>
-    <Tr>
-      <Td>CellPoint Digital</Td>
-      <Td>Airline/travel orchestration, FX optimization</Td>
-      <Td>EMEA, Global</Td>
-    </Tr>
-    <Tr>
-      <Td>BR-DGE</Td>
-      <Td>Payment orchestration for retail</Td>
-      <Td>UK, EU</Td>
-    </Tr>
-    <Tr>
-      <Td>Rebilly</Td>
-      <Td>Subscription & recurring payment orchestration</Td>
-      <Td>North America</Td>
-    </Tr>
-
-    {/* 📱 Device- & Method-specific PSPs */}
-    <Tr>
-      <Td>Apple Pay / Google Pay</Td>
-      <Td>Device-native tokenized payments</Td>
-      <Td>Global, consumer-centric</Td>
-    </Tr>
-    <Tr>
-      <Td>Alipay / WeChat Pay</Td>
-      <Td>Mobile superapps, QR & social payments</Td>
-      <Td>China, expanding APAC</Td>
-    </Tr>
-    <Tr>
-      <Td>Paytm</Td>
-      <Td>QR payments, wallet, merchant services</Td>
-      <Td>India</Td>
-    </Tr>
-    <Tr>
-      <Td>GrabPay / GCash</Td>
-      <Td>Superapp wallets, BNPL integrations</Td>
-      <Td>SEA (Singapore, Philippines)</Td>
-    </Tr>
-    <Tr>
-      <Td>M-Pesa</Td>
-      <Td>Telco-led mobile money ecosystem</Td>
-      <Td>East Africa</Td>
-    </Tr>
-
-    {/* 🪙 Crypto & Alt-Rail PSPs */}
-    <Tr>
-      <Td>Unlimint</Td>
-      <Td>Multi-rail PSP, cards + crypto + alt payments</Td>
-      <Td>Global</Td>
-    </Tr>
-    <Tr>
-      <Td>MoonPay</Td>
-      <Td>Crypto on-ramp/off-ramp for fintechs</Td>
-      <Td>Global</Td>
-    </Tr>
-    <Tr>
-      <Td>Transak</Td>
-      <Td>Fiat-crypto gateway for dApps</Td>
-      <Td>Global</Td>
-    </Tr>
-
-    {/* 🧱 Infrastructure & Settlement */}
-    <Tr>
-      <Td>Thunes</Td>
-      <Td>Cross-border settlement layer, mobile wallets</Td>
-      <Td>Africa, APAC, Middle East</Td>
-    </Tr>
-    <Tr>
-      <Td>Payoneer</Td>
-      <Td>Marketplace payouts, SME cross-border B2B</Td>
-      <Td>Global</Td>
-    </Tr>
-    <Tr>
-      <Td>Nuvei</Td>
-      <Td>Unified payments, gaming, high-risk sectors</Td>
-      <Td>North America, EU</Td>
-    </Tr>
-    <Tr>
-      <Td>Paddle</Td>
-      <Td>SaaS billing, tax compliance, recurring payments</Td>
-      <Td>UK, EU, North America</Td>
-    </Tr>
-  </Tbody>
-</Table>
-
-                <Text color={textColor}>
-                  Each PSP offers distinct advantages — but no single one can
-                  cover every geography efficiently. Businesses often integrate
-                  multiple PSPs manually, a costly and time-consuming process.
+                <Text color={textColor} mb={4}>
+                  Below is a non-exhaustive overview of the current payment landscape:
                 </Text>
+
+                {/* PSP TABLE */}
+                <Box
+  mt={8}
+  border="1px solid"
+  borderColor="whiteAlpha.200"
+  borderRadius="2xl"
+  overflow="hidden"
+  backdropFilter="blur(8px)"
+  boxShadow="0 0 24px rgba(255,255,255,0.05)"
+>
+  <Box
+    maxH="70vh"
+    overflowY="auto"
+    overflowX="auto"
+    css={{
+      "&::-webkit-scrollbar": { height: "6px", width: "6px" },
+      "&::-webkit-scrollbar-thumb": {
+        background: "rgba(255,255,255,0.1)",
+        borderRadius: "10px",
+      },
+    }}
+  >
+    <table
+      style={{
+        width: "100%",
+        borderCollapse: "collapse",
+        fontFamily: "'Inter', sans-serif",
+        fontSize: "0.95rem",
+      }}
+    >
+      <thead
+        style={{
+          position: "sticky",
+          top: 0,
+          background:
+            "linear-gradient(to right, rgba(46,55,90,0.9), rgba(20,24,38,0.9))",
+          backdropFilter: "blur(12px)",
+          zIndex: 10,
+        }}
+      >
+        <tr>
+          <th
+            style={{
+              padding: "14px 16px",
+              textAlign: "left",
+              color: "white",
+              fontWeight: "600",
+              letterSpacing: "0.03em",
+              borderBottom: "1px solid rgba(255,255,255,0.1)",
+            }}
+          >
+            PSP / Network
+          </th>
+          <th
+            style={{
+              padding: "14px 16px",
+              textAlign: "left",
+              color: "white",
+              fontWeight: "600",
+              letterSpacing: "0.03em",
+              borderBottom: "1px solid rgba(255,255,255,0.1)",
+            }}
+          >
+            Core Strength
+          </th>
+          <th
+            style={{
+              padding: "14px 16px",
+              textAlign: "left",
+              color: "white",
+              fontWeight: "600",
+              letterSpacing: "0.03em",
+              borderBottom: "1px solid rgba(255,255,255,0.1)",
+            }}
+          >
+            Primary Region
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {[
+          ["Stripe", "Developer-first APIs, SaaS billing, global reach", "US, EU"],
+          ["Adyen", "Enterprise-grade acquiring, unified commerce", "EU, NA"],
+          ["Checkout.com", "Digital-native PSP, crypto & marketplace support", "UK, Global"],
+          ["Worldpay (FIS)", "Legacy enterprise acquiring & POS infrastructure", "US, EU"],
+          ["Fiserv", "Merchant acquiring, Clover POS, card issuing", "US, Global"],
+          ["Global Payments", "Omnichannel merchant network & POS", "NA, EU"],
+          ["PayPal", "Consumer & merchant wallet ecosystem", "Global"],
+          ["Square", "POS terminals, Cash App, SME acquiring", "US, Global"],
+          ["Rapyd", "Local-payment rails, 900+ methods", "LATAM, APAC"],
+          ["Wise", "Cross-border B2B transfers", "Global"],
+          ["dLocal", "Local rails & compliance in emerging markets", "LATAM, Africa"],
+          ["Paystack", "SME payments & developer tools", "Africa"],
+          ["Primer", "No-code payment orchestration", "Europe"],
+          ["Airwallex", "FX optimization, global accounts", "APAC, EU"],
+          ["Payoneer", "Marketplace payouts, B2B FX", "Global"],
+          ["Thunes", "Cross-border settlement rails", "Africa, APAC"],
+          ["Mollie", "SME onboarding PSP", "Benelux, DACH"],
+          ["Nium", "Embedded finance infrastructure", "APAC, EU"],
+          ["Marqeta", "Card issuing & processing API", "US, EU"],
+          ["Solaris", "Licensed BaaS + embedded payments", "EU"],
+          ["ClearBank", "Real-time clearing & agency banking", "UK"],
+          ["Treezor", "Banking-as-a-service + cards", "France, EU"],
+          ["Worldline", "Legacy PSP, European acquiring", "EU"],
+          ["Network International", "Acquiring & processing for GCC", "MENA"],
+          ["Tap Payments", "Regional PSP + marketplace infra", "MENA"],
+          ["HyperPay", "PSP for MENA e-commerce", "Saudi Arabia"],
+          ["2C2P", "SEA payment processor", "Thailand, SEA"],
+          ["CCAvenue", "Local PSP, 200+ methods", "India"],
+          ["Paytm", "Wallet + QR payments + merchant services", "India"],
+          ["PhonePe", "UPI payments, financial superapp", "India"],
+          ["M-Pesa", "Telco-led mobile money ecosystem", "East Africa"],
+          ["GrabPay", "Superapp payments & BNPL", "SEA"],
+          ["GCash", "Mobile wallet with credit & insurance", "Philippines"],
+          ["Alipay", "Superapp, QR & e-wallet ecosystem", "China"],
+          ["WeChat Pay", "Social payment rail", "China"],
+          ["Unlimint", "Multi-rail PSP: cards + crypto + alt rails", "Global"],
+          ["MoonPay", "Crypto on/off ramp for fintechs", "Global"],
+          ["Transak", "Fiat-to-crypto for dApps", "Global"],
+          ["Circle", "Stablecoin infrastructure (USDC)", "Global"],
+          ["Fireblocks", "Digital asset custody & settlement", "Global"],
+          ["Marqeta", "Card issuing & processing API", "US, EU"],
+          ["Galileo", "Card & payment infra (SoFi-owned)", "US"],
+          ["Unit", "US Banking-as-a-Service infra", "US"],
+          ["Bond", "Embedded finance orchestration", "US"],
+          ["Weavr", "Embedded finance toolkit", "EU"],
+          ["Bankable", "Card issuance & payment modules", "UK"],
+          ["Dock", "Card issuing for LATAM fintechs", "LATAM"],
+          ["Currencycloud", "Embedded FX & treasury API", "UK"],
+          ["Tranglo", "Remittance & payout hub", "APAC"],
+          ["WorldRemit", "Cross-border consumer payments", "Global"],
+          ["Remitly", "Consumer remittances platform", "Global"],
+          ["Xe", "Remittance & FX transfers", "Global"],
+          ["Primer", "No-code payment orchestration layer", "Europe"],
+          ["CellPoint Digital", "Travel & airline orchestration", "EMEA"],
+          ["BR-DGE", "Retail orchestration with analytics", "UK"],
+          ["Rebilly", "Subscription orchestration, billing", "US"],
+          ["Gr4vy", "Cloud-native orchestration API", "US, EU"],
+          ["IXOPAY", "Enterprise-grade orchestration & routing", "Austria"],
+          ["Akurateco", "White-label payment orchestration", "Netherlands"],
+          ["FinMont", "Travel payment orchestration startup", "Germany"],
+          ["Payrails", "Modular orchestration infra", "Germany"],
+          ["Amazon Pay", "Embedded payments for merchants", "Global"],
+          ["Apple Pay", "Tokenized checkout", "Global"],
+          ["Google Pay", "Device-native wallet", "Global"],
+          ["Square", "POS terminals, Cash App, SME acquiring", "US"],
+          ["Worldpay", "Legacy PSP, enterprise acquiring", "US, EU"],
+          ["Fiserv", "Merchant acquiring, Clover POS", "US, Global"],
+          ["PayU", "Alternative methods, BNPL", "India, LATAM"],
+          ["CCAvenue Global", "Extended local PSP operations", "India, GCC"],
+          ["Nexi", "Merchant acquiring, POS & card rails", "Italy"],
+          ["Payone", "Merchant acquiring, POS integration", "Germany"],
+          ["Dock", "Card issuing platform for fintechs", "LATAM"],
+          ["Treezor", "White-label payment infra", "France, EU"],
+          ["Worldline", "Enterprise-grade acquiring network", "EU"],
+          ["Network International", "Acquiring for GCC markets", "MENA"],
+        ].map(([psp, desc, region], i) => (
+          <tr
+            key={i}
+            style={{
+              backgroundColor:
+                i % 2 === 0
+                  ? "rgba(255,255,255,0.02)"
+                  : "rgba(255,255,255,0.04)",
+              transition: "all 0.2s ease",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor =
+                i % 2 === 0
+                  ? "rgba(255,255,255,0.02)"
+                  : "rgba(255,255,255,0.04)")
+            }
+          >
+            <td style={{ padding: "12px 16px", color: "#fff", fontWeight: 500 }}>
+              {psp}
+            </td>
+            <td style={{ padding: "12px 16px", color: "rgba(255,255,255,0.8)" }}>
+              {desc}
+            </td>
+            <td style={{ padding: "12px 16px", color: "rgba(255,255,255,0.7)" }}>
+              {region}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </Box>
+</Box>
+
 
                 <Divider my={6} />
 
                 <Heading size="md" mb={3}>
-                  💡 SwitchPay’s Mission
+                  💡 The SwitchPay Approach
                 </Heading>
                 <Text color={textColor}>
-                  SwitchPay acts as a <b>meta-router</b> that sits between your
-                  backend and your PSPs. We dynamically decide which provider
-                  should process a payment based on:
+                  SwitchPay acts as a <b>meta-router</b> that intelligently selects which PSP should
+                  process a given payment based on:
                 </Text>
-                <List spacing={2} mt={2}>
-                  <ListItem>
-                    <ListIcon as={CheckCircleIcon} color="green.400" />
-                    Country & currency optimization
-                  </ListItem>
-                  <ListItem>
-                    <ListIcon as={CheckCircleIcon} color="green.400" />
-                    Real-time latency & success rates
-                  </ListItem>
-                  <ListItem>
-                    <ListIcon as={CheckCircleIcon} color="green.400" />
-                    PSP uptime monitoring
-                  </ListItem>
-                  <ListItem>
-                    <ListIcon as={CheckCircleIcon} color="green.400" />
-                    Cost efficiency per payment route
-                  </ListItem>
+                <List spacing={2} mt={2} color={textColor}>
+                  <ListItem><ListIcon as={CheckCircleIcon} color="green.400" /> Country & currency fit</ListItem>
+                  <ListItem><ListIcon as={CheckCircleIcon} color="green.400" /> Real-time latency & uptime</ListItem>
+                  <ListItem><ListIcon as={CheckCircleIcon} color="green.400" /> Cost-per-route optimization</ListItem>
+                  <ListItem><ListIcon as={CheckCircleIcon} color="green.400" /> AI-based routing predictions</ListItem>
                 </List>
 
                 <Text mt={4} color={textColor}>
-                  Think of SwitchPay as the <b>Cloudflare of Payments</b> — we
-                  don’t replace your PSPs, we make them smarter, faster, and
-                  globally consistent.
+                  Think of it as the <b>Cloudflare of Payments</b> making your PSP stack smarter,
+                  faster, and globally consistent.
                 </Text>
               </GlowCard>
             </MotionBox>
@@ -397,43 +342,27 @@ export default function DocsPage() {
               w="full"
             >
               <GlowCard p={10}>
-                <Heading size="lg" mb={4}>
-                   *Authentication
-                </Heading>
+                <Heading size="lg" mb={4}>🔐 Authentication</Heading>
                 <Text color={textColor}>
-                  All API calls require a valid <Code>API key</Code> included in
-                  the <Code>Authorization</Code> header. Keys are environment
-                  scoped (sandbox or production).
+                  Every request must include an <Code>Authorization</Code> header with your API key.
+                  Keys are environment-specific (<b>Sandbox</b> / <b>Production</b>).
                 </Text>
 
                 <Box mt={4} bg={codeBg} p={4} borderRadius="md">
-                  <Code whiteSpace="pre">
-                    Authorization: Bearer YOUR_API_KEY
-                  </Code>
+                  <Code whiteSpace="pre">Authorization: Bearer YOUR_API_KEY</Code>
                 </Box>
 
-                <Accordion mt={5} allowToggle reduceMotion>
+                <Accordion mt={5} allowToggle>
                   <AccordionItem border="none">
                     <AccordionButton>
-                      <Box flex="1" textAlign="left">
-                        🔍 Key Types & Security
-                      </Box>
+                      <Box flex="1" textAlign="left">🔍 Key Types</Box>
                       <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel>
                       <List spacing={2}>
-                        <ListItem>
-                          <ListIcon as={CheckCircleIcon} color="green.400" />
-                          <b>Sandbox key:</b> test payments only.
-                        </ListItem>
-                        <ListItem>
-                          <ListIcon as={CheckCircleIcon} color="green.400" />
-                          <b>Production key:</b> live transactions.
-                        </ListItem>
-                        <ListItem>
-                          <ListIcon as={WarningIcon} color="orange.400" />
-                          Keep keys server-side only.
-                        </ListItem>
+                        <ListItem><ListIcon as={CheckCircleIcon} color="green.400" /> Sandbox — test payments only</ListItem>
+                        <ListItem><ListIcon as={CheckCircleIcon} color="green.400" /> Production — live transactions</ListItem>
+                        <ListItem><ListIcon as={WarningIcon} color="orange.400" /> Keep keys server-side only</ListItem>
                       </List>
                     </AccordionPanel>
                   </AccordionItem>
@@ -450,12 +379,10 @@ export default function DocsPage() {
               w="full"
             >
               <GlowCard p={10}>
-                <Heading size="lg" mb={4}>
-                  Create a Transaction
-                </Heading>
+                <Heading size="lg" mb={4}>💳 Create a Transaction</Heading>
                 <Text color={textColor}>
-                  The <Code>POST /transaction</Code> endpoint routes each payment
-                  through the most efficient PSP automatically.
+                  The <Code>POST /transaction</Code> endpoint automatically routes each payment
+                  through the most efficient PSP.
                 </Text>
 
                 <Tabs mt={6} variant="enclosed" colorScheme="brand">
@@ -492,25 +419,14 @@ export default function DocsPage() {
                 <Accordion allowToggle mt={6}>
                   <AccordionItem border="none">
                     <AccordionButton>
-                      <Box flex="1" textAlign="left">
-                        ⚙️ Use Cases
-                      </Box>
+                      <Box flex="1" textAlign="left">⚙️ Use Cases</Box>
                       <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel>
                       <List spacing={3}>
-                        <ListItem>
-                          <ListIcon as={InfoIcon} color="blue.400" />
-                          Web checkout: route via backend API to SwitchPay.
-                        </ListItem>
-                        <ListItem>
-                          <ListIcon as={InfoIcon} color="blue.400" />
-                          Mobile apps: real-time routing per transaction.
-                        </ListItem>
-                        <ListItem>
-                          <ListIcon as={InfoIcon} color="blue.400" />
-                          Failover: fallback to Adyen if Stripe fails.
-                        </ListItem>
+                        <ListItem><ListIcon as={InfoIcon} color="blue.400" /> Web checkout → route via backend API</ListItem>
+                        <ListItem><ListIcon as={InfoIcon} color="blue.400" /> Mobile apps → real-time routing</ListItem>
+                        <ListItem><ListIcon as={InfoIcon} color="blue.400" /> Failover → fallback to Adyen if Stripe fails</ListItem>
                       </List>
                     </AccordionPanel>
                   </AccordionItem>
@@ -527,12 +443,9 @@ export default function DocsPage() {
               w="full"
             >
               <GlowCard p={10}>
-                <Heading size="lg" mb={4}>
-                  Retrieve Metrics
-                </Heading>
+                <Heading size="lg" mb={4}>📈 Retrieve Metrics</Heading>
                 <Text color={textColor}>
-                  Use <Code>GET /metrics</Code> to monitor live routing
-                  performance and PSP utilization.
+                  Use <Code>GET /metrics</Code> to monitor routing performance and PSP utilization.
                 </Text>
 
                 <Box mt={4} bg={codeBg} p={4} borderRadius="md">
@@ -552,24 +465,14 @@ export default function DocsPage() {
                 <Accordion mt={5} allowToggle>
                   <AccordionItem border="none">
                     <AccordionButton>
-                      <Box flex="1" textAlign="left">
-                        📘 Field Definitions
-                      </Box>
+                      <Box flex="1" textAlign="left">📘 Field Definitions</Box>
                       <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel>
-                      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={3}>
-                        <Text>
-                          <b>total_transactions:</b> Total number of processed
-                          payments.
-                        </Text>
-                        <Text>
-                          <b>total_volume:</b> Aggregate value of processed
-                          payments.
-                        </Text>
-                        <Text>
-                          <b>transactions_by_psp:</b> Breakdown by provider.
-                        </Text>
+                      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={3} color={textColor}>
+                        <Text><b>total_transactions:</b> Total number of processed payments.</Text>
+                        <Text><b>total_volume:</b> Aggregate transaction value.</Text>
+                        <Text><b>transactions_by_psp:</b> Volume breakdown by provider.</Text>
                       </SimpleGrid>
                     </AccordionPanel>
                   </AccordionItem>
@@ -586,39 +489,31 @@ export default function DocsPage() {
               w="full"
             >
               <GlowCard p={10}>
-                <Heading size="lg" mb={4}>
-                  ⚡ Advanced Features
-                </Heading>
+                <Heading size="lg" mb={4}>⚡ Advanced Features</Heading>
                 <Accordion allowMultiple>
                   <AccordionItem border="none">
                     <AccordionButton>
-                      <Box flex="1" textAlign="left">
-                        Idempotency Keys
-                      </Box>
+                      <Box flex="1" textAlign="left">Idempotency Keys</Box>
                       <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel>
                       <Text color={textColor}>
-                        Prevent duplicate payments by using an
-                        <Code>Idempotency-Key</Code>.
+                        Prevent duplicate payments by including an <Code>Idempotency-Key</Code> in requests.
                       </Text>
                       <Box mt={3} bg={codeBg} p={3} borderRadius="md">
-                        <Code whiteSpace="pre">{`Idempotency-Key: tx_2025_001`}</Code>
+                        <Code whiteSpace="pre">Idempotency-Key: tx_2025_001</Code>
                       </Box>
                     </AccordionPanel>
                   </AccordionItem>
 
                   <AccordionItem border="none">
                     <AccordionButton>
-                      <Box flex="1" textAlign="left">
-                        Webhooks
-                      </Box>
+                      <Box flex="1" textAlign="left">Webhooks</Box>
                       <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel>
                       <Text color={textColor}>
-                        Receive transaction updates in real time with
-                        webhooks.
+                        Receive live transaction updates via webhooks.
                       </Text>
                       <Box mt={3} bg={codeBg} p={3} borderRadius="md">
                         <Code whiteSpace="pre">{`POST /webhook
@@ -632,29 +527,15 @@ export default function DocsPage() {
 
                   <AccordionItem border="none">
                     <AccordionButton>
-                      <Box flex="1" textAlign="left">
-                        Smart Routing Logic
-                      </Box>
+                      <Box flex="1" textAlign="left">Smart Routing Logic</Box>
                       <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel>
-                      <List spacing={2} mt={2}>
-                        <ListItem>
-                          <ListIcon as={CheckCircleIcon} color="green.400" />
-                          Live PSP latency and uptime monitoring
-                        </ListItem>
-                        <ListItem>
-                          <ListIcon as={CheckCircleIcon} color="green.400" />
-                          Transaction success rate analysis
-                        </ListItem>
-                        <ListItem>
-                          <ListIcon as={CheckCircleIcon} color="green.400" />
-                          Fee & FX-based route optimization
-                        </ListItem>
-                        <ListItem>
-                          <ListIcon as={CheckCircleIcon} color="green.400" />
-                          Predictive AI routing recommendations
-                        </ListItem>
+                      <List spacing={2} mt={2} color={textColor}>
+                        <ListItem><ListIcon as={CheckCircleIcon} color="green.400" /> Live PSP latency & uptime tracking</ListItem>
+                        <ListItem><ListIcon as={CheckCircleIcon} color="green.400" /> Route success rate optimization</ListItem>
+                        <ListItem><ListIcon as={CheckCircleIcon} color="green.400" /> Fee & FX-based decision-making</ListItem>
+                        <ListItem><ListIcon as={CheckCircleIcon} color="green.400" /> Predictive AI-driven routing</ListItem>
                       </List>
                     </AccordionPanel>
                   </AccordionItem>
@@ -662,7 +543,6 @@ export default function DocsPage() {
               </GlowCard>
             </MotionBox>
 
-            {/* ===== FOOTER ===== */}
             <Divider />
           </VStack>
         </Container>

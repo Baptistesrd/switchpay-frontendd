@@ -18,7 +18,7 @@ import {
 import { FaLinkedin, FaTwitter } from "react-icons/fa";
 import { SiInstagram } from "react-icons/si";
 import { motion, useMotionValue, animate } from "framer-motion";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { useNavigate, Link, Link as RouterLink } from "react-router-dom";
 import axios from "axios";
 
 import BackgroundFX from "../components/BackgroundFX";
@@ -26,7 +26,6 @@ import AnimatedParticles from "../components/AnimatedParticles";
 import GlowBlob from "../components/GlowBlob";
 import GlowCard from "../components/GlowCard";
 import HowItWorksTimeline from "../components/HowItWorksTimeline";
-import ChatbotWidget from "../components/ChatbotWidget";
 import Layout from "../components/Layout";
 import AnimatedChat from "../components/AnimatedChat";
 import Counter from "../components/Counter";
@@ -284,39 +283,200 @@ export default function Landing() {
 
   </Box>
 
-  {/* Mobile Burger */}
-  <Box display={{ base: "block", md: "none" }}>
+  {/* === Mobile Burger (ultra premium) === */}
+<Box display={{ base: "block", md: "none" }}>
+  <motion.div
+    initial={false}
+    animate={isOpen ? "open" : "closed"}
+  >
     <IconButton
-      aria-label="Open Menu"
-      icon={<HamburgerIcon />}
+      aria-label={isOpen ? "Close Menu" : "Open Menu"}
+      icon={
+        <motion.div
+          variants={{
+            closed: { rotate: 0 },
+            open: { rotate: 90 },
+          }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        >
+          {isOpen ? (
+            <Box position="relative" w="22px" h="22px">
+              <motion.span
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: 0,
+                  width: "100%",
+                  height: "2px",
+                  backgroundColor: "white",
+                  borderRadius: "1px",
+                }}
+                initial={{ rotate: 45, y: "-50%" }}
+                animate={{ rotate: 45 }}
+              />
+              <motion.span
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: 0,
+                  width: "100%",
+                  height: "2px",
+                  backgroundColor: "white",
+                  borderRadius: "1px",
+                }}
+                initial={{ rotate: -45, y: "-50%" }}
+                animate={{ rotate: -45 }}
+              />
+            </Box>
+          ) : (
+            <HamburgerIcon boxSize={6} />
+          )}
+        </motion.div>
+      }
       variant="ghost"
       color="white"
       fontSize="2xl"
       onClick={onOpen}
+      _hover={{ transform: "scale(1.1)", color: "brand.400" }}
+      transition="all .25s ease"
     />
-  </Box>
+  </motion.div>
+</Box>
 
-  {/* Drawer Mobile Menu */}
-  <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
-    <DrawerOverlay />
-    <DrawerContent bg={pageBg}>
-      <DrawerCloseButton />
-      <DrawerHeader fontWeight="bold">Menu</DrawerHeader>
-      <DrawerBody>
-        <VStack spacing={6} align="start" mt={4}>
-          <ChakraLink onClick={() => scrollTo("#how")}>How it works</ChakraLink>
-          <ChakraLink onClick={() => scrollTo("#why")}>Why SwitchPay</ChakraLink>
-          <ChakraLink onClick={() => scrollTo("#metrics")}>Live Metrics</ChakraLink>
-          <ChakraLink onClick={() => scrollTo("#security")}>Security</ChakraLink>
-          <ChakraLink onClick={() => scrollTo("#pricing")}>Pricing</ChakraLink>
-          <ChakraLink as={RouterLink} to="/contact">Contact</ChakraLink>
-          <BrandButton w="100%" onClick={() => navigate("/app")}>
+{/* === Drawer ultra premium === */}
+<Drawer placement="right" onClose={onClose} isOpen={isOpen}>
+  <DrawerOverlay
+    bg="rgba(0, 0, 0, 0.45)"
+    backdropFilter="blur(12px)"
+  />
+  <DrawerContent
+    bgGradient="linear(to-b, rgba(10,15,30,0.95), rgba(25,30,60,0.9))"
+    backdropFilter="blur(18px)"
+    borderLeft="1px solid rgba(255,255,255,0.1)"
+    boxShadow="0 0 60px rgba(0,0,0,0.5)"
+    animation="fadeSlideIn 0.4s ease forwards"
+  >
+    <DrawerCloseButton color="white" top="24px" right="24px" size="lg" />
+    <DrawerHeader
+      fontWeight="extrabold"
+      fontSize="2xl"
+      color="white"
+      textAlign="center"
+      letterSpacing="-0.02em"
+    >
+      Menu
+    </DrawerHeader>
+
+    <DrawerBody>
+      <VStack
+        align="start"
+        spacing={8}
+        mt={10}
+        w="full"
+        color="gray.200"
+      >
+        {[
+          { label: "How it works", id: "#how" },
+          { label: "Why SwitchPay", id: "#why" },
+          { label: "Live Metrics", id: "#metrics" },
+          { label: "Security", id: "#security" },
+          { label: "Pricing", id: "#pricing" },
+          { label: "Contact", route: "/contact" },
+        ].map((item, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.08 * i, duration: 0.4 }}
+            whileHover={{ x: 8, scale: 1.03 }}
+          >
+            {item.route ? (
+              <ChakraLink
+                as={RouterLink}
+                to={item.route}
+                fontSize="xl"
+                fontWeight="semibold"
+                onClick={onClose}
+                _hover={{ color: "brand.400" }}
+              >
+                {item.label}
+              </ChakraLink>
+            ) : (
+              <ChakraLink
+                as="button"
+                onClick={() => {
+                  scrollTo(item.id);
+                  onClose();
+                }}
+                fontSize="xl"
+                fontWeight="semibold"
+                _hover={{ color: "brand.400" }}
+              >
+                {item.label}
+              </ChakraLink>
+            )}
+          </motion.div>
+        ))}
+      </VStack>
+
+      {/* CTA Gradient en bas */}
+      <Box
+        position="absolute"
+        bottom="40px"
+        left="50%"
+        transform="translateX(-50%)"
+        w="85%"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+        >
+          <Button
+            onClick={() => {
+              navigate("/app");
+              onClose();
+            }}
+            w="100%"
+            size="lg"
+            py={6}
+            fontWeight="700"
+            borderRadius="full"
+            fontSize="lg"
+            bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)"
+            bgSize="200% 200%"
+            color="white"
+            boxShadow="0 0 25px rgba(236,72,153,0.3)"
+            _hover={{
+              backgroundPosition: "100% 50%",
+              transform: "translateY(-3px)",
+              boxShadow: "0 0 40px rgba(236,72,153,0.5)",
+            }}
+            transition="all 0.35s ease"
+          >
             🚀 Make a transaction
-          </BrandButton>
-        </VStack>
-      </DrawerBody>
-    </DrawerContent>
-  </Drawer>
+          </Button>
+        </motion.div>
+      </Box>
+    </DrawerBody>
+  </DrawerContent>
+
+  {/* Animation d’apparition du Drawer */}
+  <style>
+    {`
+      @keyframes fadeSlideIn {
+        from {
+          transform: translateX(30%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    `}
+  </style>
+</Drawer>
 </Flex>
 
 
@@ -338,6 +498,8 @@ export default function Landing() {
   as="h1"
   textAlign="center"
   fontWeight="extrabold"
+  bgGradient="linear(to-r, whiteAlpha.900, gray.400)"
+  bgClip="text"
   lineHeight="1.05"
   letterSpacing="-0.03em"
   fontSize={{ base: "3xl", sm: "5xl", md: "7xl", lg: "9xl" }}
@@ -1177,41 +1339,137 @@ export default function Landing() {
   <Box h={{ base: "140px", md: "220px" }} /> 
 </Section>
 
-        {/* FAQ */}
-        <Section id="faq" bg={useColorModeValue("linear(to-r, white, gray.50)", "linear(to-r, gray.800, gray.900)")}>
-          <VStack align="start" spacing={6}>
-            <Heading size="xl">Frequently asked questions</Heading>
-            <Accordion allowToggle w="100%">
-              <AccordionItem>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">What is SwitchPay?</Box>
-                  <AccordionIcon />
-                </AccordionButton>
-                <AccordionPanel pb={4}>
-                  SwitchPay is a smart payment router that automatically picks the best PSP for each transaction.
-                </AccordionPanel>
-              </AccordionItem>
-              <AccordionItem>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">How do I test the app?</Box>
-                  <AccordionIcon />
-                </AccordionButton>
-                <AccordionPanel pb={4}>
-                  You can use the local demo with FastAPI endpoints <code>/transaction</code> and <code>/metrics</code>.
-                </AccordionPanel>
-              </AccordionItem>
-              <AccordionItem>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">Which PSPs are supported?</Box>
-                  <AccordionIcon />
-                </AccordionButton>
-                <AccordionPanel pb={4}>
-                  Currently: Stripe, Adyen, Wise, Rapyd. More coming soon.
-                </AccordionPanel>
-              </AccordionItem>
-            </Accordion>
-          </VStack>
-        </Section>
+        {/* FAQ – Product-driven */}
+<Section
+  id="faq"
+  bg="linear-gradient(to-b, #0f172a, #1e293b)"
+  color="whiteAlpha.900"
+  py={20}
+>
+  <VStack align="start" spacing={8} maxW="4xl" mx="auto">
+    <Heading
+      size="xl"
+      fontWeight="extrabold"
+      bgGradient="linear(to-r, #60a5fa, #a78bfa)"
+      bgClip="text"
+    >
+      Everything you need to know
+    </Heading>
+    <Text fontSize="lg" color="whiteAlpha.700">
+      Got questions? We’ve got answers. Everything about SwitchPay, explained.
+    </Text>
+
+    <Accordion allowToggle w="100%" borderColor="whiteAlpha.200">
+      <AccordionItem border="none">
+        <AccordionButton
+          _expanded={{ bg: "whiteAlpha.100" }}
+          px={4}
+          py={3}
+          borderRadius="lg"
+        >
+          <Box flex="1" textAlign="left" fontWeight="semibold">
+            What exactly does SwitchPay do?
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+        <AccordionPanel pb={4} color="whiteAlpha.800">
+          SwitchPay intelligently routes every transaction to the most efficient PSP based on
+          country, currency, fees, and device.  
+          Think of it as <strong>“Stripe + Adyen + Rapyd”</strong> behind one adaptive API.
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem border="none">
+        <AccordionButton
+          _expanded={{ bg: "whiteAlpha.100" }}
+          px={4}
+          py={3}
+          borderRadius="lg"
+        >
+          <Box flex="1" textAlign="left" fontWeight="semibold">
+            How do I try it right now?
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+        <AccordionPanel pb={4} color="whiteAlpha.800">
+          Jump into the <strong>Sandbox</strong> section above.  
+          <Box mt={3}>
+            <Button
+              as={Link}
+              to="/app"
+              bgGradient="linear(to-r, #2563eb, #7c3aed)"
+              color="white"
+              borderRadius="full"
+              size="sm"
+              px={5}
+              py={2}
+              _hover={{ filter: "brightness(1.2)" }}
+            >
+              Make a transaction
+            </Button>
+          </Box>
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem border="none">
+        <AccordionButton
+          _expanded={{ bg: "whiteAlpha.100" }}
+          px={4}
+          py={3}
+          borderRadius="lg"
+        >
+          <Box flex="1" textAlign="left" fontWeight="semibold">
+            Which PSPs are supported today?
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+        <AccordionPanel pb={4} color="whiteAlpha.800">
+          Currently integrated: <strong>Stripe</strong>, <strong>Adyen</strong>, <strong>Wise</strong>, and <strong>Rapyd</strong>.  
+          We’re adding <strong>dLocal</strong> and <strong>Checkout.com</strong> next, each with country-specific routing logic.
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem border="none">
+        <AccordionButton
+          _expanded={{ bg: "whiteAlpha.100" }}
+          px={4}
+          py={3}
+          borderRadius="lg"
+        >
+          <Box flex="1" textAlign="left" fontWeight="semibold">
+            Is SwitchPay live or just a prototype?
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+        <AccordionPanel pb={4} color="whiteAlpha.800">
+          The current build is a <strong>live sandbox environment</strong> running on FastAPI and React.  
+          It’s built for testing : every transaction uses simulated data but real PSP logic.  
+          The goal? Demonstrate how a unified routing layer could simplify multi-PSP operations.
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem border="none">
+        <AccordionButton
+          _expanded={{ bg: "whiteAlpha.100" }}
+          px={4}
+          py={3}
+          borderRadius="lg"
+        >
+          <Box flex="1" textAlign="left" fontWeight="semibold">
+            Can I integrate this into my own app right now?
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+        <AccordionPanel pb={4} color="whiteAlpha.800">
+          Yes, SwitchPay is designed as an API-first router.  
+          The same logic powering this demo can be embedded in your stack to automatically route payments,  
+          minimize fees, and improve success rates across markets.
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
+  </VStack>
+</Section>
+
 
         {/* SOCIALS */}
         <Section id="socials" bg={useColorModeValue("linear(to-r, white, gray.50)", "linear(to-r, gray.800, gray.900)")}>

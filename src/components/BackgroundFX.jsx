@@ -81,22 +81,3 @@ export default function BackgroundFX({ fixed = true }) {
     </Box>
   );
 }
-
-// Global CSS (theme or index.css)
-const styles = `
-@keyframes auroraFloat1 {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; transform: scale(1.05); }
-  100% { background-position: 0% 50%; }
-}
-@keyframes auroraFloat2 {
-  0% { background-position: 50% 0%; }
-  50% { background-position: 50% 100%; transform: scale(1.1); }
-  100% { background-position: 50% 0%; }
-}
-@keyframes auroraFloat3 {
-  0% { background-position: 0% 0%; }
-  50% { background-position: 100% 100%; transform: scale(0.95); }
-  100% { background-position: 0% 0%; }
-}
-`;
