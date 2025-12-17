@@ -23,37 +23,7 @@ export default function TransactionForm({ onNewTransaction }) {
   const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "");
   const [showApi, setShowApi] = useState(false);
   const [loading, setLoading] = useState(false);
-  const toast = useToast();
-
-  // ✅ Génère une API key temporaire à chaque refresh si absente
-  useEffect(() => {
-    const fetchTempKey = async () => {
-      try {
-        const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/generate-temp-key`);
-        const newKey = res.data.api_key;
-        setApiKey(newKey);
-        localStorage.setItem("apiKey", newKey);
-        toast({
-          title: "New API Key generated 🔑",
-          description: "Sandbox mode active (auto-refresh resets key)",
-          status: "info",
-          duration: 2500,
-          isClosable: true,
-        });
-      } catch (err) {
-        console.error("❌ Failed to generate temp key:", err);
-        toast({
-          title: "Backend unreachable",
-          description: "Unable to fetch test API key.",
-          status: "error",
-          duration: 2500,
-          isClosable: true,
-        });
-      }
-    };
-
-    if (!apiKey) fetchTempKey();
-  }, []);
+  const toast = useToast();  
 
   // 🔐 Persist API Key locally
   useEffect(() => { localStorage.setItem("apiKey", apiKey); }, [apiKey]);
@@ -91,9 +61,17 @@ export default function TransactionForm({ onNewTransaction }) {
 
     setLoading(true);
     try {
-      const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/transaction`, payload, {
-        headers: { "x-api-key": apiKey, "Idempotency-Key": idempotencyKey },
-      });
+      const res = await axios.post(
+  `${process.env.REACT_APP_BACKEND_URL}/transaction`,
+  payload,
+  {
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Idempotency-Key": idempotencyKey,
+    },
+  }
+);
+
 
       toast({
         title: "Transaction sent ✅",

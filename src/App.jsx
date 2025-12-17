@@ -86,22 +86,26 @@ export default function App() {
 
   // Fetch transactions using the current API key
   const fetchTransactions = async (explicitKey) => {
-    try {
-      const keyToUse = explicitKey || apiKey || localStorage.getItem("apiKey");
-      if (!keyToUse) {
-        console.warn("No api key present, skipping fetchTransactions");
-        setTransactions([]);
-        return;
+  try {
+    const keyToUse = explicitKey || apiKey || localStorage.getItem("apiKey");
+    if (!keyToUse) return;
+
+    const res = await axios.get(
+      `${process.env.REACT_APP_BACKEND_URL}/transactions`,
+      {
+        headers: {
+          "x-api-key": keyToUse,
+        },
       }
-      const res = await axios.get(`${BACKEND_URL}/transactions`, {
-        headers: { "x-api-key": keyToUse },
-      });
-      setTransactions(res.data || []);
-    } catch (err) {
-      console.error("❌ Error fetching transactions:", err);
-      setTransactions([]); // clear or keep previous depending on taste
-    }
-  };
+    );
+
+    setTransactions(res.data || []);
+  } catch (err) {
+    console.error("❌ Error fetching transactions:", err);
+    setTransactions([]);
+  }
+};
+
 
   useEffect(() => {
     // If apiKey changes (e.g. user pasted another key), refresh transactions

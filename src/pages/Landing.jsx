@@ -29,6 +29,7 @@ import HowItWorksTimeline from "../components/HowItWorksTimeline";
 import Layout from "../components/Layout";
 import AnimatedChat from "../components/AnimatedChat";
 import Counter from "../components/Counter";
+import PaymentStackMap from "../components/PaymentStackMap";
 
 
 // === Motion wrappers ===
@@ -538,7 +539,7 @@ export default function Landing() {
   letterSpacing="-0.02em"
   textAlign="center"
 >
-  Your money matters.
+  Don’t let one PSP decide your success.
 </Heading>
 
 
@@ -549,7 +550,7 @@ export default function Landing() {
         maxW={{ base: "90%", md: "3xl" }}
       >
         Stand out from your competitors. Automatically route each payment
-        to the best payment service provider based on country,
+        to the best payment service provider based on auth rate, country,
         currency, fees, and device. <b>More conversions. Lower costs.</b>
       </Text>
 
@@ -797,6 +798,9 @@ export default function Landing() {
     {/* Timeline resserrée */}
     <Box w="100%" mt={-5}>  {/* 👈 avant c'était 8 */}
       <HowItWorksTimeline />
+      <Box w="100%" mt={10}>
+  <PaymentStackMap />
+</Box>
     </Box>
   </VStack>
 </Section>

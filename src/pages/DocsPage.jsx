@@ -63,7 +63,7 @@ export default function DocsPage() {
                   bgGradient="linear(to-r, brand.400, brand.100)"
                   bgClip="text"
                 >
-                  SwitchPay Developer Docs
+                  switchpay Developer Docs
                 </Heading>
                 <Button
                   as={RouterLink}
@@ -90,7 +90,7 @@ export default function DocsPage() {
               </HStack>
 
               <Text fontSize="lg" color={textColor} maxW="3xl" mt={6} lineHeight="1.8">
-                Build resilient, borderless payment systems with <b>SwitchPay’s Routing API</b>.
+                Build resilient, borderless payment systems with <b>switchpay’s Routing API</b>.
                 This documentation covers every endpoint, architectural concept, and real-world
                 use case you need to scale from <b>0 → global</b>.
               </Text>
@@ -109,7 +109,7 @@ export default function DocsPage() {
                   🌍 Why Payment Routing Matters
                 </Heading>
                 <Text color={textColor} mb={4}>
-                  The payment stack is a maze of APIs, acquirers, and local constraints. SwitchPay abstracts the complexity into one adaptive, intelligent routing layer.
+                  The payment stack is a maze of APIs, acquirers, and local constraints. switchpay abstracts the complexity into one adaptive, intelligent routing layer.
                 </Text>
 
                 <Text color={textColor} mb={4}>
@@ -313,10 +313,10 @@ export default function DocsPage() {
                 <Divider my={6} />
 
                 <Heading size="md" mb={3}>
-                  💡 The SwitchPay Approach
+                 The switchpay Approach
                 </Heading>
                 <Text color={textColor}>
-                  SwitchPay acts as a <b>meta-router</b> that intelligently selects which PSP should
+                  switchpay acts as a <b>meta-router</b> that intelligently selects which PSP should
                   process a given payment based on:
                 </Text>
                 <List spacing={2} mt={2} color={textColor}>
