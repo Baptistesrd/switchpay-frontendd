@@ -4,12 +4,11 @@ import {
   Heading, Text, Badge, SimpleGrid, Stat, StatLabel, StatNumber,
   useColorMode, useColorModeValue, Link as ChakraLink, Tooltip,
   AspectRatio, Accordion, AccordionItem, AccordionButton,
-  AccordionPanel, AccordionIcon, Modal, ModalOverlay, ModalContent,
+  AccordionPanel, AccordionIcon,
   useDisclosure, Input, Icon,
   Drawer, IconButton, DrawerOverlay, DrawerContent,
-  DrawerCloseButton, DrawerHeader, DrawerBody, 
+  DrawerCloseButton, DrawerHeader, DrawerBody,
 } from "@chakra-ui/react";
-
 
 import {
   MoonIcon, SunIcon, LockIcon, CheckCircleIcon,
@@ -31,12 +30,8 @@ import AnimatedChat from "../components/AnimatedChat";
 import Counter from "../components/Counter";
 import PaymentStackMap from "../components/PaymentStackMap";
 
-
 // === Motion wrappers ===
 const MotionBox = motion(Box);
-const FloatingPlanet = motion(Box);
-
-
 
 // === Section wrapper ===
 const Section = ({ children, id, bg }) => (
@@ -47,22 +42,7 @@ const Section = ({ children, id, bg }) => (
   </Box>
 );
 
-// === Button brandé ===
-const BrandButton = ({ children, ...props }) => (
-  <Button
-    size="lg"
-    px={8}
-    borderRadius="full"
-    bgGradient="linear(to-r, brand.500, brand.300)"
-    color="white"
-    _hover={{ filter: "brightness(1.05)" }}
-    {...props}
-  >
-    {children}
-  </Button>
-);
-
-// === Effet magnétique (hover) ===
+// === Magnetic hover ===
 function Magnetic({ children }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -88,44 +68,78 @@ function Magnetic({ children }) {
 }
 
 export default function Landing() {
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode } = useColorMode();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const videoRef = useRef(null);
-  const [isMuted, setIsMuted] = useState(true);
-  
 
-  // 🎨 THEME HOOKS
+  const [isMuted, setIsMuted] = useState(true);
+
+  // ======================
+  // WAITLIST STATE  ✅
+  // ======================
+  const [waitlistEmail, setWaitlistEmail] = useState("");
+  const [waitlistLoading, setWaitlistLoading] = useState(false);
+  const [waitlistSuccess, setWaitlistSuccess] = useState(false);
+  const [waitlistError, setWaitlistError] = useState("");
+
+  const submitWaitlist = async () => {
+    if (!waitlistEmail) return;
+
+    setWaitlistLoading(true);
+    setWaitlistError("");
+
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/waitlist`,
+        { email: waitlistEmail }
+      );
+      setWaitlistSuccess(true);
+      setWaitlistEmail("");
+    } catch {
+      setWaitlistError("Error. Try again.");
+    } finally {
+      setWaitlistLoading(false);
+    }
+  };
+
+  // ======================
+  // THEME
+  // ======================
   const pageBg = useColorModeValue(
     "linear(to-b, #f7faff, #eef3ff, #eaf0ff)",
     "linear(to-b, #0a0f1f, #0f172a, #0b1220)"
   );
   const subText = useColorModeValue("gray.600", "gray.300");
   const borderCol = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
-  const cardBg = useColorModeValue("whiteAlpha.800", "whiteAlpha.100");
-  const cardBorder = useColorModeValue("blackAlpha.200", "whiteAlpha.200");
-  const buttonBorder = useColorModeValue("blackAlpha.400", "whiteAlpha.400");
-  const buttonHoverBg = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
-  const buttonColor = useColorModeValue("gray.800", "white");
+  // === UI COLORS (required by JSX) ===
+const cardBg = useColorModeValue("whiteAlpha.800", "whiteAlpha.100");
+const cardBorder = useColorModeValue("blackAlpha.200", "whiteAlpha.200");
 
-  // 🌟 Pricing-specific
-  const pricingBg = useColorModeValue(
-    "linear(to-b, white, gray.50)",
-    "linear(to-b, gray.900, gray.800)"
-  );
-  const premiumBg = useColorModeValue(
-    "linear(to-b, white, yellow.50)",
-    "linear(to-b, gray.900, yellow.900)"
-  );
+const buttonBorder = useColorModeValue("blackAlpha.400", "whiteAlpha.400");
+const buttonHoverBg = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
+const buttonColor = useColorModeValue("gray.800", "white");
 
-  // 📊 State
+const premiumBg = useColorModeValue(
+  "linear(to-b, white, yellow.50)",
+  "linear(to-b, gray.900, yellow.900)"
+);
+
+
+  // ======================
+  // METRICS
+  // ======================
   const [metrics, setMetrics] = useState({
     total_transactions: 0,
     total_volume: 0,
     transactions_by_psp: {},
   });
-  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
+
+  // ======================
+  // SCROLL
+  // ======================
   const [navProgress, setNavProgress] = useState(0);
+  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
 
   // === Fetch metrics ===
   useEffect(() => {
@@ -237,7 +251,7 @@ export default function Landing() {
   How it works
 </ChakraLink>
 <ChakraLink as="button" onClick={() => scrollTo("#why")} _hover={{ color: "brand.500" }}>
-  Why SwitchPay
+  Why switchpay
 </ChakraLink>
 <ChakraLink as="button" onClick={() => scrollTo("#security")} _hover={{ color: "brand.500" }}>
   Security
@@ -256,30 +270,29 @@ export default function Landing() {
 
   {/* CTA desktop */}
   <Box display={{ base: "none", md: "block" }}>
-    <Magnetic>
+  <HStack spacing={3}>
   <Button
     onClick={() => navigate("/app")}
     px={7}
     py={3.5}
     fontSize="md"
     fontWeight="700"
-    letterSpacing="0.02em"
-    textTransform="none"   // 👈 garde la casse naturelle ("Make a transaction")
     bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)"
-    bgSize="200% 200%"
     color="white"
     borderRadius="full"
-    transition="all 0.25s ease"
-    _hover={{
-      backgroundPosition: "100% 50%",
-      transform: "translateY(-2px) scale(1.03)",
-      boxShadow: "0 0 18px rgba(236, 72, 153, 0.25)",
-    }}
   >
-    Make a transaction
+    Try the sandbox
   </Button>
-</Magnetic>
 
+  <Button
+    variant="outline"
+    borderColor="brand.400"
+    color="brand.400"
+    onClick={() => scrollTo("#waitlist")}
+  >
+    Join waitlist
+  </Button>
+</HStack>
 
 
   </Box>
@@ -378,7 +391,7 @@ export default function Landing() {
       >
         {[
           { label: "How it works", id: "#how" },
-          { label: "Why SwitchPay", id: "#why" },
+          { label: "Why switchpay", id: "#why" },
           { label: "Live Metrics", id: "#metrics" },
           { label: "Security", id: "#security" },
           { label: "Pricing", id: "#pricing" },
@@ -580,31 +593,29 @@ export default function Landing() {
   justify="center"
   align="center"
 >
-  <Magnetic>
+  <HStack spacing={3}>
   <Button
-  onClick={() => navigate("/app")}
-  px={12}
-  py={-5}
-  fontSize="lg"
-  fontWeight="700"
-  letterSpacing="0.03em"
-  textTransform="none"     // 👈 garde la casse normale (seul le G majuscule)
-  bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)"
-  bgSize="200% 200%"
-  color="white"
-  borderRadius="full"
-  transition="all 0.3s ease"
-  _hover={{
-    backgroundPosition: "100% 50%",
-    transform: "translateY(-3px) scale(1.05)",
-    boxShadow: "0 0 25px rgba(236, 72, 153, 0.4)",
-  }}
->
-  Get started for free
-</Button>
+    onClick={() => navigate("/app")}
+    px={7}
+    py={3.5}
+    fontSize="md"
+    fontWeight="700"
+    bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)"
+    color="white"
+    borderRadius="full"
+  >
+    Try the sandbox
+  </Button>
 
-</Magnetic>
-
+  <Button
+    variant="outline"
+    borderColor="brand.400"
+    color="brand.400"
+    onClick={() => scrollTo("#waitlist")}
+  >
+    Join waitlist
+  </Button>
+</HStack>
 
   <Button
     variant="outline"
@@ -792,7 +803,7 @@ export default function Landing() {
       px={6}
       mt={-2}  // 👈 rapproche encore la timeline
     >
-      SwitchPay routes your payments intelligently, instantly, and with precision.
+      switchpay routes your payments intelligently, instantly, and with precision.
     </Text>
 
     {/* Timeline resserrée */}
@@ -869,9 +880,9 @@ export default function Landing() {
         <Box position="relative">
           <video
             ref={videoRef}
-            src="/Streamlining Payments for SMBs with SwitchPay 🚀.mp4"
+            src="/Streamlining Payments for SMBs with switchpay 🚀.mp4"
             poster="/demo-thumbnail.jpg" // image d’attente
-            title="SwitchPay Demo"
+            title="switchpay Demo"
             autoPlay
             loop
             muted
@@ -977,7 +988,7 @@ export default function Landing() {
     boxShadow: "0 0 25px rgba(236, 72, 153, 0.4)",
   }}
 >
-  Try SwitchPay now
+  Try switchpay now
 </Button>
 
       <Button
@@ -1003,7 +1014,7 @@ export default function Landing() {
         {/* WHY SWITCHPAY */}
         <Section id="why" bg={useColorModeValue("linear(to-b, gray.50, purple.50)", "linear(to-b, gray.800, gray.900)")}>
           <VStack align="start" spacing={8}>
-            <Heading size="xl">Why SwitchPay</Heading>
+            <Heading size="xl">Why switchpay</Heading>
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
               <ValueCard title="Plug & Play" text="Integrate in minutes. A ready-to-use backend (FastAPI) and frontend (React) built for fast iteration and seamless scaling." />
               <ValueCard title="Idempotency by design" text="Never lose sleep over duplicate payments. Every request is safe: same key for same response, always." />
@@ -1118,7 +1129,31 @@ export default function Landing() {
             </GlowCard>
           </SimpleGrid>
         </Section>
- 
+        <Section id="waitlist">
+  <VStack spacing={8} align="center" textAlign="center">
+    <Heading size="xl">Join the waitlist</Heading>
+
+    {!waitlistSuccess ? (
+      <>
+        <Input
+          placeholder="you@company.com"
+          value={waitlistEmail}
+          onChange={(e) => setWaitlistEmail(e.target.value)}
+          maxW="360px"
+        />
+
+        <Button onClick={submitWaitlist} isLoading={waitlistLoading}>
+          Join the waitlist
+        </Button>
+
+        {waitlistError && <Text color="red.400">{waitlistError}</Text>}
+      </>
+    ) : (
+      <Text>You're on the list 🚀</Text>
+    )}
+  </VStack>
+</Section>
+
 
         {/* PRICING */}
 <Section
@@ -1262,7 +1297,9 @@ export default function Landing() {
             <Magnetic>
   <Button
     as={RouterLink}
-    to={tier.price === "Custom" ? "/contact" : "/app"}
+    to={tier.price === "Custom"
+  ? "Contact us"
+  : "Join waitlist"}
     mt={6}
     w="100%"
     px={10}
@@ -1295,7 +1332,10 @@ export default function Landing() {
       filter: "brightness(1.08)",
     }}
   >
-    {tier.price === "Custom" ? "Contact us" : "Get started"}
+    {tier.price === "Custom"
+  ? "Contact us"
+  : "Join waitlist"}
+
   </Button>
 </Magnetic>
 
@@ -1315,27 +1355,30 @@ export default function Landing() {
             </VStack>
             <Spacer />
             <Magnetic>
-              <Button
+              <HStack spacing={3}>
+  <Button
     onClick={() => navigate("/app")}
     px={7}
     py={3.5}
     fontSize="md"
     fontWeight="700"
-    letterSpacing="0.02em"
-    textTransform="none"   // 👈 garde la casse naturelle ("Make a transaction")
     bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)"
-    bgSize="200% 200%"
     color="white"
     borderRadius="full"
-    transition="all 0.25s ease"
-    _hover={{
-      backgroundPosition: "100% 50%",
-      transform: "translateY(-2px) scale(1.03)",
-      boxShadow: "0 0 18px rgba(236, 72, 153, 0.25)",
-    }}
   >
-    Make a transaction
+    Try the sandbox
   </Button>
+
+  <Button
+    variant="outline"
+    borderColor="brand.400"
+    color="brand.400"
+    onClick={() => scrollTo("#waitlist")}
+  >
+    Join waitlist
+  </Button>
+</HStack>
+
 
             </Magnetic>
           </GlowCard>
@@ -1372,12 +1415,12 @@ export default function Landing() {
           borderRadius="lg"
         >
           <Box flex="1" textAlign="left" fontWeight="semibold">
-            What exactly does SwitchPay do?
+            What exactly does switchpay do?
           </Box>
           <AccordionIcon />
         </AccordionButton>
         <AccordionPanel pb={4} color="whiteAlpha.800">
-          SwitchPay intelligently routes every transaction to the most efficient PSP based on
+          switchpay intelligently routes every transaction to the most efficient PSP based on
           country, currency, fees, and device.  
           Think of it as <strong>“Stripe + Adyen + Rapyd”</strong> behind one adaptive API.
         </AccordionPanel>
@@ -1441,7 +1484,7 @@ export default function Landing() {
           borderRadius="lg"
         >
           <Box flex="1" textAlign="left" fontWeight="semibold">
-            Is SwitchPay live or just a prototype?
+            Is switchpay live or just a prototype?
           </Box>
           <AccordionIcon />
         </AccordionButton>
@@ -1465,7 +1508,7 @@ export default function Landing() {
           <AccordionIcon />
         </AccordionButton>
         <AccordionPanel pb={4} color="whiteAlpha.800">
-          Yes, SwitchPay is designed as an API-first router.  
+          Yes, switchpay is designed as an API-first router.  
           The same logic powering this demo can be embedded in your stack to automatically route payments,  
           minimize fees, and improve success rates across markets.
         </AccordionPanel>

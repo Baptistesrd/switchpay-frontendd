@@ -188,7 +188,7 @@ export default function SwitchPayAIPremiumChat() {
           <HStack alignSelf="flex-start" spacing={3}>
             <ThinkingPulse />
             <Text color="whiteAlpha.700" fontSize="sm">
-              SwitchPayAI is analyzing market rates...
+              switchpayAI is analyzing market rates...
             </Text>
           </HStack>
         )}
