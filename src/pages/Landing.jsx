@@ -880,7 +880,7 @@ const premiumBg = useColorModeValue(
         <Box position="relative">
           <video
             ref={videoRef}
-            src="/Streamlining Payments for SMBs with switchpay 🚀.mp4"
+            src="switchpay-demo.mp4"
             poster="/demo-thumbnail.jpg" // image d’attente
             title="switchpay Demo"
             autoPlay
