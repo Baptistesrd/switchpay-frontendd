@@ -64,7 +64,7 @@ root.render(
           <Route path="/" element={<Landing />} />
           <Route path="/app" element={<App />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/docs" element={<DocsPage />} /> {/* ✅ route claire */}
+          <Route path="/docs" element={<DocsPage />} /> 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>

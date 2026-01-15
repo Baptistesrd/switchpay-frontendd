@@ -192,9 +192,19 @@ const premiumBg = useColorModeValue(
 
   // === Smooth scroll ===
   const scrollTo = (hash) => {
-    const el = document.querySelector(hash);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  const el = document.querySelector(hash);
+  if (!el) return;
+
+  const y =
+    el.getBoundingClientRect().top +
+    window.pageYOffset -
+    80; // offset navbar
+
+  window.scrollTo({
+    top: y,
+    behavior: "smooth",
+  });
+};
 
   
   return (
@@ -1296,10 +1306,6 @@ const premiumBg = useColorModeValue(
 
             <Magnetic>
   <Button
-    as={RouterLink}
-    to={tier.price === "Custom"
-  ? "Contact us"
-  : "Join waitlist"}
     mt={6}
     w="100%"
     px={10}
@@ -1312,8 +1318,8 @@ const premiumBg = useColorModeValue(
     color="white"
     bgGradient={
       tier.premium
-        ? "linear(to-r, #facc15, #f59e0b, #d97706)" // gold → amber → honey
-        : "linear(to-r, #06b6d4, #7c3aed, #ec4899)" // cyan → violet → pink
+        ? "linear(to-r, #facc15, #f59e0b, #d97706)"
+        : "linear(to-r, #06b6d4, #7c3aed, #ec4899)"
     }
     bgSize="200% 200%"
     transition="all 0.35s ease"
@@ -1331,13 +1337,18 @@ const premiumBg = useColorModeValue(
           : "0 0 40px rgba(236, 72, 153, 0.5)",
       filter: "brightness(1.08)",
     }}
+    onClick={() => {
+      if (tier.price === "Custom") {
+        navigate("/contact");      // ✅ Contact us -> page /contact
+      } else {
+        scrollTo("#waitlist");     // ✅ Join waitlist -> scroll section
+      }
+    }}
   >
-    {tier.price === "Custom"
-  ? "Contact us"
-  : "Join waitlist"}
-
+    {tier.price === "Custom" ? "Contact us" : "Join waitlist"}
   </Button>
 </Magnetic>
+
 
           </VStack>
         </GlowCard>

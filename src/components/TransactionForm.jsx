@@ -66,12 +66,11 @@ export default function TransactionForm({ onNewTransaction }) {
   payload,
   {
     headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Idempotency-Key": idempotencyKey,
-    },
+  "x-api-key": apiKey,
+  "Idempotency-Key": idempotencyKey,
+},
   }
-);
-
+);  
 
       toast({
         title: "Transaction sent ✅",
