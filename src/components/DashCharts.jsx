@@ -1,4 +1,3 @@
-// src/components/DashCharts.jsx
 import React, { useMemo } from "react";
 import {
   ResponsiveContainer,
@@ -19,10 +18,6 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { format, parseISO } from "date-fns";
-
-/* =========================
-   DATA AGGREGATION HELPERS
-========================= */
 
 function groupByDay(transactions, days = 14) {
   const now = new Date();
@@ -85,12 +80,7 @@ function latencyHistogram(transactions, step = 50) {
   return Array.from(buckets.entries()).map(([bucket, count]) => ({ bucket, count }));
 }
 
-/* =========================
-   ROUTING INSIGHT ENGINE
-========================= */
-
 function computeRoutingInsight(transactions) {
-  // group by PSP + country + currency
   const map = new Map();
 
   for (const tx of transactions) {
@@ -111,7 +101,6 @@ function computeRoutingInsight(transactions) {
 
   if (stats.length < 2) return null;
 
-  // find worst vs best on same country/currency
   stats.sort((a, b) => b.successRate - a.successRate);
   const best = stats[0];
   const worst = stats[stats.length - 1];
@@ -131,10 +120,6 @@ function computeRoutingInsight(transactions) {
     estimatedGain,
   };
 }
-
-/* =========================
-   DASHBOARD
-========================= */
 
 export default function DashCharts({ transactions }) {
   const cardBg = useColorModeValue("white", "gray.800");
@@ -162,7 +147,7 @@ export default function DashCharts({ transactions }) {
   return (
     <VStack spacing={6} align="stretch">
 
-      {/* 🔍 ROUTING INSIGHT */}
+      {/*ROUTING INSIGHT */}
       {insight && (
         <Box
           bg={cardBg}
@@ -195,7 +180,7 @@ export default function DashCharts({ transactions }) {
         </Box>
       )}
 
-      {/* 📊 CHARTS */}
+      {/* CHARTS */}
       <SimpleGrid columns={[1, 2]} spacing={6}>
         <ChartCard title="Daily Volume (14d)" cardBg={cardBg} borderCol={borderCol}>
           <ResponsiveContainer width="100%" height={260}>

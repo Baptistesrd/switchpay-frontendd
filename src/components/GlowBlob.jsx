@@ -1,4 +1,3 @@
-// src/components/GlowBlob.jsx
 import { Box, useColorModeValue } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 

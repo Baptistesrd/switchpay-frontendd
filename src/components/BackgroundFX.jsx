@@ -1,13 +1,5 @@
 import { Box, useColorModeValue } from "@chakra-ui/react";
 
-/**
- * BackgroundFX (Aurora Signature)
- *
- * Next-level background design:
- * - Multi-layer drifting auroras with different speeds (parallax-like depth)
- * - Subtle noise overlay for premium organic texture
- * - Auto adapts to light/dark mode
- */
 export default function BackgroundFX({ fixed = true }) {
   const auroraLight1 = `
     radial-gradient(900px circle at 15% 20%, rgba(64, 132, 255, 0.28), transparent 70%)

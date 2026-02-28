@@ -17,7 +17,6 @@ export default function PaymentStackMap() {
 
   return (
     <VStack spacing={10} w="100%" maxW="6xl" mx="auto">
-      {/* Title */}
       <VStack spacing={2} textAlign="center">
         <Heading
           size="lg"
@@ -31,7 +30,6 @@ export default function PaymentStackMap() {
         </Text>
       </VStack>
 
-      {/* Stack */}
       <HStack
         spacing={{ base: 3, md: 5 }}
         align="center"
@@ -43,7 +41,6 @@ export default function PaymentStackMap() {
         <StackNode title="Your Shop" />
         <Arrow />
 
-        {/* SWITCHPAY — HERO */}
         <MotionBox
           whileHover={{ scale: 1.06 }}
           transition={{ duration: 0.3 }}
@@ -76,7 +73,6 @@ export default function PaymentStackMap() {
         <StackNode title="Issuer" />
       </HStack>
 
-      {/* Feedback loop */}
       <MotionBox
         mt={4}
         initial={{ opacity: 0, y: 20 }}
@@ -96,7 +92,6 @@ export default function PaymentStackMap() {
   );
 }
 
-/* === Small helpers === */
 
 function StackNode({ title, subtitle }) {
   const muted = useColorModeValue("gray.500", "gray.400");

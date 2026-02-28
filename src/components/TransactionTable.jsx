@@ -5,7 +5,6 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 
-// Bouton de simulation
 function SimulateWebhookButton({ transactionId }) {
   const [loading, setLoading] = React.useState(false);
   const toast = useToast();
@@ -43,7 +42,6 @@ function SimulateWebhookButton({ transactionId }) {
 }
 
 export default function TransactionTable({ transactions }) {
-  // 🔧 Tous les hooks en haut, pas dans des conditions
   const cardBg = useColorModeValue("white", "gray.800");
   const borderCol = useColorModeValue("blackAlpha.150", "whiteAlpha.200");
   const headerBg = useColorModeValue("gray.50", "whiteAlpha.100");
@@ -52,7 +50,7 @@ export default function TransactionTable({ transactions }) {
   return (
     <Box bg={cardBg} p={5} borderRadius="2xl" border="1px solid" borderColor={borderCol} shadow="xl">
       <Heading size="md" textAlign="left" fontWeight="semibold" fontFamily="'DM Sans', sans-serif">
-        💸 Transaction History
+        Transaction History
       </Heading>
 
       {transactions.length === 0 ? (

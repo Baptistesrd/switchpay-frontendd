@@ -1,16 +1,7 @@
-// src/components/Counter.jsx
+
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-/**
- * Compteur animé "count-up" amélioré.
- * Props:
- * - to: number (valeur finale)
- * - duration: ms (par défaut 1200)
- * - decimals: nb de décimales (par défaut 0)
- * - isMoney: pour formatter style devise fr-FR
- * - prefix/suffix: ajoute du texte avant ou après
- */
 export default function Counter({
   to = 0,
   duration = 1200,
@@ -28,7 +19,6 @@ export default function Counter({
       if (!start.current) start.current = timestamp;
       const progress = Math.min((timestamp - start.current) / duration, 1);
 
-      // effet overshoot pour un rebond naturel
       const eased = easeOutBack(progress);
       const current = to * eased;
 
@@ -63,7 +53,6 @@ export default function Counter({
   );
 }
 
-// easing avec petit overshoot
 function easeOutBack(t) {
   const c1 = 1.70158;
   const c3 = c1 + 1;

@@ -55,7 +55,6 @@ export default function DocsPage() {
       >
         <Container maxW="6xl">
           <VStack align="start" spacing={16}>
-            {/* ===== HEADER ===== */}
             <MotionBox initial="hidden" animate="visible" variants={fadeIn} w="full">
               <HStack justify="space-between" w="full">
                 <Heading
@@ -96,7 +95,6 @@ export default function DocsPage() {
               </Text>
             </MotionBox>
 
-            {/* ===== GLOBAL CONTEXT ===== */}
             <MotionBox
               initial="hidden"
               whileInView="visible"
@@ -116,7 +114,6 @@ export default function DocsPage() {
                   Below is a non-exhaustive overview of the current payment landscape:
                 </Text>
 
-                {/* PSP TABLE */}
                 <Box
   mt={8}
   border="1px solid"
@@ -333,7 +330,6 @@ export default function DocsPage() {
               </GlowCard>
             </MotionBox>
 
-            {/* ===== AUTHENTICATION ===== */}
             <MotionBox
               initial="hidden"
               whileInView="visible"
@@ -370,7 +366,6 @@ export default function DocsPage() {
               </GlowCard>
             </MotionBox>
 
-            {/* ===== TRANSACTIONS ===== */}
             <MotionBox
               initial="hidden"
               whileInView="visible"
@@ -434,7 +429,6 @@ export default function DocsPage() {
               </GlowCard>
             </MotionBox>
 
-            {/* ===== METRICS ===== */}
             <MotionBox
               initial="hidden"
               whileInView="visible"
@@ -480,7 +474,6 @@ export default function DocsPage() {
               </GlowCard>
             </MotionBox>
 
-            {/* ===== ADVANCED FEATURES ===== */}
             <MotionBox
               initial="hidden"
               whileInView="visible"

@@ -106,7 +106,6 @@ export default function Contact() {
         transition={{ duration: 0.7, ease: "easeOut" }}
       >
         <VStack spacing={8} align="stretch">
-          {/* HEADER */}
           <VStack spacing={3} textAlign="center">
             <Heading
               size="2xl"
@@ -122,7 +121,6 @@ export default function Contact() {
             </Text>
           </VStack>
 
-          {/* FORM */}
           <VStack spacing={5} align="stretch">
             <Input
               placeholder="Your email"
@@ -183,7 +181,6 @@ export default function Contact() {
               Start the conversation
             </Button>
 
-            {/* TRUST SIGNALS (resserrés juste sous le bouton) */}
             <SimpleGrid
               columns={{ base: 1, md: 3 }}
               spacing={2}

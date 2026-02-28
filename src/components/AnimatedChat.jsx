@@ -79,7 +79,6 @@ export default function SwitchPayAIPremiumChat() {
   };
 
   useEffect(() => {
-    // ✅ Crée un observer qui détecte si la démo entre dans le viewport
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
@@ -87,7 +86,7 @@ export default function SwitchPayAIPremiumChat() {
           setHasPlayed(true);
         }
       },
-      { threshold: 0.4 } // le chat doit être visible à 40% pour déclencher
+      { threshold: 0.4 }
     );
 
     if (chatRef.current) observer.observe(chatRef.current);
@@ -106,7 +105,7 @@ export default function SwitchPayAIPremiumChat() {
 
   return (
     <Box
-      ref={chatRef} // 👈 on observe ce conteneur
+      ref={chatRef}
       position="relative"
       w="100%"
       maxW="4xl"
@@ -144,23 +143,23 @@ export default function SwitchPayAIPremiumChat() {
 
       {/* Header */}
       <HStack
-  spacing={2}
-  px={3}
-  py={1}
-  position="absolute"
-  top="10px"
-  left="0"
-  right="0"
-  justifyContent="flex-start"
-  alignItems="center"
->
-  <Box w={3} h={3} rounded="full" bg="red.400" ml={3} />
-  <Box w={3} h={3} rounded="full" bg="yellow.400" />
-  <Box w={3} h={3} rounded="full" bg="green.400" />
-  <Text fontSize="sm" ml={3} fontWeight="semibold" color="whiteAlpha.900">
-    switchpayAI
-  </Text>
-</HStack>
+        spacing={2}
+        px={3}
+        py={1}
+        position="absolute"
+        top="10px"
+        left="0"
+        right="0"
+        justifyContent="flex-start"
+        alignItems="center"
+      >
+        <Box w={3} h={3} rounded="full" bg="red.400" ml={3} />
+        <Box w={3} h={3} rounded="full" bg="yellow.400" />
+        <Box w={3} h={3} rounded="full" bg="green.400" />
+        <Text fontSize="sm" ml={3} fontWeight="semibold" color="whiteAlpha.900">
+          switchpayAI
+        </Text>
+      </HStack>
 
 
       {/* Conversation */}

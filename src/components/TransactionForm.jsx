@@ -25,10 +25,8 @@ export default function TransactionForm({ onNewTransaction }) {
   const [loading, setLoading] = useState(false);
   const toast = useToast();  
 
-  // 🔐 Persist API Key locally
   useEffect(() => { localStorage.setItem("apiKey", apiKey); }, [apiKey]);
 
-  // 🛠 Handlers
   const handleChange = (e) => setFormData((f) => ({ ...f, [e.target.name]: e.target.value }));
 
   const validate = () => {
@@ -80,7 +78,6 @@ export default function TransactionForm({ onNewTransaction }) {
         isClosable: true,
       });
 
-      // Refresh dashboard/history
       onNewTransaction?.(res.data);
       setFormData({ montant: "", devise: "", pays: "", device: "" });
 
@@ -106,8 +103,7 @@ export default function TransactionForm({ onNewTransaction }) {
   return (
     <form onSubmit={handleSubmit}>
       <VStack spacing={10} align="stretch">
-        
-        {/* 🔑 API Key */}
+
         <Box
           p={4}
           borderRadius="lg"
@@ -156,7 +152,6 @@ export default function TransactionForm({ onNewTransaction }) {
 
         <Divider />
 
-        {/* 💵 Amount + Currency */}
         <HStack spacing={6} align="start">
           <FormControl isRequired>
             <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Amount</FormLabel>
@@ -203,7 +198,6 @@ export default function TransactionForm({ onNewTransaction }) {
           </FormControl>
         </HStack>
 
-        {/* 🌍 Country + Device */}
         <HStack spacing={6} align="start">
           <FormControl isRequired>
             <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Country</FormLabel>
@@ -254,7 +248,6 @@ export default function TransactionForm({ onNewTransaction }) {
           </FormControl>
         </HStack>
 
-        {/* 🚀 Submit CTA */}
         <HStack justify="space-between">
           <Text fontSize="xs" opacity={0.6}>
             <b>Idempotency-Key</b> auto-generated per request

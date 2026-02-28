@@ -15,12 +15,6 @@ import GlowCard from "./GlowCard";
 
 const MotionBox = motion(Box);
 
-/**
- * Mobile-first timeline:
- * - base: vertical stack + vertical animated line
- * - md+: horizontal timeline + horizontal animated line
- * - no overflowX on mobile (prevents sideways scroll)
- */
 export default function HowItWorksTimeline() {
   const brandFrom = useColorModeValue("#06b6d4", "#7aa2ff");
   const brandTo = useColorModeValue("#ec4899", "#9f7aea");
@@ -53,7 +47,6 @@ export default function HowItWorksTimeline() {
 
   return (
     <Box position="relative" py={{ base: 10, md: 16 }} px={{ base: 4, md: 10 }}>
-      {/* === Animated line (vertical on mobile, horizontal on desktop) === */}
       <MotionBox
         position="absolute"
         zIndex={0}
@@ -64,7 +57,6 @@ export default function HowItWorksTimeline() {
         style={{ willChange: "background-position, transform", transform: "translateZ(0)" }}
         animate={{ backgroundPosition: ["0% 50%", "100% 50%"] }}
         transition={{ duration: 5.5, repeat: Infinity, ease: "linear" }}
-        // Horizontal (md+)
         top={{ base: "56px", md: "50%" }}
         left={{ base: "32px", md: 0 }}
         right={{ base: "auto", md: 0 }}
@@ -75,15 +67,12 @@ export default function HowItWorksTimeline() {
           md: "translateY(-50%)",
         }}
       />
-
-      {/* === Steps container === */}
       <Box position="relative" zIndex={1}>
         <HStack
           spacing={{ base: 6, md: 14 }}
           align="stretch"
           justify={{ base: "flex-start", md: "center" }}
           flexDir={{ base: "column", md: "row" }}
-          // On mobile: align items after the vertical line
           pl={{ base: 10, md: 0 }}
         >
           {steps.map((s, i) => (
@@ -121,11 +110,9 @@ function StepCard({ index, icon, title, desc, labelCol }) {
       <HStack
         spacing={4}
         align="flex-start"
-        // mobile: icon left + card right, desktop: stacked centered
         flexDir={{ base: "row", md: "column" }}
         textAlign={{ base: "left", md: "center" }}
       >
-        {/* === Icon circle === */}
         <Box
           flexShrink={0}
           position="relative"
@@ -145,13 +132,11 @@ function StepCard({ index, icon, title, desc, labelCol }) {
             transform: "scale(1.05)",
             boxShadow: "0 0 20px rgba(122,162,255,0.35)",
           }}
-          // Helps line up with the vertical line on mobile
           ml={{ base: "-44px", md: 0 }}
         >
           <Icon as={icon} boxSize={{ base: 5, md: 6 }} color="white" zIndex="1" />
         </Box>
 
-        {/* === Content === */}
         <GlowCard
           p={{ base: 4, md: 6 }}
           boxShadow={brandShadow}

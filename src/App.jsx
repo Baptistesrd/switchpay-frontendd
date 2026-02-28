@@ -1,4 +1,3 @@
-// src/App.jsx
 import { useEffect, useMemo, useState } from "react";
 import {
   Box,
@@ -41,25 +40,20 @@ export default function App() {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://switchpay-backendd.onrender.com";
   const navigate = useNavigate();
 
-  // Helper : persist key and set axios default header for convenience
   const setAndUseApiKey = (key) => {
     if (!key) return;
     localStorage.setItem("apiKey", key);
     setApiKey(key);
-    // set default for axios GETs (fetchTransactions uses axios)
     axios.defaults.headers.common["x-api-key"] = key;
   };
 
-  // Generate a fresh temporary API key on each page load/refresh
   useEffect(() => {
     async function createTempKey() {
       try {
-        // always generate a fresh key on mount so that refresh => new key
         const res = await axios.get(`${BACKEND_URL}/generate-temp-key`);
         const key = res.data?.api_key;
         if (key) {
           setAndUseApiKey(key);
-          // fetch transactions after setting key
           await fetchTransactions(key);
           console.log("🔑 Temp key generated:", key);
         } else {
@@ -67,24 +61,18 @@ export default function App() {
           const fallback = localStorage.getItem("apiKey");
           if (fallback) setAndUseApiKey(fallback);
           else {
-            // optional: fallback to an env key (if you kept one for dev)
-            // const devKey = process.env.REACT_APP_API_KEY;
-            // if (devKey) setAndUseApiKey(devKey);
           }
         }
       } catch (err) {
         console.error("Failed to generate temp key:", err);
-        // fallback to existing localStorage key if any
         const fallback = localStorage.getItem("apiKey");
         if (fallback) setAndUseApiKey(fallback);
       }
     }
 
     createTempKey();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // run once on mount (so refresh -> rerun)
+  }, []);
 
-  // Fetch transactions using the current API key
   const fetchTransactions = async (explicitKey) => {
   try {
     const keyToUse = explicitKey || apiKey || localStorage.getItem("apiKey");
@@ -108,9 +96,7 @@ export default function App() {
 
 
   useEffect(() => {
-    // If apiKey changes (e.g. user pasted another key), refresh transactions
     if (apiKey) fetchTransactions(apiKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apiKey]);
 
   const totalAmount = useMemo(

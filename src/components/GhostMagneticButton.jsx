@@ -1,4 +1,3 @@
-// src/components/GhostMagneticButton.jsx
 import { useRef } from "react";
 import { Button } from "@chakra-ui/react";
 import { motion, useMotionValue, animate } from "framer-motion";
@@ -51,7 +50,6 @@ export default function GhostMagneticButton({ children = "Contact us", ...props 
       _hover={{ filter: "brightness(1.1)" }}
       {...props}
     >
-      {/* Reflet animé */}
       <motion.div
         style={{
           position: "absolute",

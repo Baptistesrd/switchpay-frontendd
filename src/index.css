@@ -1,4 +1,3 @@
-/* === Reset & Base Styles === */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -13,7 +12,6 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-/* ✅ correction ici : retirer overflow-y:auto → Lenis gère ça */
 html, body, #root {
   min-height: 100%;
   overflow-x: hidden;
@@ -21,15 +19,11 @@ html, body, #root {
   scroll-behavior: auto;
 }
 
-/* === Scrollbar Custom === */
-
-/* Firefox */
 html {
   scrollbar-width: thin;
   scrollbar-color: #4a5568 #1a202c;
 }
 
-/* Chrome, Edge, Safari */
 ::-webkit-scrollbar {
   width: 10px;
 }

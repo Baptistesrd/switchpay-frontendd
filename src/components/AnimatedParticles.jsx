@@ -1,13 +1,9 @@
 import { Box, useColorModeValue } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 
-/**
- * AnimatedParticles (Canvas-based aurora waves)
- */
 export default function AnimatedParticles({ fixed = true }) {
   const canvasRef = useRef(null);
 
-  // ✅ Hook appelé uniquement au bon endroit
   const baseBg = useColorModeValue("#f9fafc", "#080d19");
 
   useEffect(() => {
@@ -26,7 +22,6 @@ export default function AnimatedParticles({ fixed = true }) {
       t += 0.002;
       ctx.clearRect(0, 0, w, h);
 
-      // ✅ Ici on utilise la variable, pas le hook
       ctx.fillStyle = baseBg;
       ctx.fillRect(0, 0, w, h);
 
@@ -66,7 +61,7 @@ export default function AnimatedParticles({ fixed = true }) {
     draw();
 
     return () => window.removeEventListener("resize", resize);
-  }, [baseBg]); // ✅ le hook est passé comme dépendance
+  }, [baseBg]);
 
   return (
     <Box

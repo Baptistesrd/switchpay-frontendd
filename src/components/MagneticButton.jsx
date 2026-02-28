@@ -1,4 +1,3 @@
-// src/components/MagneticButton.jsx
 import { useRef } from "react";
 import { Button } from "@chakra-ui/react";
 import { motion, useMotionValue, animate } from "framer-motion";
@@ -16,7 +15,6 @@ export default function MagneticButton({ children, ...props }) {
     const relX = e.clientX - rect.left - rect.width / 2;
     const relY = e.clientY - rect.top - rect.height / 2;
 
-    // déplacement fluide (distance / facteur)
     mx.set(relX / 12);
     my.set(relY / 12);
   };
@@ -52,7 +50,6 @@ export default function MagneticButton({ children, ...props }) {
       _hover={{ filter: "brightness(1.08)" }}
       {...props}
     >
-      {/* Reflet animé */}
       <motion.div
         style={{
           position: "absolute",

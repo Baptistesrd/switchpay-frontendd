@@ -1,4 +1,3 @@
-// src/components/Layout.jsx
 import { Box } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useColorMode } from "@chakra-ui/react";
@@ -11,7 +10,7 @@ export default function Layout({ children }) {
   return (
     <AnimatePresence mode="wait">
       <MotionBox
-        key={colorMode} // <-- relance l’animation à chaque toggle
+        key={colorMode}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}

@@ -54,7 +54,6 @@ export default function Navbar({ onRefresh }) {
         mx="auto"
         transition="padding 0.3s ease"
       >
-        {/* LOGO */}
         <Heading
           as={Link}
           to="/"
@@ -74,7 +73,6 @@ export default function Navbar({ onRefresh }) {
 
         <Spacer />
 
-        {/* Desktop actions */}
         <HStack spacing={4} display={{ base: "none", md: "flex" }}>
           <Tooltip label="Refresh sandbox" hasArrow>
             <IconButton
@@ -115,7 +113,6 @@ export default function Navbar({ onRefresh }) {
           </Button>
         </HStack>
 
-        {/* Mobile menu button */}
         <IconButton
           aria-label="Open menu"
           icon={<HamburgerIcon />}
@@ -126,7 +123,6 @@ export default function Navbar({ onRefresh }) {
         />
       </Flex>
 
-      {/* Drawer (mobile) */}
       <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay backdropFilter="blur(6px)" />
         <DrawerContent

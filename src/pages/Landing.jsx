@@ -58,10 +58,8 @@ import Layout from "../components/Layout";
 import AnimatedChat from "../components/AnimatedChat";
 import PaymentStackMap from "../components/PaymentStackMap";
 
-// === Motion wrappers ===
 const MotionBox = motion(Box);
 
-// === Section wrapper (accepts extra props) ===
 const Section = ({ children, id, bg, ...rest }) => (
   <Box as="section" id={id} py={{ base: 14, md: 18 }} bg={bg} {...rest}>
     <Container maxW="6xl" px={{ base: 4, md: 6 }} position="relative" zIndex={1}>
@@ -70,7 +68,6 @@ const Section = ({ children, id, bg, ...rest }) => (
   </Box>
 );
 
-// === Magnetic hover (desktop-focused) ===
 function Magnetic({ children }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -102,9 +99,6 @@ export default function Landing() {
 
   const [isMuted, setIsMuted] = useState(true);
 
-  // ======================
-  // WAITLIST STATE
-  // ======================
   const [waitlistEmail, setWaitlistEmail] = useState("");
   const [waitlistLoading, setWaitlistLoading] = useState(false);
   const [waitlistSuccess, setWaitlistSuccess] = useState(false);
@@ -128,10 +122,6 @@ export default function Landing() {
       setWaitlistLoading(false);
     }
   };
-
-  // ======================
-  // THEME
-  // ======================
   const pageBg = useColorModeValue(
     "linear(to-b, #f7faff, #eef3ff, #eaf0ff)",
     "linear(to-b, #0a0f1f, #0f172a, #0b1220)"
@@ -151,18 +141,13 @@ export default function Landing() {
     "linear(to-b, gray.900, yellow.900)"
   );
 
-  // ======================
-  // METRICS
-  // ======================
   const [metrics, setMetrics] = useState({
     total_transactions: 0,
     total_volume: 0,
     transactions_by_psp: {},
   });
 
-  // ======================
-  // SCROLL
-  // ======================
+
   const [navProgress, setNavProgress] = useState(0);
   const [showFloatingCTA, setShowFloatingCTA] = useState(false);
 
@@ -172,7 +157,6 @@ export default function Landing() {
         const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/metrics`);
         setMetrics(res.data);
       } catch {
-        // silent
       }
     };
 
@@ -217,7 +201,7 @@ export default function Landing() {
     const el = document.querySelector(hash);
     if (!el) return;
 
-    const offset = 72; // better on mobile
+    const offset = 72;
     const y = el.getBoundingClientRect().top + window.pageYOffset - offset;
 
     window.scrollTo({

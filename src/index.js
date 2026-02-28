@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import reportWebVitals from "./reportWebVitals";
 import {
   ChakraProvider,
   extendTheme,
@@ -9,13 +8,11 @@ import {
 } from "@chakra-ui/react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-// 🧩 Pages
 import Landing from "./pages/Landing";
 import Contact from "./pages/Contact";
 import DocsPage from "./pages/DocsPage";
 import App from "./App";
 
-// 🎨 Thème Chakra (dark forcé)
 const theme = extendTheme({
   config: {
     initialColorMode: "dark",
@@ -51,13 +48,12 @@ const theme = extendTheme({
   },
 });
 
-// 🏁 Point d’entrée React
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
-      {/* Force le dark mode au démarrage */}
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <Router>
         <Routes>
@@ -71,5 +67,3 @@ root.render(
     </ChakraProvider>
   </React.StrictMode>
 );
-
-reportWebVitals();
