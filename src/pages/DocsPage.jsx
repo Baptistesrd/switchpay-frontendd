@@ -34,6 +34,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import Layout from "../components/Layout";
 import GlowCard from "../components/GlowCard";
+import { PSP_TABLE } from "../data/pspData";
 
 const MotionBox = motion(Box);
 
@@ -194,83 +195,7 @@ export default function DocsPage() {
       </thead>
 
       <tbody>
-        {[
-          ["Stripe", "Developer-first APIs, SaaS billing, global reach", "US, EU"],
-          ["Adyen", "Enterprise-grade acquiring, unified commerce", "EU, NA"],
-          ["Checkout.com", "Digital-native PSP, crypto & marketplace support", "UK, Global"],
-          ["Worldpay (FIS)", "Legacy enterprise acquiring & POS infrastructure", "US, EU"],
-          ["Fiserv", "Merchant acquiring, Clover POS, card issuing", "US, Global"],
-          ["Global Payments", "Omnichannel merchant network & POS", "NA, EU"],
-          ["PayPal", "Consumer & merchant wallet ecosystem", "Global"],
-          ["Square", "POS terminals, Cash App, SME acquiring", "US, Global"],
-          ["Rapyd", "Local-payment rails, 900+ methods", "LATAM, APAC"],
-          ["Wise", "Cross-border B2B transfers", "Global"],
-          ["dLocal", "Local rails & compliance in emerging markets", "LATAM, Africa"],
-          ["Paystack", "SME payments & developer tools", "Africa"],
-          ["Primer", "No-code payment orchestration", "Europe"],
-          ["Airwallex", "FX optimization, global accounts", "APAC, EU"],
-          ["Payoneer", "Marketplace payouts, B2B FX", "Global"],
-          ["Thunes", "Cross-border settlement rails", "Africa, APAC"],
-          ["Mollie", "SME onboarding PSP", "Benelux, DACH"],
-          ["Nium", "Embedded finance infrastructure", "APAC, EU"],
-          ["Marqeta", "Card issuing & processing API", "US, EU"],
-          ["Solaris", "Licensed BaaS + embedded payments", "EU"],
-          ["ClearBank", "Real-time clearing & agency banking", "UK"],
-          ["Treezor", "Banking-as-a-service + cards", "France, EU"],
-          ["Worldline", "Legacy PSP, European acquiring", "EU"],
-          ["Network International", "Acquiring & processing for GCC", "MENA"],
-          ["Tap Payments", "Regional PSP + marketplace infra", "MENA"],
-          ["HyperPay", "PSP for MENA e-commerce", "Saudi Arabia"],
-          ["2C2P", "SEA payment processor", "Thailand, SEA"],
-          ["CCAvenue", "Local PSP, 200+ methods", "India"],
-          ["Paytm", "Wallet + QR payments + merchant services", "India"],
-          ["PhonePe", "UPI payments, financial superapp", "India"],
-          ["M-Pesa", "Telco-led mobile money ecosystem", "East Africa"],
-          ["GrabPay", "Superapp payments & BNPL", "SEA"],
-          ["GCash", "Mobile wallet with credit & insurance", "Philippines"],
-          ["Alipay", "Superapp, QR & e-wallet ecosystem", "China"],
-          ["WeChat Pay", "Social payment rail", "China"],
-          ["Unlimint", "Multi-rail PSP: cards + crypto + alt rails", "Global"],
-          ["MoonPay", "Crypto on/off ramp for fintechs", "Global"],
-          ["Transak", "Fiat-to-crypto for dApps", "Global"],
-          ["Circle", "Stablecoin infrastructure (USDC)", "Global"],
-          ["Fireblocks", "Digital asset custody & settlement", "Global"],
-          ["Marqeta", "Card issuing & processing API", "US, EU"],
-          ["Galileo", "Card & payment infra (SoFi-owned)", "US"],
-          ["Unit", "US Banking-as-a-Service infra", "US"],
-          ["Bond", "Embedded finance orchestration", "US"],
-          ["Weavr", "Embedded finance toolkit", "EU"],
-          ["Bankable", "Card issuance & payment modules", "UK"],
-          ["Dock", "Card issuing for LATAM fintechs", "LATAM"],
-          ["Currencycloud", "Embedded FX & treasury API", "UK"],
-          ["Tranglo", "Remittance & payout hub", "APAC"],
-          ["WorldRemit", "Cross-border consumer payments", "Global"],
-          ["Remitly", "Consumer remittances platform", "Global"],
-          ["Xe", "Remittance & FX transfers", "Global"],
-          ["Primer", "No-code payment orchestration layer", "Europe"],
-          ["CellPoint Digital", "Travel & airline orchestration", "EMEA"],
-          ["BR-DGE", "Retail orchestration with analytics", "UK"],
-          ["Rebilly", "Subscription orchestration, billing", "US"],
-          ["Gr4vy", "Cloud-native orchestration API", "US, EU"],
-          ["IXOPAY", "Enterprise-grade orchestration & routing", "Austria"],
-          ["Akurateco", "White-label payment orchestration", "Netherlands"],
-          ["FinMont", "Travel payment orchestration startup", "Germany"],
-          ["Payrails", "Modular orchestration infra", "Germany"],
-          ["Amazon Pay", "Embedded payments for merchants", "Global"],
-          ["Apple Pay", "Tokenized checkout", "Global"],
-          ["Google Pay", "Device-native wallet", "Global"],
-          ["Square", "POS terminals, Cash App, SME acquiring", "US"],
-          ["Worldpay", "Legacy PSP, enterprise acquiring", "US, EU"],
-          ["Fiserv", "Merchant acquiring, Clover POS", "US, Global"],
-          ["PayU", "Alternative methods, BNPL", "India, LATAM"],
-          ["CCAvenue Global", "Extended local PSP operations", "India, GCC"],
-          ["Nexi", "Merchant acquiring, POS & card rails", "Italy"],
-          ["Payone", "Merchant acquiring, POS integration", "Germany"],
-          ["Dock", "Card issuing platform for fintechs", "LATAM"],
-          ["Treezor", "White-label payment infra", "France, EU"],
-          ["Worldline", "Enterprise-grade acquiring network", "EU"],
-          ["Network International", "Acquiring for GCC markets", "MENA"],
-        ].map(([psp, desc, region], i) => (
+        {PSP_TABLE.map(([psp, desc, region], i) => (
           <tr
             key={i}
             style={{
