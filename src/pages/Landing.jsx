@@ -58,8 +58,6 @@ import MagneticButton from "../components/MagneticButton";
 import Feature from "../components/landing/Feature";
 import ValueCard from "../components/landing/ValueCard";
 import RoadmapItem from "../components/landing/RoadmapItem";
-import MiniKpis from "../components/landing/MiniKpis";
-
 import { NAV_SCROLL_OFFSET, YOUTUBE_DEMO_URL, SOCIAL_LINKS } from "../constants/links";
 
 const MotionBox = motion(Box);
@@ -82,11 +80,6 @@ export default function Landing() {
   const [waitlistLoading, setWaitlistLoading] = useState(false);
   const [waitlistSuccess, setWaitlistSuccess] = useState(false);
   const [waitlistError, setWaitlistError] = useState("");
-  const [metrics, setMetrics] = useState({
-    total_transactions: 0,
-    total_volume: 0,
-    transactions_by_psp: {},
-  });
   const [navProgress, setNavProgress] = useState(0);
   const [showFloatingCTA, setShowFloatingCTA] = useState(false);
 
@@ -122,20 +115,6 @@ export default function Landing() {
       setWaitlistLoading(false);
     }
   };
-
-  useEffect(() => {
-    const fetchMetrics = async () => {
-      try {
-        const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/metrics`);
-        setMetrics(res.data);
-      } catch {
-        // metrics are non-critical; fail silently
-      }
-    };
-    fetchMetrics();
-    const intervalId = setInterval(fetchMetrics, 8000);
-    return () => clearInterval(intervalId);
-  }, []);
 
   useEffect(() => {
     let raf = 0;

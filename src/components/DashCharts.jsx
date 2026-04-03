@@ -4,8 +4,7 @@ import {
   AreaChart, Area,
   BarChart, Bar,
   LineChart, Line,
-  PieChart, Pie, Cell,
-  XAxis, YAxis, Tooltip, Legend, CartesianGrid,
+  XAxis, YAxis, Tooltip, CartesianGrid,
 } from "recharts";
 import {
   Box,
@@ -14,7 +13,6 @@ import {
   Text,
   Badge,
   VStack,
-  HStack,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { format, parseISO } from "date-fns";
@@ -129,15 +127,6 @@ export default function DashCharts({ transactions }) {
   const pspDist = useMemo(() => byPSP(transactions), [transactions]);
   const latencyDist = useMemo(() => latencyHistogram(transactions), [transactions]);
   const insight = useMemo(() => computeRoutingInsight(transactions), [transactions]);
-
-  const pieData = useMemo(() => {
-    const success = transactions.filter((t) => t.status === "success").length;
-    const failed = transactions.length - success;
-    return [
-      { name: "Success", value: success },
-      { name: "Failed", value: failed },
-    ];
-  }, [transactions]);
 
   const colors = useColorModeValue(
     ["#2368f5", "#7ea0ff", "#1b52c4", "#99c2ff"],

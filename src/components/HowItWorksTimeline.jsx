@@ -2,7 +2,6 @@ import React from "react";
 import {
   Box,
   HStack,
-  VStack,
   Heading,
   Text,
   Icon,
