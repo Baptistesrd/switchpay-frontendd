@@ -16,7 +16,6 @@ import {
   HStack,
   Badge,
   Button,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -37,7 +36,7 @@ const MotionBox = motion(Box);
 export default function App() {
   const [transactions, setTransactions] = useState([]);
   const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "");
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://switchpay-backendd.onrender.com";
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
 
   const setAndUseApiKey = (key) => {
@@ -55,13 +54,9 @@ export default function App() {
         if (key) {
           setAndUseApiKey(key);
           await fetchTransactions(key);
-          console.log("🔑 Temp key generated:", key);
         } else {
-          console.warn("No key returned from /generate-temp-key, falling back to localStorage if present.");
           const fallback = localStorage.getItem("apiKey");
           if (fallback) setAndUseApiKey(fallback);
-          else {
-          }
         }
       } catch (err) {
         console.error("Failed to generate temp key:", err);
@@ -79,7 +74,7 @@ export default function App() {
     if (!keyToUse) return;
 
     const res = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/transactions`,
+      `${BACKEND_URL}/transactions`,
       {
         headers: {
           "x-api-key": keyToUse,
@@ -131,7 +126,7 @@ export default function App() {
       />
       <BackgroundFX fixed />
 
-      <Navbar />
+      <Navbar onRefresh={() => fetchTransactions(apiKey)} />
 
       <Box position="relative" zIndex={1} maxW="7xl" mx="auto" px={6} py={16}>
         {/* Hero */}

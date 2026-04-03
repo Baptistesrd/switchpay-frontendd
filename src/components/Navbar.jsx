@@ -78,7 +78,7 @@ export default function Navbar({ onRefresh }) {
             <IconButton
               aria-label="refresh"
               icon={<RepeatIcon />}
-              onClick={onRefresh}
+              onClick={() => onRefresh?.()}
               variant="ghost"
               size="md"
               color="whiteAlpha.900"
@@ -156,7 +156,7 @@ export default function Navbar({ onRefresh }) {
                 color="whiteAlpha.900"
                 _hover={{ bg: "whiteAlpha.200" }}
                 onClick={() => {
-                  onRefresh();
+                  onRefresh?.();
                   onClose();
                 }}
               >

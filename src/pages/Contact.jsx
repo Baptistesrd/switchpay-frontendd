@@ -54,7 +54,7 @@ export default function Contact() {
       setEmail("");
       setMessage("");
     } catch (err) {
-      console.error(err);
+      console.error("Contact form error:", err.message);
       toast({
         title: "Error",
         description: "Something went wrong. Please try again later.",
