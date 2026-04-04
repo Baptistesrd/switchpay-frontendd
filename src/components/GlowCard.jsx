@@ -1,23 +1,16 @@
-import { Box, useColorModeValue } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
 const MotionBox = motion(Box);
 
 export default function GlowCard({ children, interactive = true, ...props }) {
-  const bg = useColorModeValue("rgba(255,255,255,0.7)", "rgba(20,24,38,0.6)");
-  const borderCol = useColorModeValue("blackAlpha.200", "whiteAlpha.200");
-  const hoverShadow = useColorModeValue(
-    "0 0 0 1px rgba(35,104,245,0.4), 0 12px 28px rgba(35,104,245,0.12)",
-    "0 0 0 1px rgba(122,162,255,0.5), 0 12px 28px rgba(122,162,255,0.2)"
-  );
-
   return (
     <MotionBox
       position="relative"
       overflow="hidden"
-      bg={bg}
+      bg="rgba(255,255,255,0.03)"
       border="1px solid"
-      borderColor={borderCol}
+      borderColor="rgba(255,255,255,0.08)"
       borderRadius="2xl"
       p={6}
       shadow="xl"
@@ -26,14 +19,18 @@ export default function GlowCard({ children, interactive = true, ...props }) {
         whileTap: { scale: 0.98 },
         transition: { duration: 0.25, ease: "easeOut" },
       })}
-      _hover={{ boxShadow: hoverShadow }}
+      _hover={{
+        borderColor: "rgba(255,255,255,0.15)",
+        bg: "rgba(255,255,255,0.05)",
+        boxShadow: "0 0 0 1px rgba(99,102,241,0.25), 0 12px 28px rgba(99,102,241,0.12)",
+      }}
       _before={{
         content: '""',
         position: "absolute",
         inset: "-2px",
         borderRadius: "inherit",
         background:
-          "linear-gradient(130deg, #7aa2ff, #29d2ff, #b388ff, #7aa2ff)",
+          "linear-gradient(130deg, #6366f1, #7c3aed, #a78bfa, #6366f1)",
         backgroundSize: "300% 300%",
         filter: "blur(14px)",
         opacity: 0,

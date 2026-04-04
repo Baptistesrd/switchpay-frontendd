@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -12,10 +12,8 @@ import {
   Text,
   Badge,
   SimpleGrid,
-  useColorModeValue,
   Link as ChakraLink,
   Tooltip,
-  AspectRatio,
   Accordion,
   AccordionItem,
   AccordionButton,
@@ -35,7 +33,6 @@ import {
 import {
   LockIcon,
   CheckCircleIcon,
-  TimeIcon,
   ExternalLinkIcon,
   HamburgerIcon,
 } from "@chakra-ui/icons";
@@ -46,18 +43,17 @@ import { useNavigate, Link, Link as RouterLink } from "react-router-dom";
 import axios from "axios";
 
 import BackgroundFX from "../components/BackgroundFX";
-import AnimatedParticles from "../components/AnimatedParticles";
-import GlowBlob from "../components/GlowBlob";
 import GlowCard from "../components/GlowCard";
-import HowItWorksTimeline from "../components/HowItWorksTimeline";
 import Layout from "../components/Layout";
 import AnimatedChat from "../components/AnimatedChat";
 import PaymentStackMap from "../components/PaymentStackMap";
 import MagneticButton from "../components/MagneticButton";
 
-import Feature from "../components/landing/Feature";
 import ValueCard from "../components/landing/ValueCard";
 import RoadmapItem from "../components/landing/RoadmapItem";
+import HeroSection from "../components/landing/HeroSection";
+import PspCarousel from "../components/landing/PspCarousel";
+import HowItWorksCards from "../components/landing/HowItWorksCards";
 import { NAV_SCROLL_OFFSET, YOUTUBE_DEMO_URL, SOCIAL_LINKS } from "../constants/links";
 
 const MotionBox = motion(Box);
@@ -73,9 +69,7 @@ const Section = ({ children, id, bg, ...rest }) => (
 export default function Landing() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const videoRef = useRef(null);
 
-  const [isMuted, setIsMuted] = useState(true);
   const [waitlistEmail, setWaitlistEmail] = useState("");
   const [waitlistLoading, setWaitlistLoading] = useState(false);
   const [waitlistSuccess, setWaitlistSuccess] = useState(false);
@@ -83,21 +77,12 @@ export default function Landing() {
   const [navProgress, setNavProgress] = useState(0);
   const [showFloatingCTA, setShowFloatingCTA] = useState(false);
 
-  const pageBg = useColorModeValue(
-    "linear(to-b, #f7faff, #eef3ff, #eaf0ff)",
-    "linear(to-b, #0a0f1f, #0f172a, #0b1220)"
-  );
-  const subText = useColorModeValue("gray.600", "gray.300");
-  const borderCol = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
-  const cardBg = useColorModeValue("whiteAlpha.800", "whiteAlpha.100");
-  const cardBorder = useColorModeValue("blackAlpha.200", "whiteAlpha.200");
-  const buttonBorder = useColorModeValue("blackAlpha.400", "whiteAlpha.400");
-  const buttonHoverBg = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
-  const buttonColor = useColorModeValue("gray.800", "white");
-  const premiumBg = useColorModeValue(
-    "linear(to-b, white, yellow.50)",
-    "linear(to-b, gray.900, yellow.900)"
-  );
+  const subText = "rgba(255,255,255,0.5)";
+  const borderCol = "rgba(255,255,255,0.08)";
+  const cardBg = "rgba(255,255,255,0.03)";
+  const cardBorder = "rgba(255,255,255,0.08)";
+  const premiumBg = "linear(to-b, rgba(245,158,11,0.07), rgba(30,25,10,0.5))";
+  const YOUTUBE_EMBED_URL = `https://www.youtube.com/embed/${YOUTUBE_DEMO_URL.split("/").pop()}`;
 
   const submitWaitlist = async () => {
     if (!waitlistEmail) return;
@@ -184,18 +169,9 @@ export default function Landing() {
     },
   ];
 
-  const PSP_LOGOS = [
-    { src: "/Stripe_Logo,_revised_2016.svg.png", alt: "Stripe" },
-    { src: "/Adyen_Corporate_Logo.svg.png", alt: "Adyen" },
-    { src: "/Airwallex_Logo_-_Black.png", alt: "Airwallex" },
-    { src: "/Wise2020.svg", alt: "Wise" },
-    { src: "/Rapyd-logo-768x236.webp", alt: "Rapyd" },
-    { src: "/PayPal.svg.png", alt: "PayPal" },
-  ];
-
   return (
     <Layout>
-      <Box position="relative" overflowX="hidden" bgGradient={pageBg} minH="100vh">
+      <Box position="relative" overflowX="hidden" bg="#030303" minH="100vh">
         <BackgroundFX />
 
         {/* NAVBAR */}
@@ -241,11 +217,46 @@ export default function Landing() {
 
           <Box display={{ base: "none", md: "block" }}>
             <HStack spacing={3}>
-              <Button onClick={() => navigate("/app")} px={7} py={3.5} fontSize="md" fontWeight="700" bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)" color="white" borderRadius="full">
+              <Button
+                onClick={() => navigate("/app")}
+                px={8}
+                py={3}
+                fontSize="sm"
+                fontWeight="600"
+                borderRadius="full"
+                color="white"
+                border="1px solid"
+                borderColor="whiteAlpha.200"
+                bg="whiteAlpha.50"
+                backdropFilter="blur(12px)"
+                _hover={{
+                  bg: "whiteAlpha.100",
+                  borderColor: "whiteAlpha.400",
+                  transform: "scale(1.03)",
+                }}
+                transition="all 0.2s"
+              >
                 Try the sandbox
               </Button>
-              <Button variant="outline" borderColor="brand.400" color="brand.400" onClick={() => scrollTo("#waitlist")}>
-                Join waitlist
+              <Button
+                onClick={() => scrollTo("#waitlist")}
+                px={8}
+                py={3}
+                fontSize="sm"
+                fontWeight="600"
+                borderRadius="full"
+                color="white"
+                border="1px solid"
+                borderColor="whiteAlpha.200"
+                bg="whiteAlpha.50"
+                backdropFilter="blur(12px)"
+                _hover={{
+                  bg: "whiteAlpha.100",
+                  borderColor: "whiteAlpha.400",
+                  transform: "scale(1.03)",
+                }}
+              >
+                Join the waitlist
               </Button>
             </HStack>
           </Box>
@@ -319,164 +330,164 @@ export default function Landing() {
         </Flex>
 
         {/* HERO */}
-        <Box as="header" position="relative" pt={{ base: 28, md: 100 }} pb={{ base: 8, md: 10 }}>
-          <Box position="absolute" inset={0} zIndex={0}>
-            <AnimatedParticles />
-            <GlowBlob top="6%" left="65%" size="520px" delay={0.2} />
-            <GlowBlob top="58%" left="10%" size="460px" delay={0.6} />
-          </Box>
+        <HeroSection />
 
-          <Section id="hero">
-            <VStack spacing={{ base: 7, md: 12 }} align="center" textAlign="center">
-              <Heading as="h1" textAlign="center" fontWeight="extrabold" bgGradient="linear(to-r, whiteAlpha.900, gray.400)" bgClip="text" lineHeight="1.05" letterSpacing="-0.03em" fontSize={{ base: "3xl", sm: "4xl", md: "6xl", lg: "7xl" }} px={{ base: 2, md: 0 }} overflowWrap="anywhere">
-                Welcome to <br />
-                <Box as="span" bgGradient="linear(to-r, cyan.400, purple.500, pink.400)" bgClip="text" animation="gradientShift 6s ease infinite" backgroundSize="200% 200%" display="inline-block">
-                  switchpay.
-                </Box>
-              </Heading>
-
-              <style>{`@keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }`}</style>
-
-              <Heading as="h2" fontSize={{ base: "xl", sm: "2xl", md: "4xl", lg: "5xl" }} fontWeight="800" lineHeight="1.08" bgGradient="linear(to-r, whiteAlpha.900, gray.400)" bgClip="text" letterSpacing="-0.02em" textAlign="center" px={{ base: 2, md: 0 }}>
-                Don't let one PSP decide your success.
-              </Heading>
-
-              <Text fontSize={{ base: "md", md: "lg" }} color={subText} maxW={{ base: "95%", md: "3xl" }}>
-                Stand out from your competitors. Automatically route each payment to the best payment
-                service provider based on auth rate, country, currency, fees, and device.{" "}
-                <b>More conversions. Lower costs.</b>
-              </Text>
-
-              <Stack direction={{ base: "column", sm: "row" }} spacing={{ base: 2, sm: 6 }} mt={{ base: 0, md: -4 }} justify="center" align="center">
-                <HStack spacing={2}>
-                  <CheckCircleIcon color="green.400" />
-                  <Text color={subText}>95%+ success (simulated)</Text>
-                </HStack>
-                <HStack spacing={2}>
-                  <TimeIcon color="blue.400" />
-                  <Text color={subText}>Latency-aware routing</Text>
-                </HStack>
-              </Stack>
-
-              <Stack spacing={{ base: 3, sm: 4 }} direction={{ base: "column", sm: "row" }} w="100%" justify="center" align="center" pt={2}>
-                <Stack direction={{ base: "column", sm: "row" }} spacing={3} w={{ base: "100%", sm: "auto" }}>
-                  <Button onClick={() => navigate("/app")} w={{ base: "100%", sm: "auto" }} px={7} py={3.5} fontSize="md" fontWeight="700" bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)" color="white" borderRadius="full">
-                    Try the sandbox
-                  </Button>
-                  <Button variant="outline" borderColor="brand.400" color="brand.400" onClick={() => scrollTo("#waitlist")} w={{ base: "100%", sm: "auto" }}>
-                    Join waitlist
-                  </Button>
-                </Stack>
-                <Button variant="outline" borderColor="brand.400" color="brand.400" rightIcon={<ExternalLinkIcon />} onClick={() => scrollTo("#how")} w={{ base: "100%", sm: "auto" }}>
-                  See how it works
-                </Button>
-              </Stack>
-
-              <GlowCard flex="1" p={{ base: 5, md: 10 }} w="100%" maxW="5xl" mt={{ base: 8, md: 20 }} position="relative" borderRadius="2xl" bg="rgba(255,255,255,0.04)" backdropFilter="blur(20px)" overflow="hidden" border="1px solid rgba(255,255,255,0.08)" boxShadow="0 0 60px rgba(0,0,0,0.1)">
-                <Box position="absolute" top="-20%" left="-10%" w="150%" h="150%" bgGradient="radial(circle at center, rgba(0,255,255,0.12), transparent 70%)" animation="pulse 6s ease-in-out infinite" filter="blur(80px)" zIndex={0} />
-                <VStack align="stretch" spacing={5} position="relative" zIndex={1}>
-                  <VStack spacing={4} align="center">
-                    <Text fontWeight="semibold" fontSize="sm" color="gray.400" textTransform="uppercase" letterSpacing="0.08em" textAlign="center">
-                      Integrated Payment Service Providers
-                    </Text>
-                    <HStack spacing={{ base: 5, md: 10 }} flexWrap="wrap" justify="center" opacity={0.9}>
-                      {PSP_LOGOS.map((psp, i) => (
-                        <Box key={i} as="img" src={psp.src} alt={psp.alt} maxW={{ base: "56px", sm: "70px", md: "90px" }} h="auto" objectFit="contain" opacity={0.75} transition="all 0.3s ease" filter="drop-shadow(0 0 6px rgba(0,255,255,0.1))" _hover={{ opacity: 1, transform: "translateY(-2px) scale(1.03)", filter: "drop-shadow(0 0 10px rgba(0,255,255,0.3))" }} />
-                      ))}
-                    </HStack>
-                  </VStack>
-                  <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={{ base: 3, md: 6 }}>
-                    <Feature label="Higher auth rates" />
-                    <Feature label="Lower fees" />
-                    <Feature label="Geo coverage" />
-                    <Feature label="Failover routing" />
-                  </SimpleGrid>
-                </VStack>
-                <style>{`@keyframes pulse { 0%,100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.05); } }`}</style>
-              </GlowCard>
-            </VStack>
-          </Section>
-        </Box>
+        {/* PSP CAROUSEL */}
+        <PspCarousel />
 
         {/* HOW IT WORKS */}
-        <Section id="how" position="relative" pb={{ base: 20, md: 32 }} pt={{ base: 16, md: 24 }} overflow="hidden">
-          <Box position="absolute" top="10%" left="50%" transform="translateX(-50%)" w={{ base: "360px", md: "500px" }} h={{ base: "360px", md: "500px" }} bgGradient="radial(circle at center, rgba(0,255,255,0.06), transparent 70%)" filter="blur(120px)" opacity={0.5} zIndex={0} />
-          <VStack align="center" spacing={6} position="relative" zIndex={1} w="100%">
-            <Heading as="h2" fontSize={{ base: "2xl", md: "4xl" }} fontWeight="extrabold" textAlign="center" color="white">
-              How it works
-            </Heading>
-            <Text fontSize={{ base: "md", md: "lg" }} color="gray.400" textAlign="center" maxW="2xl" px={{ base: 2, md: 6 }}>
-              switchpay routes your payments intelligently, instantly, and with precision.
-            </Text>
-            <Box w="100%" mt={{ base: 2, md: 0 }}>
-              <HowItWorksTimeline />
-              <Box w="100%" mt={{ base: 8, md: 10 }}>
-                <PaymentStackMap />
+        <Box as="section" id="how" pt={{ base: 8, md: 10 }} pb={{ base: 10, md: 12 }} bg="transparent">
+          <Container maxW="6xl" px={{ base: 4, md: 6 }}>
+            {/* Badge + title */}
+            <VStack spacing={5} align="center" mb={10}>
+              <Box
+                display="inline-flex"
+                px={4}
+                py="6px"
+                borderRadius="full"
+                bg="rgba(255,255,255,0.04)"
+                border="1px solid rgba(255,255,255,0.08)"
+                style={{ backdropFilter: "blur(8px)" }}
+              >
+                <Text fontSize="xs" color="rgba(255,255,255,0.5)" letterSpacing="widest" textTransform="uppercase">
+                  How it works
+                </Text>
               </Box>
+              <Heading fontWeight="bold" fontSize={{ base: "3xl", md: "5xl" }} textAlign="center" lineHeight="1.1">
+                <Box as="span" display="block" color="white">Three steps.</Box>
+                <Box
+                  as="span"
+                  display="block"
+                  bgGradient="linear(to-r, #a5b4fc, rgba(255,255,255,0.9), #fda4af)"
+                  bgClip="text"
+                >
+                  One decision layer.
+                </Box>
+              </Heading>
+            </VStack>
+
+            {/* Step cards */}
+            <HowItWorksCards />
+
+            {/* Payment Stack Map */}
+            <Box w="100%" mt={8}>
+              <PaymentStackMap />
             </Box>
-          </VStack>
-        </Section>
+          </Container>
+        </Box>
 
         {/* PRODUCT DEMO */}
-        <Section id="demo" bg={useColorModeValue("linear(to-r, white, blue.50)", "linear(to-r, gray.900, gray.800)")} pt={{ base: 20, md: 32 }} pb={{ base: 20, md: 32 }}>
-          <VStack spacing={{ base: 10, md: 16 }} align="center" textAlign="center" position="relative">
-            <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} viewport={{ once: true }}>
-              <Heading size="2xl" bgGradient="linear(to-r, brand.500, brand.300)" bgClip="text">
-                Product Demo
-              </Heading>
-              <Text mt={3} fontSize={{ base: "md", md: "lg" }} color={subText} maxW="2xl" mx="auto" px={{ base: 2, md: 0 }}>
-                See SwitchPay in action. Real-time routing. Real savings.
-              </Text>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.01 }}
-              style={{ width: "100%", maxWidth: "1000px", borderRadius: "24px", overflow: "hidden", position: "relative", background: "rgba(255,255,255,0.08)", backdropFilter: "blur(12px) saturate(180%)", border: "1px solid rgba(255,255,255,0.15)", boxShadow: "0 0 60px rgba(35, 104, 245, 0.45)" }}
-            >
-              <Box position="absolute" inset={-1} borderRadius="24px" pointerEvents="none" boxShadow="0 0 80px rgba(35, 104, 245, 0.6)" />
-              <AspectRatio ratio={16 / 9} w="100%">
-                <Box position="relative">
-                  <video ref={videoRef} src="switchpay-demo.mp4" poster="/demo-thumbnail.jpg" title="switchpay Demo" autoPlay loop muted playsInline preload="none" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(1.1) contrast(1.05)", borderRadius: "24px" }} />
-                  <MotionBox position="absolute" top="0" left="0" right="0" bottom="0" bgGradient="linear(to-t, rgba(0,0,0,0.3), rgba(0,0,0,0))" opacity={0} whileHover={{ opacity: 1 }} transition={{ duration: 0.3 }} display="flex" alignItems="center" justifyContent="center" color="white" fontSize="4xl" fontWeight="bold" />
-                  <motion.button
-                    onClick={() => { const video = videoRef.current; if (!video) return; video.muted = !isMuted; setIsMuted(!isMuted); }}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    whileHover={{ scale: 1.07, boxShadow: "0 0 15px rgba(35, 104, 245, 0.6)" }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ duration: 0.25, ease: "easeOut" }}
-                    style={{ position: "absolute", bottom: "1rem", right: "1rem", width: "48px", height: "48px", borderRadius: "50%", backdropFilter: "blur(10px) saturate(180%)", background: "rgba(35, 104, 245, 0.15)", border: "1px solid rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "white", fontSize: "20px", transition: "all 0.25s ease" }}
-                    aria-label={isMuted ? "Unmute video" : "Mute video"}
-                  >
-                    <motion.span key={isMuted ? "off" : "on"} initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.7 }} transition={{ duration: 0.2 }}>
-                      {isMuted ? "🔇" : "🔊"}
-                    </motion.span>
-                  </motion.button>
+        <Box as="section" id="demo" py={{ base: 20, md: 28 }} position="relative" bg="#030303">
+          <Container maxW="6xl" px={{ base: 4, md: 6 }}>
+            {/* Badge + title */}
+            <VStack spacing={4} align="center" textAlign="center" mb={12}>
+              <Heading fontWeight="bold" fontSize={{ base: "3xl", md: "5xl" }} lineHeight="1.1">
+                <Box as="span" display="block" color="white">See SwitchPay</Box>
+                <Box as="span" display="block" bgGradient="linear(to-r, #a5b4fc, #fda4af)" bgClip="text">
+                  in action.
                 </Box>
-              </AspectRatio>
-            </motion.div>
+              </Heading>
+              <Text color="rgba(255,255,255,0.4)" fontSize={{ base: "md", md: "lg" }}>
+                Real-time routing. Real savings.
+              </Text>
+            </VStack>
 
-            <Stack direction={{ base: "column", sm: "row" }} spacing={4} w="100%" justify="center" pt={{ base: 0, md: 2 }}>
-              <Button onClick={() => navigate("/app")} w={{ base: "100%", sm: "auto" }} px={10} py={6} fontSize="lg" fontWeight="700" letterSpacing="0.02em" bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)" bgSize="200% 200%" color="white" borderRadius="full" transition="all 0.3s ease" _hover={{ backgroundPosition: "100% 50%", transform: "translateY(-2px)", boxShadow: "0 0 25px rgba(236, 72, 153, 0.4)" }}>
+            {/* Video container */}
+            <Box position="relative" maxW="4xl" mx="auto">
+              {/* Ambient glows */}
+              <Box
+                position="absolute"
+                w="300px"
+                h="300px"
+                bg="#6366f1"
+                opacity={0.12}
+                top="-50px"
+                left="-50px"
+                borderRadius="full"
+                filter="blur(80px)"
+                zIndex={0}
+                pointerEvents="none"
+              />
+              <Box
+                position="absolute"
+                w="200px"
+                h="200px"
+                bg="#f43f5e"
+                opacity={0.10}
+                bottom="-30px"
+                right="-30px"
+                borderRadius="full"
+                filter="blur(80px)"
+                zIndex={0}
+                pointerEvents="none"
+              />
+
+              <MotionBox
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, ease: "easeOut" }}
+                position="relative"
+                zIndex={1}
+                bg="rgba(255,255,255,0.03)"
+                border="1px solid rgba(255,255,255,0.10)"
+                borderRadius="3xl"
+                overflow="hidden"
+                boxShadow="0 0 80px rgba(99,102,241,0.15), 0 0 160px rgba(244,63,94,0.08)"
+              >
+                {/* YouTube iframe */}
+                <Box w="100%" style={{ aspectRatio: "16/9" }}>
+                  <iframe
+                    src={YOUTUBE_EMBED_URL}
+                    title="switchpay Demo"
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                    style={{ width: "100%", height: "100%", border: "none", display: "block" }}
+                  />
+                </Box>
+              </MotionBox>
+            </Box>
+
+            {/* CTA buttons */}
+            <Stack direction={{ base: "column", sm: "row" }} spacing={4} justify="center" mt={12}>
+              <Button
+                onClick={() => navigate("/app")}
+                bgGradient="linear(to-r, #6366f1, #7c3aed)"
+                color="white"
+                borderRadius="full"
+                px={8}
+                py={3}
+                fontWeight="semibold"
+                border="none"
+                _hover={{ transform: "scale(1.03)", boxShadow: "0 0 30px rgba(99,102,241,0.4)" }}
+                transition="all 0.2s"
+              >
                 Try switchpay now
               </Button>
-              <Button variant="outline" size="lg" borderColor="brand.400" color="brand.400" rightIcon={<ExternalLinkIcon />} w={{ base: "100%", sm: "auto" }} onClick={() => window.open(YOUTUBE_DEMO_URL, "_blank")}>
+              <Button
+                variant="ghost"
+                border="1px solid"
+                borderColor="rgba(255,255,255,0.15)"
+                color="rgba(255,255,255,0.7)"
+                borderRadius="full"
+                px={6}
+                py={3}
+                _hover={{ bg: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.3)", color: "white" }}
+                rightIcon={<ExternalLinkIcon />}
+                onClick={() => window.open(YOUTUBE_DEMO_URL, "_blank")}
+              >
                 Watch full demo on YouTube
               </Button>
             </Stack>
-          </VStack>
-        </Section>
+          </Container>
+        </Box>
 
         <Box h={{ base: "80px", md: "140px" }} />
 
         {/* WHY SWITCHPAY */}
-        <Section id="why" bg={useColorModeValue("linear(to-b, gray.50, purple.50)", "linear(to-b, gray.800, gray.900)")}>
+        <Section id="why" bg="#030303">
           <VStack align="start" spacing={8}>
-            <Heading size="xl">Why switchpay</Heading>
+            <Heading size="xl" bgGradient="linear(to-r, #a5b4fc, rgba(255,255,255,0.9))" bgClip="text">Why switchpay</Heading>
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} w="100%">
               <ValueCard title="Plug & Play" text="Integrate in minutes. A ready-to-use backend (FastAPI) and frontend (React) built for fast iteration and seamless scaling." />
               <ValueCard title="Idempotency by design" text="Never lose sleep over duplicate payments. Every request is safe: same key for same response, always." />
@@ -486,7 +497,7 @@ export default function Landing() {
         </Section>
 
         {/* AI ASSISTANT */}
-        <Section id="assistant" py={{ base: 18, md: 28 }} bg={pageBg}>
+        <Section id="assistant" py={{ base: 18, md: 28 }} bg="#030303">
           <VStack spacing={{ base: 10, md: 14 }} align="center" textAlign="center">
             <Heading as="h2" fontSize={{ base: "2xl", sm: "3xl", md: "5xl", lg: "6xl" }} fontWeight="800" lineHeight="1.05" bgGradient="linear(to-r, whiteAlpha.900, gray.400)" bgClip="text" letterSpacing="-0.02em" textAlign="center" px={{ base: 2, md: 0 }}>
               Meet switchpayAI
@@ -507,7 +518,21 @@ export default function Landing() {
                 </GlowCard>
               ))}
             </SimpleGrid>
-            <Button size="lg" w={{ base: "100%", sm: "auto" }} px={10} py={6} borderRadius="full" bg="transparent" border="1px solid" borderColor={buttonBorder} backdropFilter="blur(20px) saturate(180%)" color={buttonColor} fontWeight="semibold" _hover={{ bg: buttonHoverBg, transform: "scale(1.03)" }} transition="all .3s ease" onClick={() => scrollTo("#pricing")}>
+            <Button
+              size="lg"
+              w={{ base: "100%", sm: "auto" }}
+              px={8}
+              py={3}
+              borderRadius="full"
+              variant="ghost"
+              border="1px solid"
+              borderColor="rgba(255,255,255,0.15)"
+              color="rgba(255,255,255,0.7)"
+              fontWeight="semibold"
+              _hover={{ bg: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.3)", color: "white" }}
+              transition="all 0.2s"
+              onClick={() => scrollTo("#pricing")}
+            >
               🚀 Launch Assistant
             </Button>
           </VStack>
@@ -515,22 +540,22 @@ export default function Landing() {
         </Section>
 
         {/* SECURITY */}
-        <Section id="security" bg={useColorModeValue("linear(to-r, gray.50, white)", "linear(to-r, gray.900, gray.800)")}>
+        <Section id="security" bg="#030303">
           <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 8, md: 10 }} alignItems="center">
             <VStack align="start" spacing={6}>
-              <Heading size="xl">Security & Reliability</Heading>
+              <Heading size="xl" color="white">Security & Reliability</Heading>
               <Text color={subText}>
                 Start with simulated PSPs and switch seamlessly to real providers (Stripe, Adyen, Wise…) when you're ready.
               </Text>
               <HStack spacing={3} flexWrap="wrap">
-                <Badge colorScheme="green" px={3} py={1} borderRadius="full"><LockIcon mr={1} /> API Key</Badge>
-                <Badge colorScheme="purple" px={3} py={1} borderRadius="full">Idempotency</Badge>
-                <Badge colorScheme="blue" px={3} py={1} borderRadius="full">Metrics</Badge>
+                <Badge bg="rgba(99,102,241,0.15)" color="#a5b4fc" border="1px solid" borderColor="rgba(99,102,241,0.3)" px={3} py={1} borderRadius="full"><LockIcon mr={1} /> API Key</Badge>
+                <Badge bg="rgba(139,92,246,0.15)" color="#c4b5fd" border="1px solid" borderColor="rgba(139,92,246,0.3)" px={3} py={1} borderRadius="full">Idempotency</Badge>
+                <Badge bg="rgba(6,182,212,0.15)" color="#67e8f9" border="1px solid" borderColor="rgba(6,182,212,0.3)" px={3} py={1} borderRadius="full">Metrics</Badge>
               </HStack>
             </VStack>
             <GlowCard>
               <VStack align="stretch" spacing={4}>
-                <Heading size="md">Next steps</Heading>
+                <Heading size="md" color="white">Next steps</Heading>
                 <RoadmapItem text="Connect your first sandbox (e.g. Stripe PaymentIntent)." />
                 <RoadmapItem text="Enable retry & failover with PSP fallback." />
                 <RoadmapItem text="Optimize routing score." />
@@ -540,28 +565,50 @@ export default function Landing() {
         </Section>
 
         {/* WAITLIST */}
-        <Section id="waitlist">
+        <Section id="waitlist" bg="#030303">
           <VStack spacing={6} align="center" textAlign="center">
-            <Heading size="xl">Join the waitlist</Heading>
+            <Heading size="xl" bgGradient="linear(to-r, #a5b4fc, rgba(255,255,255,0.9))" bgClip="text">Join the waitlist</Heading>
             {!waitlistSuccess ? (
               <>
-                <Input placeholder="you@company.com" value={waitlistEmail} onChange={(e) => setWaitlistEmail(e.target.value)} maxW="420px" w="100%" />
-                <Button onClick={submitWaitlist} isLoading={waitlistLoading} w={{ base: "100%", sm: "auto" }}>
+                <Input
+                  placeholder="you@company.com"
+                  value={waitlistEmail}
+                  onChange={(e) => setWaitlistEmail(e.target.value)}
+                  maxW="420px"
+                  w="100%"
+                  bg="rgba(255,255,255,0.05)"
+                  border="1px solid"
+                  borderColor="rgba(255,255,255,0.1)"
+                  borderRadius="xl"
+                  color="white"
+                  _placeholder={{ color: "rgba(255,255,255,0.3)" }}
+                  _focus={{ borderColor: "rgba(99,102,241,0.5)", boxShadow: "0 0 0 1px rgba(99,102,241,0.3)" }}
+                />
+                <Button
+                  onClick={submitWaitlist}
+                  isLoading={waitlistLoading}
+                  w={{ base: "100%", sm: "auto" }}
+                  bgGradient="linear(to-r, #6366f1, #7c3aed)"
+                  color="white"
+                  borderRadius="full"
+                  px={8}
+                  _hover={{ filter: "brightness(1.1)", transform: "scale(1.02)" }}
+                >
                   Join the waitlist
                 </Button>
                 {waitlistError && <Text color="red.400">{waitlistError}</Text>}
               </>
             ) : (
-              <Text>You're on the list 🚀</Text>
+              <Text color="rgba(255,255,255,0.7)">You're on the list 🚀</Text>
             )}
           </VStack>
         </Section>
 
         {/* PRICING */}
-        <Section id="pricing" bg={useColorModeValue("linear(to-b, white, gray.50)", "linear(to-b, gray.900, gray.800)")}>
+        <Section id="pricing" bg="#030303">
           <VStack spacing={10} align="center" textAlign="center">
             <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} viewport={{ once: true }}>
-              <Heading as="h2" fontSize={{ base: "2xl", sm: "3xl", md: "4xl", lg: "5xl" }} fontWeight="800" lineHeight="1.1" bgGradient="linear(to-r, whiteAlpha.900, gray.400)" bgClip="text" letterSpacing="-0.02em" textAlign="center" px={{ base: 2, md: 0 }}>
+              <Heading as="h2" fontSize={{ base: "2xl", sm: "3xl", md: "4xl", lg: "5xl" }} fontWeight="800" lineHeight="1.1" bgGradient="linear(to-r, #a5b4fc, rgba(255,255,255,0.9))" bgClip="text" letterSpacing="-0.02em" textAlign="center" px={{ base: 2, md: 0 }}>
                 Simple and transparent pricing.
               </Heading>
               <Text fontSize={{ base: "md", md: "lg" }} color={subText} px={{ base: 2, md: 0 }}>
@@ -571,9 +618,9 @@ export default function Landing() {
 
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8} w="100%" maxW="6xl">
               {PRICING_TIERS.map((tier, i) => (
-                <GlowCard key={i} p={{ base: 6, md: 8 }} borderWidth={tier.highlight ? "2px" : "1px"} borderColor={tier.premium ? "yellow.400" : tier.highlight ? "brand.400" : borderCol} transition="all 0.35s ease" _hover={{ transform: { base: "none", md: "scale(1.04)" }, boxShadow: tier.premium ? "0 0 50px rgba(255, 215, 0, 0.35)" : tier.highlight ? "0 0 40px rgba(123, 63, 252, 0.3)" : "0 0 25px rgba(35,104,245,0.2)" }} display="flex" flexDirection="column" bg={tier.premium ? premiumBg : "inherit"}>
+                <GlowCard key={i} p={{ base: 6, md: 8 }} borderWidth={tier.highlight ? "2px" : "1px"} borderColor={tier.premium ? "rgba(245,158,11,0.5)" : tier.highlight ? "rgba(99,102,241,0.4)" : borderCol} transition="all 0.35s ease" _hover={{ transform: { base: "none", md: "scale(1.04)" }, boxShadow: tier.premium ? "0 0 50px rgba(245,158,11,0.3)" : tier.highlight ? "0 0 40px rgba(99,102,241,0.4)" : "0 0 25px rgba(99,102,241,0.15)" }} display="flex" flexDirection="column" bg={tier.premium ? premiumBg : tier.highlight ? "rgba(99,102,241,0.05)" : "inherit"}>
                   <VStack spacing={4} flex="1" align="stretch">
-                    <Badge alignSelf="center" colorScheme={tier.premium ? "yellow" : tier.highlight ? "purple" : "gray"} variant={tier.premium ? "solid" : tier.highlight ? "solid" : "subtle"} px={3} py={1} borderRadius="full">
+                    <Badge alignSelf="center" bg={tier.premium ? "rgba(245,158,11,0.2)" : tier.highlight ? "rgba(99,102,241,0.2)" : "rgba(255,255,255,0.06)"} color={tier.premium ? "#fcd34d" : tier.highlight ? "#a5b4fc" : "rgba(255,255,255,0.6)"} border="1px solid" borderColor={tier.premium ? "rgba(245,158,11,0.3)" : tier.highlight ? "rgba(99,102,241,0.3)" : "rgba(255,255,255,0.1)"} px={3} py={1} borderRadius="full">
                       {tier.title}
                     </Badge>
                     <Heading size="2xl" textAlign="center">{tier.price}</Heading>
@@ -581,7 +628,7 @@ export default function Landing() {
                     <VStack spacing={2} align="start" flex="1">
                       {tier.features.map((f, idx) => (
                         <HStack key={idx} spacing={2}>
-                          <CheckCircleIcon color={tier.premium ? "yellow.400" : "green.400"} />
+                          <CheckCircleIcon color={tier.premium ? "#fcd34d" : "#a5b4fc"} />
                           <Text>{f}</Text>
                         </HStack>
                       ))}
@@ -598,11 +645,10 @@ export default function Landing() {
                       letterSpacing="0.02em"
                       borderRadius="full"
                       color="white"
-                      bgGradient={tier.premium ? "linear(to-r, #facc15, #f59e0b, #d97706)" : "linear(to-r, #06b6d4, #7c3aed, #ec4899)"}
-                      bgSize="200% 200%"
-                      transition="all 0.35s ease"
-                      boxShadow={tier.premium ? "0 0 25px rgba(245, 158, 11, 0.35)" : "0 0 25px rgba(236, 72, 153, 0.25)"}
-                      _hover={{ backgroundPosition: "100% 50%", transform: { base: "none", md: "translateY(-2px) scale(1.03)" }, filter: "brightness(1.06)" }}
+                      bgGradient={tier.premium ? "linear(to-r, #facc15, #f59e0b, #d97706)" : "linear(to-r, #6366f1, #7c3aed)"}
+                      transition="all 0.2s ease"
+                      boxShadow={tier.premium ? "0 0 25px rgba(245,158,11,0.35)" : "0 0 20px rgba(99,102,241,0.3)"}
+                      _hover={{ transform: { base: "none", md: "scale(1.03)" }, boxShadow: tier.premium ? "0 0 35px rgba(245,158,11,0.5)" : "0 0 30px rgba(99,102,241,0.5)" }}
                       onClick={() => { if (tier.price === "Custom") navigate("/contact"); else scrollTo("#waitlist"); }}
                     >
                       {tier.price === "Custom" ? "Contact us" : "Join waitlist"}
@@ -618,16 +664,16 @@ export default function Landing() {
         <Section id="cta">
           <GlowCard display="flex" flexDirection={{ base: "column", md: "row" }} alignItems={{ base: "stretch", md: "center" }} gap={{ base: 6, md: 0 }} p={{ base: 7, md: 12 }}>
             <VStack align="start" spacing={3} flex="1">
-              <Heading size="lg">Start routing smarter, today.</Heading>
+              <Heading size="lg" color="white">Start routing smarter, today.</Heading>
               <Text color={subText}>Jump into the app and create your first transaction.</Text>
             </VStack>
             <Spacer display={{ base: "none", md: "block" }} />
             <Stack direction={{ base: "column", sm: "row" }} spacing={3} w={{ base: "100%", md: "auto" }}>
-              <MagneticButton onClick={() => navigate("/app")} w={{ base: "100%", sm: "auto" }} px={7} py={3.5} fontSize="md" fontWeight="700" bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)" color="white" borderRadius="full">
+              <MagneticButton onClick={() => navigate("/app")} w={{ base: "100%", sm: "auto" }} px={7} py={3.5} fontSize="md" fontWeight="semibold" bgGradient="linear(to-r, #6366f1, #7c3aed)" color="white" borderRadius="full" border="none" _hover={{ transform: "scale(1.03)", boxShadow: "0 0 30px rgba(99,102,241,0.4)" }} transition="all 0.2s">
                 Try the sandbox
               </MagneticButton>
-              <Button variant="outline" borderColor="brand.400" color="brand.400" w={{ base: "100%", sm: "auto" }} onClick={() => scrollTo("#waitlist")}>
-                Join waitlist
+              <Button variant="ghost" border="1px solid" borderColor="rgba(255,255,255,0.15)" color="rgba(255,255,255,0.7)" borderRadius="full" w={{ base: "100%", sm: "auto" }} _hover={{ bg: "rgba(255,255,255,0.05)", color: "white" }} onClick={() => scrollTo("#waitlist")}>
+                Join the waitlist
               </Button>
             </Stack>
           </GlowCard>
@@ -635,15 +681,15 @@ export default function Landing() {
         </Section>
 
         {/* FAQ */}
-        <Section id="faq" bg="linear-gradient(to-b, #0f172a, #1e293b)" color="whiteAlpha.900" py={{ base: 16, md: 20 }}>
+        <Section id="faq" bg="#030303" color="white" py={{ base: 16, md: 20 }}>
           <VStack align="start" spacing={8} maxW="4xl" mx="auto" w="100%">
-            <Heading size="xl" fontWeight="extrabold" bgGradient="linear(to-r, #60a5fa, #a78bfa)" bgClip="text">
+            <Heading size="xl" fontWeight="extrabold" bgGradient="linear(to-r, #a5b4fc, rgba(255,255,255,0.9))" bgClip="text">
               Everything you need to know
             </Heading>
             <Text fontSize={{ base: "md", md: "lg" }} color="whiteAlpha.700">
               Got questions? We've got answers. Everything about SwitchPay, explained.
             </Text>
-            <Accordion allowToggle w="100%" borderColor="whiteAlpha.200">
+            <Accordion allowToggle w="100%" borderColor="rgba(255,255,255,0.08)">
               {[
                 { q: "What exactly does switchpay do?", a: 'switchpay intelligently routes every transaction to the most efficient PSP based on country, currency, fees, and device. Think of it as <strong>"Stripe + Adyen + Rapyd"</strong> behind one adaptive API.' },
                 { q: "How do I try it right now?", a: null },
@@ -651,17 +697,17 @@ export default function Landing() {
                 { q: "Is switchpay live or just a prototype?", a: "The current build is a <strong>live sandbox environment</strong> running on FastAPI and React. It's built for testing: every transaction uses simulated data but real PSP logic. The goal is to demonstrate how a unified routing layer could simplify multi-PSP operations." },
                 { q: "Can I integrate this into my own app right now?", a: "Yes, switchpay is designed as an API-first router. The same logic powering this demo can be embedded in your stack to automatically route payments, minimize fees, and improve success rates across markets." },
               ].map((item, i) => (
-                <AccordionItem key={i} border="none">
-                  <AccordionButton _expanded={{ bg: "whiteAlpha.100" }} px={4} py={3} borderRadius="lg">
+                <AccordionItem key={i} borderColor="rgba(255,255,255,0.08)">
+                  <AccordionButton _expanded={{ bg: "rgba(255,255,255,0.05)" }} _hover={{ bg: "rgba(255,255,255,0.03)" }} px={4} py={3} borderRadius="lg" color="rgba(255,255,255,0.7)">
                     <Box flex="1" textAlign="left" fontWeight="semibold">{item.q}</Box>
-                    <AccordionIcon />
+                    <Box color="#a5b4fc"><AccordionIcon /></Box>
                   </AccordionButton>
-                  <AccordionPanel pb={4} color="whiteAlpha.800">
+                  <AccordionPanel pb={4} color="rgba(255,255,255,0.6)">
                     {i === 1 ? (
                       <>
                         Jump into the <strong>Sandbox</strong> section above.
                         <Box mt={3}>
-                          <Button as={Link} to="/app" bgGradient="linear(to-r, #2563eb, #7c3aed)" color="white" borderRadius="full" size="sm" px={5} py={2} _hover={{ filter: "brightness(1.2)" }}>
+                          <Button as={Link} to="/app" bgGradient="linear(to-r, #6366f1, #7c3aed)" color="white" borderRadius="full" size="sm" px={5} py={2} _hover={{ filter: "brightness(1.2)" }}>
                             Make a transaction
                           </Button>
                         </Box>
@@ -677,7 +723,7 @@ export default function Landing() {
         </Section>
 
         {/* SOCIALS */}
-        <Section id="socials" bg={useColorModeValue("linear(to-r, white, gray.50)", "linear(to-r, gray.800, gray.900)")}>
+        <Section id="socials" bg="rgba(255,255,255,0.02)">
           <GlowCard>
             <Flex align="center" gap={6} wrap="wrap" justify="space-between">
               <VStack align="start" spacing={1}>
@@ -686,13 +732,13 @@ export default function Landing() {
               </VStack>
               <HStack spacing={3} flexWrap="wrap">
                 <Tooltip label="LinkedIn">
-                  <Button as="a" href={SOCIAL_LINKS.linkedin} target="_blank" rel="noreferrer" leftIcon={<Icon as={FaLinkedin} />} variant="outline">LinkedIn</Button>
+                  <Button as="a" href={SOCIAL_LINKS.linkedin} target="_blank" rel="noreferrer" leftIcon={<Icon as={FaLinkedin} />} bg="rgba(255,255,255,0.04)" border="1px solid" borderColor="rgba(255,255,255,0.1)" color="rgba(255,255,255,0.7)" borderRadius="full" backdropFilter="blur(8px)" _hover={{ bg: "rgba(99,102,241,0.15)", borderColor: "rgba(99,102,241,0.3)", color: "white" }}>LinkedIn</Button>
                 </Tooltip>
                 <Tooltip label="X / Twitter">
-                  <Button as="a" href={SOCIAL_LINKS.twitter} target="_blank" rel="noreferrer" leftIcon={<Icon as={FaTwitter} />} variant="outline">X</Button>
+                  <Button as="a" href={SOCIAL_LINKS.twitter} target="_blank" rel="noreferrer" leftIcon={<Icon as={FaTwitter} />} bg="rgba(255,255,255,0.04)" border="1px solid" borderColor="rgba(255,255,255,0.1)" color="rgba(255,255,255,0.7)" borderRadius="full" backdropFilter="blur(8px)" _hover={{ bg: "rgba(99,102,241,0.15)", borderColor: "rgba(99,102,241,0.3)", color: "white" }}>X</Button>
                 </Tooltip>
                 <Tooltip label="Instagram">
-                  <Button as="a" href={SOCIAL_LINKS.instagram} target="_blank" rel="noreferrer" leftIcon={<Icon as={SiInstagram} />} variant="outline">Instagram</Button>
+                  <Button as="a" href={SOCIAL_LINKS.instagram} target="_blank" rel="noreferrer" leftIcon={<Icon as={SiInstagram} />} bg="rgba(255,255,255,0.04)" border="1px solid" borderColor="rgba(255,255,255,0.1)" color="rgba(255,255,255,0.7)" borderRadius="full" backdropFilter="blur(8px)" _hover={{ bg: "rgba(99,102,241,0.15)", borderColor: "rgba(99,102,241,0.3)", color: "white" }}>Instagram</Button>
                 </Tooltip>
               </HStack>
             </Flex>
@@ -705,13 +751,13 @@ export default function Landing() {
             <Flex align="center" gap={4} wrap="wrap">
               <HStack spacing={3}>
                 <Box w="10px" h="10px" borderRadius="full" bgGradient="linear(to-br, brand.400, brand.600)" />
-                <Text>© {new Date().getFullYear()} SwitchPay</Text>
+                <Text color="rgba(255,255,255,0.35)">© {new Date().getFullYear()} SwitchPay</Text>
               </HStack>
               <Spacer />
               <HStack spacing={4} flexWrap="wrap">
-                <ChakraLink as="a" href={SOCIAL_LINKS.twitter} isExternal>X</ChakraLink>
-                <ChakraLink as="a" href={SOCIAL_LINKS.linkedin} isExternal>LinkedIn</ChakraLink>
-                <ChakraLink as="a" href={SOCIAL_LINKS.substack} isExternal>Substack</ChakraLink>
+                <ChakraLink as="a" href={SOCIAL_LINKS.twitter} isExternal color="rgba(255,255,255,0.4)" _hover={{ color: "#a5b4fc" }}>X</ChakraLink>
+                <ChakraLink as="a" href={SOCIAL_LINKS.linkedin} isExternal color="rgba(255,255,255,0.4)" _hover={{ color: "#a5b4fc" }}>LinkedIn</ChakraLink>
+                <ChakraLink as="a" href={SOCIAL_LINKS.substack} isExternal color="rgba(255,255,255,0.4)" _hover={{ color: "#a5b4fc" }}>Substack</ChakraLink>
               </HStack>
             </Flex>
           </Container>
@@ -720,10 +766,10 @@ export default function Landing() {
         {/* FLOATING CTA */}
         {showFloatingCTA && (
           <Box position="fixed" bottom={{ base: "14px", md: "24px" }} left="50%" transform="translateX(-50%)" zIndex={200} w={{ base: "calc(100% - 24px)", sm: "auto" }} maxW="520px">
-            <GlowCard p={3} borderRadius="full" bg="rgba(20,25,45,0.72)" backdropFilter="saturate(180%) blur(18px)" border="1px solid rgba(255,255,255,0.10)">
+            <GlowCard p={3} borderRadius="full" bg="rgba(3,3,3,0.85)" backdropFilter="saturate(180%) blur(18px)" border="1px solid rgba(255,255,255,0.08)">
               <Stack direction={{ base: "column", sm: "row" }} spacing={3}>
-                <Button onClick={() => navigate("/app")} w={{ base: "100%", sm: "auto" }} bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)" color="white" borderRadius="full">Try the sandbox</Button>
-                <Button variant="outline" borderColor="brand.400" color="brand.400" w={{ base: "100%", sm: "auto" }} onClick={() => scrollTo("#waitlist")}>Join waitlist</Button>
+                <Button onClick={() => navigate("/app")} w={{ base: "100%", sm: "auto" }} bgGradient="linear(to-r, #6366f1, #7c3aed)" color="white" borderRadius="full">Try the sandbox</Button>
+                <Button variant="ghost" border="1px solid" borderColor="rgba(255,255,255,0.2)" color="rgba(255,255,255,0.7)" borderRadius="full" w={{ base: "100%", sm: "auto" }} _hover={{ bg: "rgba(255,255,255,0.05)", color: "white" }} onClick={() => scrollTo("#waitlist")}>Join waitlist</Button>
               </Stack>
             </GlowCard>
           </Box>

@@ -74,23 +74,31 @@ export default function Contact() {
     <Box
       position="relative"
       minH="100vh"
-      bg="radial-gradient(circle at 30% 20%, rgba(255,255,255,0.08), rgba(0,0,0,0.85) 80%)"
       display="flex"
       alignItems="center"
       justifyContent="center"
       px={6}
       py={20}
-      _before={{
-        content: '""',
-        position: "absolute",
-        inset: 0,
-        bgImage: "url('/mid-shot-woman-talking-phone-table.jpg')",
-        bgSize: "cover",
-        bgPos: "center",
-        filter: "blur(4px) brightness(0.35)",
-        zIndex: 0,
-      }}
+      overflow="hidden"
     >
+      {/* Background image */}
+      <Box
+        position="absolute"
+        inset={0}
+        bgImage="url('/mid-shot-woman-talking-phone-table.jpg')"
+        bgSize="cover"
+        bgPos="center"
+        filter="blur(4px) brightness(0.3)"
+        zIndex={0}
+        transform="scale(1.05)"
+      />
+      {/* Dark overlay */}
+      <Box
+        position="absolute"
+        inset={0}
+        bg="rgba(3,3,3,0.55)"
+        zIndex={0}
+      />
       <MotionBox
         position="relative"
         maxW="4xl"
