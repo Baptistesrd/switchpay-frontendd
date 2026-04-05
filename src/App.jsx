@@ -30,11 +30,18 @@ import DashCharts from "./components/DashCharts";
 import GlowCard from "./components/GlowCard";
 import BackgroundFX from "./components/BackgroundFX";
 import Navbar from "./components/Navbar";
+import RoutingEngine from "./components/RoutingEngine";
+import DashboardErrorBoundary from "./components/DashboardErrorBoundary";
 
 const MotionBox = motion(Box);
 
+const EMPTY_METRICS = { summary: {}, by_psp: {}, thompson: {} };
+
 export default function App() {
   const [transactions, setTransactions] = useState([]);
+  const [metricsData, setMetricsData] = useState(EMPTY_METRICS);
+  const [strategy, setStrategy] = useState("weighted_score");
+  const [lastUpdated, setLastUpdated] = useState(null);
   const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "");
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
@@ -46,52 +53,78 @@ export default function App() {
     axios.defaults.headers.common["x-api-key"] = key;
   };
 
+  const fetchTransactions = async (explicitKey) => {
+    try {
+      const keyToUse = explicitKey || apiKey || localStorage.getItem("apiKey");
+      if (!keyToUse) return;
+      const res = await axios.get(`${BACKEND_URL}/transactions`, {
+        headers: { "x-api-key": keyToUse },
+      });
+      setTransactions(res.data || []);
+    } catch (err) {
+      console.error("Error fetching transactions:", err);
+    }
+  };
+
+  const fetchMetrics = async () => {
+    try {
+      const res = await axios.get(`${BACKEND_URL}/metrics`);
+      setMetricsData(res.data || EMPTY_METRICS);
+    } catch (err) {
+      console.error("Error fetching metrics:", err);
+    }
+  };
+
+  const fetchAll = async (explicitKey) => {
+    await Promise.all([fetchTransactions(explicitKey), fetchMetrics()]);
+    setLastUpdated(new Date());
+  };
+
+  // Mount: get temp key, fetch health for strategy, then fetch all data
   useEffect(() => {
-    async function createTempKey() {
+    axios
+      .get(`${BACKEND_URL}/health`)
+      .then((res) => setStrategy(res.data?.strategy || "weighted_score"))
+      .catch(() => {});
+
+    async function init() {
       try {
         const res = await axios.get(`${BACKEND_URL}/generate-temp-key`);
         const key = res.data?.api_key;
         if (key) {
           setAndUseApiKey(key);
-          await fetchTransactions(key);
+          await fetchAll(key);
         } else {
           const fallback = localStorage.getItem("apiKey");
-          if (fallback) setAndUseApiKey(fallback);
+          if (fallback) {
+            setAndUseApiKey(fallback);
+            await fetchAll(fallback);
+          }
         }
       } catch (err) {
         console.error("Failed to generate temp key:", err);
         const fallback = localStorage.getItem("apiKey");
-        if (fallback) setAndUseApiKey(fallback);
+        if (fallback) {
+          setAndUseApiKey(fallback);
+          await fetchAll(fallback);
+        }
       }
     }
 
-    createTempKey();
+    init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetchTransactions = async (explicitKey) => {
-  try {
-    const keyToUse = explicitKey || apiKey || localStorage.getItem("apiKey");
-    if (!keyToUse) return;
-
-    const res = await axios.get(
-      `${BACKEND_URL}/transactions`,
-      {
-        headers: {
-          "x-api-key": keyToUse,
-        },
-      }
-    );
-
-    setTransactions(res.data || []);
-  } catch (err) {
-    console.error("❌ Error fetching transactions:", err);
-    setTransactions([]);
-  }
-};
-
-
+  // 30-second silent polling — no loading spinner, just background refresh
   useEffect(() => {
-    if (apiKey) fetchTransactions(apiKey);
+    if (!apiKey) return;
+    const id = setInterval(() => {
+      fetchTransactions(apiKey);
+      fetchMetrics();
+      setLastUpdated(new Date());
+    }, 30000);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apiKey]);
 
   const totalAmount = useMemo(
@@ -126,19 +159,48 @@ export default function App() {
       />
       <BackgroundFX fixed />
 
-      <Navbar onRefresh={() => fetchTransactions(apiKey)} />
+      <Navbar
+        onRefresh={() => fetchAll(apiKey)}
+        lastUpdated={lastUpdated}
+      />
 
       <Box position="relative" zIndex={1} maxW="7xl" mx="auto" px={6} py={16}>
         {/* Hero */}
-        <MotionBox textAlign="center" mb={16} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-          <Heading as="h1" fontSize={{ base: "5xl", md: "7xl", lg: "8xl" }} fontWeight="extrabold" lineHeight="1.1">
+        <MotionBox
+          textAlign="center"
+          mb={16}
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <Heading
+            as="h1"
+            fontSize={{ base: "5xl", md: "7xl", lg: "8xl" }}
+            fontWeight="extrabold"
+            lineHeight="1.1"
+          >
             Start a transaction{" "}
-            <Box as="span" bgGradient="linear(to-r, brand.500, brand.300)" bgClip="text">
+            <Box
+              as="span"
+              bgGradient="linear(to-r, brand.500, brand.300)"
+              bgClip="text"
+            >
               now.
             </Box>
           </Heading>
           <HStack spacing={4} justify="center" mt={10}>
-            <Button type="button" onClick={() => navigate("/contact")} variant="outline" borderRadius="full" px={6} py={2.5} fontWeight="medium" fontSize="sm" rightIcon={<ExternalLinkIcon />} w={{ base: "100%", sm: "auto" }}>
+            <Button
+              type="button"
+              onClick={() => navigate("/contact")}
+              variant="outline"
+              borderRadius="full"
+              px={6}
+              py={2.5}
+              fontWeight="medium"
+              fontSize="sm"
+              rightIcon={<ExternalLinkIcon />}
+              w={{ base: "100%", sm: "auto" }}
+            >
               Contact Us
             </Button>
           </HStack>
@@ -147,13 +209,22 @@ export default function App() {
         <Tabs variant="soft-rounded" colorScheme="purple" isFitted>
           <TabList mb={8}>
             {["New Transaction", "Transaction History", "Dashboard"].map((label) => (
-              <Tab key={label} fontWeight="semibold" _selected={{ color: "white", bgGradient: "linear(to-r, brand.500, brand.300)" }} _hover={{ bg: "whiteAlpha.100" }}>
+              <Tab
+                key={label}
+                fontWeight="semibold"
+                _selected={{
+                  color: "white",
+                  bgGradient: "linear(to-r, brand.500, brand.300)",
+                }}
+                _hover={{ bg: "whiteAlpha.100" }}
+              >
                 {label}
               </Tab>
             ))}
           </TabList>
 
           <TabPanels>
+            {/* ── New Transaction ── */}
             <TabPanel>
               <GlowCard p={8} interactive={false}>
                 <Heading size="md" mb={2}>
@@ -162,12 +233,11 @@ export default function App() {
                 <Text mb={6} color="gray.400">
                   Fill the form and send — routing happens in your FastAPI backend.
                 </Text>
-
-                {/* TransactionForm reads localStorage("apiKey") so no prop needed, but we keep fetch callback */}
-                <TransactionForm onNewTransaction={() => fetchTransactions(apiKey)} />
+                <TransactionForm onNewTransaction={() => fetchAll(apiKey)} />
               </GlowCard>
             </TabPanel>
 
+            {/* ── Transaction History ── */}
             <TabPanel>
               <GlowCard p={6}>
                 <HStack justify="space-between" mb={4} wrap="wrap" spacing={3}>
@@ -182,35 +252,49 @@ export default function App() {
               </GlowCard>
             </TabPanel>
 
+            {/* ── Dashboard ── */}
             <TabPanel>
-              <SimpleGrid columns={[1, 2, 4]} spacing={6} mb={8}>
-                <KpiCard label="Total Volume">
-                  <StatNumber>
-                    <Counter to={totalAmount} isMoney decimals={2} />
-                  </StatNumber>
-                </KpiCard>
-                <KpiCard label="# Transactions">
-                  <StatNumber>
-                    <Counter to={count} />
-                  </StatNumber>
-                </KpiCard>
-                <KpiCard label="Success Rate">
-                  <StatNumber>{successRate}%</StatNumber>
-                </KpiCard>
-                <KpiCard label="Failures">
-                  <StatNumber>
-                    <Counter to={failCount} />
-                  </StatNumber>
-                </KpiCard>
-              </SimpleGrid>
+              <DashboardErrorBoundary>
+                {/* KPI cards */}
+                <SimpleGrid columns={[1, 2, 4]} spacing={6} mb={8}>
+                  <KpiCard label="Total Volume">
+                    <StatNumber>
+                      <Counter to={totalAmount} isMoney decimals={2} />
+                    </StatNumber>
+                  </KpiCard>
+                  <KpiCard label="# Transactions">
+                    <StatNumber>
+                      <Counter to={count} />
+                    </StatNumber>
+                  </KpiCard>
+                  <KpiCard label="Success Rate">
+                    <StatNumber>{successRate}%</StatNumber>
+                  </KpiCard>
+                  <KpiCard label="Failures">
+                    <StatNumber>
+                      <Counter to={failCount} />
+                    </StatNumber>
+                  </KpiCard>
+                </SimpleGrid>
 
-              <GlowCard p={6}>
-                <Heading size="md" mb={4}>
-                  Analytics
-                </Heading>
-                <Divider mb={4} />
-                <DashCharts transactions={transactions} />
-              </GlowCard>
+                {/* Analytics charts */}
+                <GlowCard p={6} mb={6}>
+                  <Heading size="md" mb={4}>
+                    Analytics
+                  </Heading>
+                  <Divider mb={4} />
+                  <DashCharts transactions={transactions} metricsData={metricsData} />
+                </GlowCard>
+
+                {/* Routing Engine panel */}
+                <GlowCard p={6}>
+                  <Heading size="md" mb={4}>
+                    Routing Engine
+                  </Heading>
+                  <Divider mb={4} />
+                  <RoutingEngine metricsData={metricsData} strategy={strategy} />
+                </GlowCard>
+              </DashboardErrorBoundary>
             </TabPanel>
           </TabPanels>
         </Tabs>

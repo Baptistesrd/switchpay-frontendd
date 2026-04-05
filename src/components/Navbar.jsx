@@ -22,7 +22,7 @@ import { Link } from "react-router-dom";
 import { motion, useScroll } from "framer-motion";
 import { useEffect, useState } from "react";
 
-export default function Navbar({ onRefresh }) {
+export default function Navbar({ onRefresh, lastUpdated }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { scrollY } = useScroll();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -74,6 +74,11 @@ export default function Navbar({ onRefresh }) {
         <Spacer />
 
         <HStack spacing={4} display={{ base: "none", md: "flex" }}>
+          {lastUpdated && (
+            <Text fontSize="xs" color="whiteAlpha.400" userSelect="none">
+              Updated {lastUpdated.toLocaleTimeString()}
+            </Text>
+          )}
           <Tooltip label="Refresh sandbox" hasArrow>
             <IconButton
               aria-label="refresh"

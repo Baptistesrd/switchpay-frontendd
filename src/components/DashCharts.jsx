@@ -119,12 +119,23 @@ function computeRoutingInsight(transactions) {
   };
 }
 
-export default function DashCharts({ transactions }) {
+export default function DashCharts({ transactions, metricsData }) {
   const cardBg = useColorModeValue("white", "gray.800");
   const borderCol = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
 
   const daily = useMemo(() => groupByDay(transactions), [transactions]);
-  const pspDist = useMemo(() => byPSP(transactions), [transactions]);
+  // Use decay-weighted counts from the scoring engine when available;
+  // fall back to raw transaction list counts otherwise.
+  const pspDist = useMemo(() => {
+    const byPsp = metricsData?.by_psp;
+    if (byPsp && Object.keys(byPsp).length > 0) {
+      return Object.entries(byPsp).map(([psp, stats]) => ({
+        psp,
+        count: stats.transaction_count,
+      }));
+    }
+    return byPSP(transactions);
+  }, [transactions, metricsData]);
   const latencyDist = useMemo(() => latencyHistogram(transactions), [transactions]);
   const insight = useMemo(() => computeRoutingInsight(transactions), [transactions]);
 

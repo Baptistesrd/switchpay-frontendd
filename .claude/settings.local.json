@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx react-scripts:*)",
+      "Bash(find:*)",
+      "Bash(xargs ls:*)",
+      "Read(//mnt/c/Users/Utilisateur/Desktop/**)",
+      "Read(//c/Users/Utilisateur/Desktop/SwitchPay/**)",
+      "Bash(find /mnt -name \"main.py\" -path \"*/switchpay*\")",
+      "Bash(npm run:*)",
+      "Bash(python3 -c \"print\\(open\\('/c/Users/Utilisateur/Desktop/SwitchPay/switchpay-frontendd/.gitignore','rb'\\).read\\(\\).decode\\('utf-16-le', errors='ignore'\\)\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const buf=fs.readFileSync\\('/c/Users/Utilisateur/Desktop/SwitchPay/switchpay-frontendd/.gitignore'\\); console.log\\(buf.toString\\('utf16le'\\)\\);\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const buf=fs.readFileSync\\('C:/Users/Utilisateur/Desktop/SwitchPay/switchpay-frontendd/.gitignore'\\); console.log\\(buf.toString\\('utf16le'\\)\\);\")"
+    ]
+  }
+}
