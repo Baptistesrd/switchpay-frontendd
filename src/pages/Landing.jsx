@@ -54,6 +54,7 @@ import RoadmapItem from "../components/landing/RoadmapItem";
 import HeroSection from "../components/landing/HeroSection";
 import PspCarousel from "../components/landing/PspCarousel";
 import HowItWorksCards from "../components/landing/HowItWorksCards";
+import HowItWorksTimeline from "../components/HowItWorksTimeline";
 import { NAV_SCROLL_OFFSET, YOUTUBE_DEMO_URL, SOCIAL_LINKS } from "../constants/links";
 
 const MotionBox = motion(Box);
@@ -76,6 +77,13 @@ export default function Landing() {
   const [waitlistError, setWaitlistError] = useState("");
   const [navProgress, setNavProgress] = useState(0);
   const [showFloatingCTA, setShowFloatingCTA] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const fn = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
 
   const subText = "rgba(255,255,255,0.5)";
   const borderCol = "rgba(255,255,255,0.08)";
@@ -171,30 +179,28 @@ export default function Landing() {
 
   return (
     <Layout>
-      <Box position="relative" overflowX="hidden" bg="#030303" minH="100vh">
+      <Box position="relative" bg="#030303" minH="100vh">
         <BackgroundFX />
 
         {/* NAVBAR */}
         <Flex
           as="nav"
           position="fixed"
-          top={{ base: "12px", md: "20px" }}
-          left="50%"
-          w={{ base: "calc(100% - 24px)", md: "100%" }}
-          maxW="6xl"
-          transform={`translateX(-50%) translateY(${(-navProgress * 140).toFixed(2)}px)`}
-          opacity={1 - navProgress}
-          pointerEvents={navProgress >= 1 ? "none" : "auto"}
-          transition="opacity .35s ease, transform .35s ease"
-          willChange="transform, opacity"
+          top="0"
+          left="0"
+          right="0"
+          width="100vw"
+          opacity={scrollY > 80 ? 0 : 1}
+          pointerEvents={scrollY > 80 ? "none" : "auto"}
+          transition="opacity 0.4s ease"
           zIndex="100"
-          bg="rgba(20,25,45,0.65)"
-          backdropFilter="saturate(180%) blur(18px)"
-          border="1px solid"
-          borderColor="rgba(255,255,255,0.1)"
-          borderRadius="full"
-          px={{ base: 4, md: 6 }}
-          py={{ base: 2.5, md: 3 }}
+          bg="#040406"
+          backdropFilter="none"
+          border="none"
+          borderColor="transparent"
+          borderRadius="0"
+          px={{ base: 6, md: 16 }}
+          py={4}
           align="center"
           gap={3}
         >
@@ -330,47 +336,20 @@ export default function Landing() {
         </Flex>
 
         {/* HERO */}
-        <HeroSection />
+        <Box pt="72px">
+          <HeroSection />
+        </Box>
 
         {/* PSP CAROUSEL */}
         <PspCarousel />
 
         {/* HOW IT WORKS */}
-        <Box as="section" id="how" pt={{ base: 8, md: 10 }} pb={{ base: 10, md: 12 }} bg="transparent">
+        <Box as="section" id="how" py={0} bg="transparent" overflow="visible" position="relative" zIndex={1}>
+          <HowItWorksTimeline />
+
+          {/* Payment Stack Map */}
           <Container maxW="6xl" px={{ base: 4, md: 6 }}>
-            {/* Badge + title */}
-            <VStack spacing={5} align="center" mb={10}>
-              <Box
-                display="inline-flex"
-                px={4}
-                py="6px"
-                borderRadius="full"
-                bg="rgba(255,255,255,0.04)"
-                border="1px solid rgba(255,255,255,0.08)"
-                style={{ backdropFilter: "blur(8px)" }}
-              >
-                <Text fontSize="xs" color="rgba(255,255,255,0.5)" letterSpacing="widest" textTransform="uppercase">
-                  How it works
-                </Text>
-              </Box>
-              <Heading fontWeight="bold" fontSize={{ base: "3xl", md: "5xl" }} textAlign="center" lineHeight="1.1">
-                <Box as="span" display="block" color="white">Three steps.</Box>
-                <Box
-                  as="span"
-                  display="block"
-                  bgGradient="linear(to-r, #a5b4fc, rgba(255,255,255,0.9), #fda4af)"
-                  bgClip="text"
-                >
-                  One decision layer.
-                </Box>
-              </Heading>
-            </VStack>
-
-            {/* Step cards */}
-            <HowItWorksCards />
-
-            {/* Payment Stack Map */}
-            <Box w="100%" mt={8}>
+            <Box w="100%" mt={4}>
               <PaymentStackMap />
             </Box>
           </Container>
@@ -533,7 +512,7 @@ export default function Landing() {
               transition="all 0.2s"
               onClick={() => scrollTo("#pricing")}
             >
-              🚀 Launch Assistant
+              Launch Assistant
             </Button>
           </VStack>
           <Box h={{ base: "80px", md: "140px" }} />

@@ -10,7 +10,7 @@ const LOGOS = [
   { name: "PayPal",     src: "/PayPal.svg.png" },
   { name: "Wise",       src: "/Wise2020.svg" },
   { name: "Rapyd",      src: "/Rapyd-logo-768x236.webp" },
-  { name: "Airwallex",  src: "/Airwallex_Logo_-_Black.png" },
+  { name: "Airwallex",  src: "/Airwallex_Logo_-_Black.png", darkLogo: true },
 ];
 
 const tripled = [...LOGOS, ...LOGOS, ...LOGOS];
@@ -55,7 +55,7 @@ export default function PspCarousel() {
               justifyContent="center"
               px={6}
               py={4}
-              bg="rgba(255,255,255,0.04)"
+              bg="rgba(255,255,255,0.06)"
               border="1px solid rgba(255,255,255,0.07)"
               borderRadius="xl"
               flexShrink={0}
@@ -71,16 +71,20 @@ export default function PspCarousel() {
                   height: "32px",
                   width: "auto",
                   objectFit: "contain",
-                  filter: "brightness(0) invert(1) opacity(0.7)",
+                  filter: logo.darkLogo
+                    ? "brightness(0) invert(1) opacity(0.85)"
+                    : "opacity(0.85)",
                   transition: "filter 0.2s",
                 }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.style.filter =
-                    "brightness(0) invert(1) opacity(1)")
+                  (e.currentTarget.style.filter = logo.darkLogo
+                    ? "brightness(0) invert(1) opacity(1)"
+                    : "opacity(1)")
                 }
                 onMouseLeave={(e) =>
-                  (e.currentTarget.style.filter =
-                    "brightness(0) invert(1) opacity(0.7)")
+                  (e.currentTarget.style.filter = logo.darkLogo
+                    ? "brightness(0) invert(1) opacity(0.85)"
+                    : "opacity(0.85)")
                 }
               />
             </Box>

@@ -80,7 +80,7 @@ export default function PaymentStackMap() {
         transition={{ duration: 0.4 }}
         viewport={{ once: true }}
       >
-        <GlowCard px={6} py={4}>
+        <GlowCard px={6} py={4} mb={6}>
           <Text fontSize="sm" color={muted} textAlign="center">
   Routing decisions are continuously optimized for the highest authorization rate, 
   maximizing successful payments and aligning merchant revenue with customer intent.

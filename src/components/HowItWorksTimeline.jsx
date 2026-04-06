@@ -1,174 +1,162 @@
 import React from "react";
 import {
   Box,
-  HStack,
+  Flex,
   Heading,
   Text,
-  Icon,
-  Badge,
-  useColorModeValue,
+  Container,
 } from "@chakra-ui/react";
-import { motion } from "framer-motion";
-import { AtSignIcon, RepeatIcon, CheckCircleIcon } from "@chakra-ui/icons";
-import GlowCard from "./GlowCard";
 
-const MotionBox = motion(Box);
+const STEPS = [
+  {
+    number: "01",
+    label: "Collect",
+    accent: "#06b6d4",
+    desc: "Your frontend sends the payment request — amount, currency, country, device — secured with your API key.",
+  },
+  {
+    number: "02",
+    label: "Route",
+    accent: "#7c3aed",
+    desc: "Our smart router instantly selects the most efficient PSP to maximize authorization rates and minimize costs.",
+  },
+  {
+    number: "03",
+    label: "Settle",
+    accent: "#f43f5e",
+    desc: "The transaction is processed and your KPIs are updated in real time — no manual rules, no lock-in.",
+  },
+];
 
-export default function HowItWorksTimeline() {
-  const brandFrom = useColorModeValue("#06b6d4", "#7aa2ff");
-  const brandTo = useColorModeValue("#ec4899", "#9f7aea");
-  const glow = useColorModeValue(
-    "rgba(35,104,245,0.25)",
-    "rgba(122,162,255,0.3)"
-  );
-  const labelCol = useColorModeValue("gray.600", "gray.300");
-
-  const steps = [
-    {
-      n: 1,
-      title: "Collect",
-      desc: "Your frontend sends the payment request (amount, currency, country, device) secured with an API key.",
-      icon: AtSignIcon,
-    },
-    {
-      n: 2,
-      title: "Route",
-      desc: "Our smart router instantly selects the most efficient PSP to maximize performance and minimize costs.",
-      icon: RepeatIcon,
-    },
-    {
-      n: 3,
-      title: "Settle",
-      desc: "The transaction is processed and your KPIs are updated in real time.",
-      icon: CheckCircleIcon,
-    },
-  ];
-
+function StepCard({ step }) {
   return (
-    <Box position="relative" py={{ base: 10, md: 16 }} px={{ base: 4, md: 10 }}>
-      <MotionBox
+    <Box
+      flex="1"
+      position="relative"
+      overflow="hidden"
+      bg="rgba(255,255,255,0.03)"
+      border="1px solid rgba(255,255,255,0.08)"
+      borderRadius="2xl"
+      p={8}
+      backdropFilter="blur(12px)"
+      transition="border-color 0.22s ease, transform 0.22s ease"
+      _hover={{
+        borderColor: `${step.accent}66`,
+        transform: "translateY(-4px)",
+      }}
+      sx={{
+        _before: {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "1px",
+          background: `linear-gradient(to right, transparent, ${step.accent}99, transparent)`,
+        },
+      }}
+    >
+      {/* Giant background number */}
+      <Box
+        as="span"
         position="absolute"
-        zIndex={0}
-        borderRadius="full"
-        bgGradient={`linear(to-r, ${brandFrom}, ${brandTo})`}
-        bgSize="200% 100%"
-        filter={`drop-shadow(0 0 8px ${glow})`}
-        style={{ willChange: "background-position, transform", transform: "translateZ(0)" }}
-        animate={{ backgroundPosition: ["0% 50%", "100% 50%"] }}
-        transition={{ duration: 5.5, repeat: Infinity, ease: "linear" }}
-        top={{ base: "56px", md: "50%" }}
-        left={{ base: "32px", md: 0 }}
-        right={{ base: "auto", md: 0 }}
-        width={{ base: "3px", md: "100%" }}
-        height={{ base: "calc(100% - 56px)", md: "3px" }}
-        transform={{
-          base: "none",
-          md: "translateY(-50%)",
-        }}
-      />
-      <Box position="relative" zIndex={1}>
-        <HStack
-          spacing={{ base: 6, md: 14 }}
-          align="stretch"
-          justify={{ base: "flex-start", md: "center" }}
-          flexDir={{ base: "column", md: "row" }}
-          pl={{ base: 10, md: 0 }}
-        >
-          {steps.map((s, i) => (
-            <StepCard key={i} index={i} {...s} labelCol={labelCol} />
-          ))}
-        </HStack>
+        top="-10px"
+        left="8px"
+        fontSize="8xl"
+        fontWeight="black"
+        color="white"
+        lineHeight="1"
+        userSelect="none"
+        pointerEvents="none"
+        opacity={0.06}
+      >
+        {step.number}
       </Box>
+
+      {/* Title */}
+      <Heading
+        fontSize="xl"
+        fontWeight="bold"
+        color="white"
+        mb={3}
+      >
+        {step.label}
+      </Heading>
+
+      {/* Description */}
+      <Text
+        fontSize="sm"
+        color="gray.400"
+        lineHeight="tall"
+      >
+        {step.desc}
+      </Text>
     </Box>
   );
 }
 
-function StepCard({ index, icon, title, desc, labelCol }) {
-  const brandShadow = useColorModeValue(
-    "0 8px 24px rgba(35,104,245,0.15)",
-    "0 8px 24px rgba(122,162,255,0.2)"
-  );
-  const delay = index * 0.12;
-
+function Connector() {
   return (
-    <MotionBox
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{
-        opacity: 1,
-        y: 0,
-        transition: { delay, duration: 0.35, ease: "easeOut" },
-      }}
-      whileHover={{
-        y: -3,
-        scale: 1.01,
-        transition: { duration: 0.22, ease: "easeOut" },
-      }}
-      viewport={{ once: true, amount: 0.25 }}
-      style={{ willChange: "transform, opacity", transform: "translateZ(0)" }}
+    <Box
+      display={{ base: "none", md: "flex" }}
+      alignItems="center"
+      flexShrink={0}
+      w="40px"
     >
-      <HStack
-        spacing={4}
-        align="flex-start"
-        flexDir={{ base: "row", md: "column" }}
-        textAlign={{ base: "left", md: "center" }}
-      >
-        <Box
-          flexShrink={0}
-          position="relative"
-          w={{ base: "44px", md: "64px" }}
-          h={{ base: "44px", md: "64px" }}
-          borderRadius="full"
-          display="grid"
-          placeItems="center"
-          bg="rgba(255,255,255,0.06)"
-          border="2px solid transparent"
-          bgGradient="linear(to-r, cyan.400, purple.500)"
-          backgroundClip="padding-box"
-          boxShadow="0 0 0 4px rgba(255,255,255,0.05)"
-          transition="transform 0.3s ease, box-shadow 0.3s ease"
-          style={{ willChange: "transform" }}
-          _hover={{
-            transform: "scale(1.05)",
-            boxShadow: "0 0 20px rgba(122,162,255,0.35)",
-          }}
-          ml={{ base: "-44px", md: 0 }}
+      <Box
+        w="100%"
+        borderTop="1px dashed"
+        borderColor="whiteAlpha.200"
+      />
+    </Box>
+  );
+}
+
+export default function HowItWorksTimeline() {
+  return (
+    <Box as="section" pt={{ base: 8, md: 10 }} pb={{ base: 12, md: 16 }} px={{ base: 6, md: 16 }} bg="transparent" position="relative" zIndex={1}>
+      {/* Section header */}
+      <Box textAlign="center" mb={{ base: 10, md: 14 }} position="relative" zIndex={2}>
+        <Text
+          fontSize="xs"
+          fontWeight="bold"
+          letterSpacing="widest"
+          textTransform="uppercase"
+          color="cyan.400"
+          mb={3}
         >
-          <Icon as={icon} boxSize={{ base: 5, md: 6 }} color="white" zIndex="1" />
-        </Box>
-
-        <GlowCard
-          p={{ base: 4, md: 6 }}
-          boxShadow={brandShadow}
-          transition="transform 0.3s ease, box-shadow 0.3s ease"
-          w={{ base: "100%", md: "280px" }}
-          maxW={{ base: "520px", md: "280px" }}
-          minH={{ base: "auto", md: "220px" }}
-          style={{ willChange: "transform, opacity", transform: "translateZ(0)" }}
+          How it works
+        </Text>
+        <Heading
+          as="h2"
+          fontSize={{ base: "3xl", md: "5xl" }}
+          fontWeight="black"
+          color="white"
+          lineHeight="1.1"
+          mb={4}
         >
-          <Badge
-            colorScheme="blue"
-            borderRadius="full"
-            mb={2}
-            variant="subtle"
-            px={3}
-          >
-            Step {index + 1}
-          </Badge>
+          Three steps to smarter payments
+        </Heading>
+        <Text color="gray.400" fontSize={{ base: "sm", md: "md" }}>
+          No PSP lock-in. No manual rules. Just results.
+        </Text>
+      </Box>
 
-          <Heading
-            size={{ base: "md", md: "lg" }}
-            bgGradient="linear(to-r, cyan.400, purple.400)"
-            bgClip="text"
-            lineHeight="1.15"
-          >
-            {title}
-          </Heading>
-
-          <Text color={labelCol} fontSize={{ base: "sm", md: "md" }} mt={2}>
-            {desc}
-          </Text>
-        </GlowCard>
-      </HStack>
-    </MotionBox>
+      {/* Cards row */}
+      <Container maxW="6xl" px={0}>
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          align={{ base: "stretch", md: "stretch" }}
+          gap={{ base: 4, md: 0 }}
+        >
+          {STEPS.map((step, i) => (
+            <React.Fragment key={step.number}>
+              <StepCard step={step} index={i} />
+              {i < STEPS.length - 1 && <Connector />}
+            </React.Fragment>
+          ))}
+        </Flex>
+      </Container>
+    </Box>
   );
 }

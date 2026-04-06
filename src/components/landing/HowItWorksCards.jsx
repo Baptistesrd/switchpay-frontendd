@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Text, Heading, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Text, Heading, VStack, useBreakpointValue } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
 const MotionDiv = motion.div;
@@ -25,12 +25,30 @@ const STEPS = [
   },
 ];
 
+const Title = () => (
+  <VStack spacing={4} align="center" textAlign="center" mb={10}>
+    <Heading fontWeight="bold" fontSize={{ base: "3xl", md: "5xl" }} textAlign="center" lineHeight="1.1">
+      <Box as="span" display="block" color="white">How it works.</Box>
+      <Box
+        as="span"
+        display="block"
+        bgGradient="linear(to-r, #a5b4fc, rgba(255,255,255,0.9), #fda4af)"
+        bgClip="text"
+      >
+        Three steps, one decision layer.
+      </Box>
+    </Heading>
+  </VStack>
+);
+
 export default function HowItWorksCards() {
   const [expandedIndex, setExpandedIndex] = useState(1);
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   if (isMobile) {
     return (
+      <Box>
+        <Title />
       <Box display="flex" flexDirection="column" gap={3}>
         {STEPS.map((step, i) => (
           <Box
@@ -96,10 +114,13 @@ export default function HowItWorksCards() {
           </Box>
         ))}
       </Box>
+      </Box>
     );
   }
 
   return (
+    <Box>
+      <Title />
     <Box display="flex" gap={3} h="320px" w="100%">
       {STEPS.map((step, i) => {
         const isExpanded = expandedIndex === i;
@@ -224,6 +245,7 @@ export default function HowItWorksCards() {
           </Box>
         );
       })}
+    </Box>
     </Box>
   );
 }
