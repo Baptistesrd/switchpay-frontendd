@@ -45,7 +45,7 @@ export default function HeroSection() {
       <ElegantShape
         width={520}
         height={140}
-        top="8%"
+        top="14%"
         left="60%"
         rotate={-15}
         gradient="linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.1))"

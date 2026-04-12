@@ -29,6 +29,7 @@ export default function ElegantShape({
       }}
       style={{
         position: "absolute",
+        zIndex: 0,
         top,
         left,
         right,

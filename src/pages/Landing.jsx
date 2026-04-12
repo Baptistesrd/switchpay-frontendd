@@ -174,77 +174,91 @@ export default function Landing() {
   return (
     <Layout>
       <Helmet>
-        <title>switchpay. go global ;)</title>
+        <title>switchpay. Go global. </title>
         <meta name="description" content="Automatically route payments to the best PSP — Stripe, Adyen, Wise, Rapyd — based on country, currency, fees and device. More conversions, lower costs." />
       </Helmet>
-      <Box position="relative" bg="#030303" minH="100vh">
+      <Box position="relative" bg="#030303" minH="100vh" zIndex={1}>
         <BackgroundFX />
 
-        {/* NAVBAR */}
-        <Flex
-          as="nav"
-          position="fixed"
-          top="0"
-          left="0"
-          right="0"
-          width="100vw"
-          opacity={scrollY > 80 ? 0 : 1}
-          pointerEvents={scrollY > 80 ? "none" : "auto"}
-          transition="opacity 0.4s ease"
-          zIndex="100"
-          bg="#040406"
-          backdropFilter="none"
-          border="none"
-          borderColor="transparent"
-          borderRadius="0"
-          px={{ base: 6, md: 16 }}
-          py={4}
-          align="center"
-          gap={3}
-        >
-          <Heading fontSize={{ base: "lg", md: "xl" }} fontWeight="black" color="white" lineHeight="1" whiteSpace="nowrap">
-            switchpay
-          </Heading>
+        
 
-          <Spacer />
+        {/* HERO */}
+        <Box pt="0px">
+          <HeroSection />
+        </Box>
 
-          <HStack spacing={6} display={{ base: "none", md: "flex" }} color="whiteAlpha.900">
-            <ChakraLink as={RouterLink} to="/docs" _hover={{ color: "brand.500" }}>Documentation</ChakraLink>
-            <ChakraLink as="button" onClick={() => scrollTo("#how")} _hover={{ color: "brand.500" }}>How it works</ChakraLink>
-            <ChakraLink as="button" onClick={() => scrollTo("#why")} _hover={{ color: "brand.500" }}>Why switchpay</ChakraLink>
-            <ChakraLink as="button" onClick={() => scrollTo("#security")} _hover={{ color: "brand.500" }}>Security</ChakraLink>
-            <ChakraLink as="button" onClick={() => scrollTo("#pricing")} _hover={{ color: "brand.500" }}>Pricing</ChakraLink>
-            <ChakraLink as={RouterLink} to="/contact" _hover={{ color: "brand.500" }}>Contact</ChakraLink>
-          </HStack>
+        {/* PSP CAROUSEL */}
+        <PspCarousel />
 
-          <Spacer display={{ base: "none", md: "block" }} />
+        {/* HOW IT WORKS */}
+        <Box as="section" id="how" py={0} bg="transparent" overflow="visible" position="relative" zIndex={1}>
+          <HowItWorksTimeline />
 
-          <Box display={{ base: "block", md: "none" }}>
-            <motion.div initial={false} animate={isOpen ? "open" : "closed"}>
-              <IconButton
-                aria-label={isOpen ? "Close Menu" : "Open Menu"}
-                icon={
-                  <motion.div variants={{ closed: { rotate: 0 }, open: { rotate: 90 } }} transition={{ duration: 0.3, ease: "easeOut" }}>
-                    {isOpen ? (
-                      <Box position="relative" w="22px" h="22px">
-                        <motion.span style={{ position: "absolute", top: "50%", left: 0, width: "100%", height: "2px", backgroundColor: "white", borderRadius: "1px", transform: "translateY(-50%) rotate(45deg)" }} />
-                        <motion.span style={{ position: "absolute", top: "50%", left: 0, width: "100%", height: "2px", backgroundColor: "white", borderRadius: "1px", transform: "translateY(-50%) rotate(-45deg)" }} />
-                      </Box>
-                    ) : (
-                      <HamburgerIcon boxSize={6} />
-                    )}
-                  </motion.div>
-                }
-                variant="ghost"
-                color="white"
-                fontSize="2xl"
-                onClick={toggleMenu}
-                _hover={{ transform: "scale(1.06)", color: "brand.400" }}
-                transition="all .25s ease"
-              />
-            </motion.div>
-          </Box>
+          {/* Payment Stack Map */}
+          {/* NAVBAR */}
+          <Flex
+            as="nav"
+            position="fixed"
+            top="0"
+            left="0"
+            right="0"
+            width="100vw"
+            opacity={scrollY > 80 ? 0 : 1}
+            pointerEvents={scrollY > 80 ? "none" : "auto"}
+            transition="opacity 0.4s ease"
+            zIndex="100"
+            bg="#040406"
+            px={{ base: 6, md: 16 }}
+            py={4}
+            align="center"
+            gap={3}
+          >
+            <Heading fontSize={{ base: "lg", md: "xl" }} fontWeight="black" color="white" lineHeight="1" whiteSpace="nowrap">
+              switchpay
+            </Heading>
 
+            <Spacer />
+
+            <HStack spacing={6} display={{ base: "none", md: "flex" }} color="whiteAlpha.900">
+              <ChakraLink as={RouterLink} to="/docs" _hover={{ color: "brand.500" }}>Documentation</ChakraLink>
+              <ChakraLink as="button" onClick={() => scrollTo("#how")} _hover={{ color: "brand.500" }}>How it works</ChakraLink>
+              <ChakraLink as="button" onClick={() => scrollTo("#why")} _hover={{ color: "brand.500" }}>Why switchpay</ChakraLink>
+              <ChakraLink as="button" onClick={() => scrollTo("#security")} _hover={{ color: "brand.500" }}>Security</ChakraLink>
+              <ChakraLink as="button" onClick={() => scrollTo("#pricing")} _hover={{ color: "brand.500" }}>Pricing</ChakraLink>
+              <ChakraLink as={RouterLink} to="/contact" _hover={{ color: "brand.500" }}>Contact</ChakraLink>
+            </HStack>
+
+            <Spacer display={{ base: "none", md: "block" }} />
+
+            <Box display={{ base: "block", md: "none" }}>
+              <motion.div initial={false} animate={isOpen ? "open" : "closed"}>
+                <IconButton
+                  aria-label={isOpen ? "Close Menu" : "Open Menu"}
+                  icon={
+                    <motion.div variants={{ closed: { rotate: 0 }, open: { rotate: 90 } }} transition={{ duration: 0.3, ease: "easeOut" }}>
+                      {isOpen ? (
+                        <Box position="relative" w="22px" h="22px">
+                          <motion.span style={{ position: "absolute", top: "50%", left: 0, width: "100%", height: "2px", backgroundColor: "white", borderRadius: "1px", transform: "translateY(-50%) rotate(45deg)" }} />
+                          <motion.span style={{ position: "absolute", top: "50%", left: 0, width: "100%", height: "2px", backgroundColor: "white", borderRadius: "1px", transform: "translateY(-50%) rotate(-45deg)" }} />
+                        </Box>
+                      ) : (
+                        <HamburgerIcon boxSize={6} />
+                      )}
+                    </motion.div>
+                  }
+                  variant="ghost"
+                  color="white"
+                  fontSize="2xl"
+                  onClick={toggleMenu}
+                  _hover={{ transform: "scale(1.06)", color: "brand.400" }}
+                  transition="all .25s ease"
+                />
+              </motion.div>
+            </Box>
+          </Flex>
+
+          {/* Mobile Drawer — hors du Flex nav */}
+          <style>{`@keyframes fadeSlideIn { from { transform: translateX(30%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`}</style>
           <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
             <DrawerOverlay bg="rgba(0,0,0,0.45)" backdropFilter="blur(12px)" />
             <DrawerContent
@@ -277,29 +291,15 @@ export default function Landing() {
                 <Box position="absolute" bottom="40px" left="50%" transform="translateX(-50%)" w="85%">
                   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}>
                     <Button onClick={() => { navigate("/app"); onClose(); }} w="100%" size="lg" py={6} fontWeight="700" borderRadius="full" fontSize="lg" bgGradient="linear(to-r, #06b6d4, #7c3aed, #ec4899)" bgSize="200% 200%" color="white" boxShadow="0 0 25px rgba(236,72,153,0.3)" _hover={{ backgroundPosition: "100% 50%", transform: "translateY(-3px)", boxShadow: "0 0 40px rgba(236,72,153,0.5)" }} transition="all 0.35s ease">
-                      🚀 Make a transaction
+                      Make a transaction
                     </Button>
                   </motion.div>
                 </Box>
               </DrawerBody>
             </DrawerContent>
-            <style>{`@keyframes fadeSlideIn { from { transform: translateX(30%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`}</style>
           </Drawer>
-        </Flex>
 
-        {/* HERO */}
-        <Box pt="72px">
-          <HeroSection />
-        </Box>
-
-        {/* PSP CAROUSEL */}
-        <PspCarousel />
-
-        {/* HOW IT WORKS */}
-        <Box as="section" id="how" py={0} bg="transparent" overflow="visible" position="relative" zIndex={1}>
-          <HowItWorksTimeline />
-
-          {/* Payment Stack Map */}
+          {/* HERO */}   
           <Container maxW="6xl" px={{ base: 4, md: 6 }}>
             <Box w="100%" mt={4}>
               <PaymentStackMap />
@@ -700,18 +700,6 @@ export default function Landing() {
             </Flex>
           </Container>
         </Box>
-
-        {/* FLOATING CTA */}
-        {showFloatingCTA && (
-          <Box position="fixed" bottom={{ base: "14px", md: "24px" }} left="50%" transform="translateX(-50%)" zIndex={200} w={{ base: "calc(100% - 32px)", sm: "auto" }} maxW="520px">
-            <GlowCard p={3} borderRadius={{ base: "2xl", sm: "full" }} bg="rgba(3,3,3,0.85)" backdropFilter="saturate(180%) blur(18px)" border="1px solid rgba(255,255,255,0.08)">
-              <Stack direction={{ base: "column", sm: "row" }} spacing={3}>
-                <Button onClick={() => navigate("/app")} w={{ base: "100%", sm: "auto" }} bgGradient="linear(to-r, #6366f1, #7c3aed)" color="white" borderRadius="full">Try the sandbox</Button>
-                <Button variant="ghost" border="1px solid" borderColor="rgba(255,255,255,0.2)" color="rgba(255,255,255,0.7)" borderRadius="full" w={{ base: "100%", sm: "auto" }} _hover={{ bg: "rgba(255,255,255,0.05)", color: "white" }} onClick={() => scrollTo("#waitlist")}>Join waitlist</Button>
-              </Stack>
-            </GlowCard>
-          </Box>
-        )}
       </Box>
     </Layout>
   );

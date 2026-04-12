@@ -5,7 +5,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  animation: gradientShift 18s ease-in-out infinite;
 }
 
 code {
@@ -51,11 +50,6 @@ html {
   100% { transform: translateX(-50%); }
 }
 
-@keyframes gradientShift {
-  0% { filter: hue-rotate(0deg) brightness(1); }
-  50% { filter: hue-rotate(4deg) brightness(1.03); }
-  100% { filter: hue-rotate(0deg) brightness(1); }
-}
 
 /* === Links === */
 a:hover {

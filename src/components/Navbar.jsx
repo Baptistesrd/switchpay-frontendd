@@ -46,18 +46,16 @@ export default function Navbar({ onRefresh, lastUpdated }) {
         right="0"
         zIndex={1000}
         width="100vw"
-        bg={isScrolled ? "rgba(10, 10, 20, 0.85)" : "transparent"}
-        backdropFilter={isScrolled ? "blur(14px)" : "none"}
+        bg={isScrolled ? "rgba(10,10,20,0.85)" : "transparent"}
+        backdropFilter={isScrolled ? "blur(12px)" : "none"}
+        boxShadow="none"
         borderBottom="1px solid"
-        borderColor={isScrolled ? "whiteAlpha.200" : "transparent"}
+        borderColor={isScrolled ? "rgba(255,255,255,0.06)" : "transparent"}
         sx={{
-          transitionProperty: "background, border-color, backdrop-filter",
-          transitionDuration: "0.3s",
-          transitionTimingFunction: "ease",
+          transition: "background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease",
         }}
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
       >
         <Flex
           align="center"
