@@ -174,7 +174,7 @@ export default function Landing() {
   return (
     <Layout>
       <Helmet>
-        <title>switchpay — Smart Payment Routing</title>
+        <title>switchpay. go global ;)</title>
         <meta name="description" content="Automatically route payments to the best PSP — Stripe, Adyen, Wise, Rapyd — based on country, currency, fees and device. More conversions, lower costs." />
       </Helmet>
       <Box position="relative" bg="#030303" minH="100vh">
