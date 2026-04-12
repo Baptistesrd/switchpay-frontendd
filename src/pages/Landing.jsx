@@ -578,7 +578,14 @@ export default function Landing() {
                 {waitlistError && <Text color="red.400">{waitlistError}</Text>}
               </>
             ) : (
-              <Text color="rgba(255,255,255,0.7)">You're on the list 🚀</Text>
+              <VStack spacing={1}>
+                <Text color="white" fontWeight="semibold" fontSize="lg">
+                  You're on the list! We'll be in touch soon.
+                </Text>
+                <Text color="rgba(255,255,255,0.5)" fontSize="sm">
+                  Check your inbox for a confirmation email.
+                </Text>
+              </VStack>
             )}
           </VStack>
         </Section>

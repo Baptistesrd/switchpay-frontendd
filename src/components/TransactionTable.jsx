@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Table, Thead, Tbody, Tr, Th, Td, TableContainer, Badge,
-  Box, Heading, Text, useColorModeValue, Button, useToast, HStack
+  Box, Heading, Text, useColorModeValue, Button, useToast, HStack, Tooltip
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -35,9 +35,15 @@ function SimulateWebhookButton({ transactionId }) {
   };
 
   return (
-    <Button colorScheme="blue" onClick={simulateWebhook} isLoading={loading} loadingText="Updating" variant="outline">
-      Simulate Webhook
-    </Button>
+    <Tooltip
+      label="Randomly sets the transaction to success or failed — simulates real-world PSP callback behavior."
+      placement="top"
+      hasArrow
+    >
+      <Button colorScheme="blue" onClick={simulateWebhook} isLoading={loading} loadingText="Updating" variant="outline">
+        Simulate Webhook
+      </Button>
+    </Tooltip>
   );
 }
 

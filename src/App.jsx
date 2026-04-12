@@ -226,30 +226,34 @@ export default function App() {
           <TabPanels>
             {/* ── New Transaction ── */}
             <TabPanel>
-              <GlowCard p={8} interactive={false}>
-                <Heading size="md" mb={2}>
-                  New Transaction
-                </Heading>
-                <Text mb={6} color="gray.400">
-                  Fill the form and send — routing happens in your FastAPI backend.
-                </Text>
-                <TransactionForm onNewTransaction={() => fetchAll(apiKey)} />
-              </GlowCard>
+              <DashboardErrorBoundary>
+                <GlowCard p={8} interactive={false}>
+                  <Heading size="md" mb={2}>
+                    New Transaction
+                  </Heading>
+                  <Text mb={6} color="gray.400">
+                    Fill the form and send — routing happens in your FastAPI backend.
+                  </Text>
+                  <TransactionForm onNewTransaction={() => fetchAll(apiKey)} />
+                </GlowCard>
+              </DashboardErrorBoundary>
             </TabPanel>
 
             {/* ── Transaction History ── */}
             <TabPanel>
-              <GlowCard p={6}>
-                <HStack justify="space-between" mb={4} wrap="wrap" spacing={3}>
-                  <HStack spacing={3}>
-                    <Badge colorScheme="blue">Total: {count}</Badge>
-                    <Badge colorScheme="green">Success: {successCount}</Badge>
-                    <Badge colorScheme="red">Failed: {failCount}</Badge>
+              <DashboardErrorBoundary>
+                <GlowCard p={6}>
+                  <HStack justify="space-between" mb={4} wrap="wrap" spacing={3}>
+                    <HStack spacing={3}>
+                      <Badge colorScheme="blue">Total: {count}</Badge>
+                      <Badge colorScheme="green">Success: {successCount}</Badge>
+                      <Badge colorScheme="red">Failed: {failCount}</Badge>
+                    </HStack>
+                    <MagneticButton type="button">Download CSV</MagneticButton>
                   </HStack>
-                  <MagneticButton type="button">Download CSV</MagneticButton>
-                </HStack>
-                <TransactionTable transactions={transactions} />
-              </GlowCard>
+                  <TransactionTable transactions={transactions} />
+                </GlowCard>
+              </DashboardErrorBoundary>
             </TabPanel>
 
             {/* ── Dashboard ── */}
