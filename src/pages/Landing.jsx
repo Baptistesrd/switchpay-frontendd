@@ -219,52 +219,6 @@ export default function Landing() {
 
           <Spacer display={{ base: "none", md: "block" }} />
 
-          <Box display={{ base: "none", md: "block" }}>
-            <HStack spacing={3}>
-              <Button
-                onClick={() => navigate("/app")}
-                px={8}
-                py={3}
-                fontSize="sm"
-                fontWeight="600"
-                borderRadius="full"
-                color="white"
-                border="1px solid"
-                borderColor="whiteAlpha.200"
-                bg="whiteAlpha.50"
-                backdropFilter="blur(12px)"
-                _hover={{
-                  bg: "whiteAlpha.100",
-                  borderColor: "whiteAlpha.400",
-                  transform: "scale(1.03)",
-                }}
-                transition="all 0.2s"
-              >
-                Try the sandbox
-              </Button>
-              <Button
-                onClick={() => scrollTo("#waitlist")}
-                px={8}
-                py={3}
-                fontSize="sm"
-                fontWeight="600"
-                borderRadius="full"
-                color="white"
-                border="1px solid"
-                borderColor="whiteAlpha.200"
-                bg="whiteAlpha.50"
-                backdropFilter="blur(12px)"
-                _hover={{
-                  bg: "whiteAlpha.100",
-                  borderColor: "whiteAlpha.400",
-                  transform: "scale(1.03)",
-                }}
-              >
-                Join the waitlist
-              </Button>
-            </HStack>
-          </Box>
-
           <Box display={{ base: "block", md: "none" }}>
             <motion.div initial={false} animate={isOpen ? "open" : "closed"}>
               <IconButton
