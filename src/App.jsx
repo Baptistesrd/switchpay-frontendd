@@ -16,6 +16,7 @@ import {
   HStack,
   Badge,
   Button,
+  Spinner,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +33,7 @@ import BackgroundFX from "./components/BackgroundFX";
 import Navbar from "./components/Navbar";
 import RoutingEngine from "./components/RoutingEngine";
 import DashboardErrorBoundary from "./components/DashboardErrorBoundary";
+import { useApiKey } from "./hooks/useApiKey";
 
 const MotionBox = motion(Box);
 
@@ -42,16 +44,12 @@ export default function App() {
   const [metricsData, setMetricsData] = useState(EMPTY_METRICS);
   const [strategy, setStrategy] = useState("weighted_score");
   const [lastUpdated, setLastUpdated] = useState(null);
-  const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "");
+  const [apiKey, setAndUseApiKey] = useApiKey();
+  const [isFetching, setIsFetching] = useState(false);
+  const [pollErrorCount, setPollErrorCount] = useState(0);
+  const [pollPaused, setPollPaused] = useState(false);
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
-
-  const setAndUseApiKey = (key) => {
-    if (!key) return;
-    localStorage.setItem("apiKey", key);
-    setApiKey(key);
-    axios.defaults.headers.common["x-api-key"] = key;
-  };
 
   const fetchTransactions = async (explicitKey) => {
     try {
@@ -76,8 +74,10 @@ export default function App() {
   };
 
   const fetchAll = async (explicitKey) => {
+    setIsFetching(true);
     await Promise.all([fetchTransactions(explicitKey), fetchMetrics()]);
     setLastUpdated(new Date());
+    setIsFetching(false);
   };
 
   // Mount: get temp key, fetch health for strategy, then fetch all data
@@ -115,17 +115,29 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 30-second silent polling — no loading spinner, just background refresh
+  // 30-second polling with backoff: pauses for 60s after 3 consecutive errors
   useEffect(() => {
     if (!apiKey) return;
-    const id = setInterval(() => {
-      fetchTransactions(apiKey);
-      fetchMetrics();
-      setLastUpdated(new Date());
+    const id = setInterval(async () => {
+      if (pollPaused) return;
+      try {
+        await Promise.all([fetchTransactions(apiKey), fetchMetrics()]);
+        setLastUpdated(new Date());
+        setPollErrorCount(0);
+      } catch {
+        setPollErrorCount((n) => {
+          const next = n + 1;
+          if (next >= 3) {
+            setPollPaused(true);
+            setTimeout(() => setPollPaused(false), 60000);
+          }
+          return next;
+        });
+      }
     }, 30000);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiKey]);
+  }, [apiKey, pollPaused]);
 
   const totalAmount = useMemo(
     () => transactions.reduce((acc, tx) => acc + Number(tx.montant || 0), 0),
@@ -201,10 +213,24 @@ export default function App() {
               rightIcon={<ExternalLinkIcon />}
               w={{ base: "100%", sm: "auto" }}
             >
-              Contact Us
+              Book a Demo
             </Button>
           </HStack>
         </MotionBox>
+
+        {/* Polling indicator */}
+        <HStack justify="flex-end" mb={2} spacing={2} opacity={0.6}>
+          {isFetching && <Spinner size="xs" color="purple.300" />}
+          {pollPaused ? (
+            <Text fontSize="xs" color="orange.300">
+              Connection lost — retrying in 60s
+            </Text>
+          ) : lastUpdated ? (
+            <Text fontSize="xs" color="gray.400">
+              Last updated: {lastUpdated.toLocaleTimeString()}
+            </Text>
+          ) : null}
+        </HStack>
 
         <Tabs variant="soft-rounded" colorScheme="purple" isFitted>
           <TabList mb={8}>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import {
   Box,
   Container,
@@ -63,6 +64,10 @@ export default function DocsPage() {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Developer Docs — switchpay</title>
+        <meta name="description" content="switchpay API documentation: authentication, transaction routing, webhooks, and advanced features for borderless payment systems." />
+      </Helmet>
       <Box py={24} bg="#030303" minH="100vh">
         <Container maxW="6xl">
           <VStack align="start" spacing={16}>
@@ -119,7 +124,7 @@ export default function DocsPage() {
             >
               <GlowCard p={10}>
                 <Heading size="lg" mb={4} color="white">
-                  🌍 Why Payment Routing Matters
+                  <span role="img" aria-label="globe">🌍</span> Why Payment Routing Matters
                 </Heading>
                 <Text color={textColor} mb={4}>
                   The payment stack is a maze of APIs, acquirers, and local constraints. switchpay abstracts the complexity into one adaptive, intelligent routing layer.
@@ -171,6 +176,7 @@ export default function DocsPage() {
                           {["PSP / Network", "Core Strength", "Primary Region"].map((col) => (
                             <th
                               key={col}
+                              scope="col"
                               style={{
                                 padding: "14px 16px",
                                 textAlign: "left",
@@ -270,7 +276,7 @@ export default function DocsPage() {
               w="full"
             >
               <GlowCard p={10}>
-                <Heading size="lg" mb={4} color="white">🔐 Authentication</Heading>
+                <Heading size="lg" mb={4} color="white"><span role="img" aria-label="lock">🔐</span> Authentication</Heading>
                 <Text color={textColor}>
                   Every request must include an{" "}
                   <Code bg="rgba(99,102,241,0.15)" color="#a5b4fc" px={1.5} borderRadius="md">
@@ -313,7 +319,7 @@ export default function DocsPage() {
               w="full"
             >
               <GlowCard p={10}>
-                <Heading size="lg" mb={4} color="white">💳 Create a Transaction</Heading>
+                <Heading size="lg" mb={4} color="white"><span role="img" aria-label="credit card">💳</span> Create a Transaction</Heading>
                 <Text color={textColor}>
                   The{" "}
                   <Code bg="rgba(99,102,241,0.15)" color="#a5b4fc" px={1.5} borderRadius="md">
@@ -367,7 +373,7 @@ export default function DocsPage() {
                 <Accordion allowToggle mt={6}>
                   <AccordionItem border="none">
                     <AccordionButton {...accordionButtonProps}>
-                      <Box flex="1" textAlign="left">⚙️ Use Cases</Box>
+                      <Box flex="1" textAlign="left"><span role="img" aria-label="settings">⚙️</span> Use Cases</Box>
                       <Box color="#a5b4fc"><AccordionIcon /></Box>
                     </AccordionButton>
                     <AccordionPanel bg="rgba(255,255,255,0.02)" borderRadius="lg">
@@ -391,7 +397,7 @@ export default function DocsPage() {
               w="full"
             >
               <GlowCard p={10}>
-                <Heading size="lg" mb={4} color="white">📈 Retrieve Metrics</Heading>
+                <Heading size="lg" mb={4} color="white"><span role="img" aria-label="chart">📈</span> Retrieve Metrics</Heading>
                 <Text color={textColor}>
                   Use{" "}
                   <Code bg="rgba(99,102,241,0.15)" color="#a5b4fc" px={1.5} borderRadius="md">
@@ -417,7 +423,7 @@ export default function DocsPage() {
                 <Accordion mt={5} allowToggle>
                   <AccordionItem border="none">
                     <AccordionButton {...accordionButtonProps}>
-                      <Box flex="1" textAlign="left">📘 Field Definitions</Box>
+                      <Box flex="1" textAlign="left"><span role="img" aria-label="book">📘</span> Field Definitions</Box>
                       <Box color="#a5b4fc"><AccordionIcon /></Box>
                     </AccordionButton>
                     <AccordionPanel bg="rgba(255,255,255,0.02)" borderRadius="lg">
@@ -441,7 +447,7 @@ export default function DocsPage() {
               w="full"
             >
               <GlowCard p={10}>
-                <Heading size="lg" mb={4} color="white">⚡ Advanced Features</Heading>
+                <Heading size="lg" mb={4} color="white"><span role="img" aria-label="lightning bolt">⚡</span> Advanced Features</Heading>
                 <Accordion allowMultiple>
                   <AccordionItem border="none">
                     <AccordionButton {...accordionButtonProps}>

@@ -18,6 +18,8 @@ export default function AnimatedParticles({ fixed = true }) {
     resize();
     window.addEventListener("resize", resize);
 
+    let rafId;
+
     const draw = () => {
       t += 0.002;
       ctx.clearRect(0, 0, w, h);
@@ -56,11 +58,14 @@ export default function AnimatedParticles({ fixed = true }) {
         ctx.fill();
       }
 
-      requestAnimationFrame(draw);
+      rafId = requestAnimationFrame(draw);
     };
     draw();
 
-    return () => window.removeEventListener("resize", resize);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", resize);
+    };
   }, [baseBg]);
 
   return (

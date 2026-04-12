@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import {
   Box,
   VStack,
@@ -71,6 +72,11 @@ export default function Contact() {
   const textColor = useColorModeValue("gray.600", "gray.300");
 
   return (
+    <>
+    <Helmet>
+      <title>Contact — switchpay</title>
+      <meta name="description" content="Talk to the switchpay team. Fix your payment routing strategy and improve your success rate." />
+    </Helmet>
     <Box
       position="relative"
       minH="100vh"
@@ -85,13 +91,23 @@ export default function Contact() {
       <Box
         position="absolute"
         inset={0}
-        bgImage="url('/mid-shot-woman-talking-phone-table.jpg')"
-        bgSize="cover"
-        bgPos="center"
-        filter="blur(4px) brightness(0.3)"
+        overflow="hidden"
         zIndex={0}
         transform="scale(1.05)"
-      />
+      >
+        <img
+          src="/mid-shot-woman-talking-phone-table.jpg"
+          alt=""
+          loading="lazy"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+            filter: "blur(4px) brightness(0.3)",
+          }}
+        />
+      </Box>
       {/* Dark overlay */}
       <Box
         position="absolute"
@@ -130,39 +146,47 @@ export default function Contact() {
           </VStack>
 
           <VStack spacing={5} align="stretch">
-            <Input
-              placeholder="Your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              size="lg"
-              borderRadius="xl"
-              border="1px solid"
-              borderColor="whiteAlpha.200"
-              bg="rgba(255,255,255,0.04)"
-              color="whiteAlpha.900"
-              _placeholder={{ color: "whiteAlpha.600" }}
-              _focus={{
-                borderColor: "whiteAlpha.400",
-                boxShadow: "0 0 15px rgba(255,255,255,0.1)",
-              }}
-            />
-            <Textarea
-              placeholder="Your message..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              rows={5}
-              size="lg"
-              borderRadius="xl"
-              border="1px solid"
-              borderColor="whiteAlpha.200"
-              bg="rgba(255,255,255,0.04)"
-              color="whiteAlpha.900"
-              _placeholder={{ color: "whiteAlpha.600" }}
-              _focus={{
-                borderColor: "whiteAlpha.400",
-                boxShadow: "0 0 15px rgba(255,255,255,0.1)",
-              }}
-            />
+            <Box>
+              <label htmlFor="contact-email" style={{ display: "none" }}>Email</label>
+              <Input
+                id="contact-email"
+                placeholder="Your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                size="lg"
+                borderRadius="xl"
+                border="1px solid"
+                borderColor="whiteAlpha.200"
+                bg="rgba(255,255,255,0.04)"
+                color="whiteAlpha.900"
+                _placeholder={{ color: "whiteAlpha.600" }}
+                _focus={{
+                  borderColor: "whiteAlpha.400",
+                  boxShadow: "0 0 15px rgba(255,255,255,0.1)",
+                }}
+              />
+            </Box>
+            <Box>
+              <label htmlFor="contact-message" style={{ display: "none" }}>Message</label>
+              <Textarea
+                id="contact-message"
+                placeholder="Your message..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                rows={5}
+                size="lg"
+                borderRadius="xl"
+                border="1px solid"
+                borderColor="whiteAlpha.200"
+                bg="rgba(255,255,255,0.04)"
+                color="whiteAlpha.900"
+                _placeholder={{ color: "whiteAlpha.600" }}
+                _focus={{
+                  borderColor: "whiteAlpha.400",
+                  boxShadow: "0 0 15px rgba(255,255,255,0.1)",
+                }}
+              />
+            </Box>
             <Button
               size="lg"
               borderRadius="full"
@@ -218,5 +242,6 @@ export default function Contact() {
         </VStack>
       </MotionBox>
     </Box>
+    </>
   );
 }

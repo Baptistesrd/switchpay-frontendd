@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import {
   Box,
   Container,
@@ -179,6 +180,10 @@ export default function Landing() {
 
   return (
     <Layout>
+      <Helmet>
+        <title>switchpay — Smart Payment Routing</title>
+        <meta name="description" content="Automatically route payments to the best PSP — Stripe, Adyen, Wise, Rapyd — based on country, currency, fees and device. More conversions, lower costs." />
+      </Helmet>
       <Box position="relative" bg="#030303" minH="100vh">
         <BackgroundFX />
 

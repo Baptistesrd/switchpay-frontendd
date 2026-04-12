@@ -7,6 +7,7 @@ import {
   ColorModeScript,
 } from "@chakra-ui/react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 
 import Landing from "./pages/Landing";
 import Contact from "./pages/Contact";
@@ -53,6 +54,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
+    <HelmetProvider>
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <Router>
@@ -65,5 +67,6 @@ root.render(
         </Routes>
       </Router>
     </ChakraProvider>
+    </HelmetProvider>
   </React.StrictMode>
 );

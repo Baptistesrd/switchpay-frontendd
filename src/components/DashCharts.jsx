@@ -144,6 +144,16 @@ export default function DashCharts({ transactions, metricsData }) {
     ["#7aa2ff", "#4a6bdc", "#90a4ff", "#2b3a80"]
   );
 
+  if (transactions.length === 0) {
+    return (
+      <Box py={12} textAlign="center">
+        <Text color="gray.500" fontSize="md">
+          No transactions yet — submit your first payment to see data here.
+        </Text>
+      </Box>
+    );
+  }
+
   return (
     <VStack spacing={6} align="stretch">
 
@@ -159,7 +169,7 @@ export default function DashCharts({ transactions, metricsData }) {
         >
           <VStack align="start" spacing={3}>
             <Badge colorScheme="orange" variant="subtle" borderRadius="full">
-              ⚠️ Routing opportunity detected
+              <span role="img" aria-label="warning">⚠️</span> Routing opportunity detected
             </Badge>
 
             <Text fontSize="sm">

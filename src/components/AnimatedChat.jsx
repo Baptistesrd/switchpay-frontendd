@@ -10,6 +10,9 @@ import { motion } from "framer-motion";
 
 const MotionBox = motion(Box);
 
+const DELAY_AFTER_USER_MESSAGE_MS = 1000;
+const DELAY_AI_THINKING_MS = 1800;
+
 function ThinkingPulse() {
   return (
     <motion.div
@@ -66,10 +69,10 @@ export default function SwitchPayAIPremiumChat() {
       if (msg.sender === "user") {
         setMessages((prev) => [...prev, msg]);
         i++;
-        await new Promise((res) => setTimeout(res, 1000));
+        await new Promise((res) => setTimeout(res, DELAY_AFTER_USER_MESSAGE_MS));
       } else {
         setAiThinking(true);
-        await new Promise((res) => setTimeout(res, 1800));
+        await new Promise((res) => setTimeout(res, DELAY_AI_THINKING_MS));
         setAiThinking(false);
         setMessages((prev) => [...prev, msg]);
         i++;

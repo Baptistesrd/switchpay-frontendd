@@ -88,16 +88,21 @@ export default function TransactionTable({ transactions }) {
                   <Td>{tx.pays}</Td>
                   <Td fontStyle="italic" color={pspColor}>{tx.psp}</Td>
                   <Td>
-                    <Badge
-                      colorScheme={tx.status === "success" ? "green" : "red"}
-                      variant="subtle"
-                      borderRadius="md"
-                      px={2}
-                      py={1}
-                      textTransform="capitalize"
-                    >
-                      {tx.status}
-                    </Badge>
+                    <HStack spacing={2}>
+                      <Badge
+                        colorScheme={tx.status === "success" ? "green" : "red"}
+                        variant="subtle"
+                        borderRadius="md"
+                        px={2}
+                        py={1}
+                        textTransform="capitalize"
+                      >
+                        {tx.status === "success" ? "✓" : "✗"}
+                      </Badge>
+                      <Text fontSize="sm" color={tx.status === "success" ? "green.400" : "red.400"}>
+                        {tx.status === "success" ? "Success" : "Failed"}
+                      </Text>
+                    </HStack>
                   </Td>
                   <Td>
                     <HStack>
