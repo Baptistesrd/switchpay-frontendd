@@ -54,7 +54,6 @@ import ValueCard from "../components/landing/ValueCard";
 import RoadmapItem from "../components/landing/RoadmapItem";
 import HeroSection from "../components/landing/HeroSection";
 import PspCarousel from "../components/landing/PspCarousel";
-import HowItWorksCards from "../components/landing/HowItWorksCards";
 import HowItWorksTimeline from "../components/HowItWorksTimeline";
 import { NAV_SCROLL_OFFSET, YOUTUBE_DEMO_URL, SOCIAL_LINKS } from "../constants/links";
 
@@ -76,7 +75,6 @@ export default function Landing() {
   const [waitlistLoading, setWaitlistLoading] = useState(false);
   const [waitlistSuccess, setWaitlistSuccess] = useState(false);
   const [waitlistError, setWaitlistError] = useState("");
-  const [navProgress, setNavProgress] = useState(0);
   const [showFloatingCTA, setShowFloatingCTA] = useState(false);
   const [scrollY, setScrollY] = useState(0);
 
@@ -115,11 +113,6 @@ export default function Landing() {
     const handleScroll = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        const hero = document.getElementById("hero");
-        if (!hero) { setNavProgress(0); return; }
-        const rect = hero.getBoundingClientRect();
-        const progress = Math.min(1, Math.max(0, -rect.top / (rect.height || 1)));
-        setNavProgress(progress);
         setShowFloatingCTA((window.scrollY || document.documentElement.scrollTop || 0) > 100);
       });
     };
@@ -756,8 +749,8 @@ export default function Landing() {
 
         {/* FLOATING CTA */}
         {showFloatingCTA && (
-          <Box position="fixed" bottom={{ base: "14px", md: "24px" }} left="50%" transform="translateX(-50%)" zIndex={200} w={{ base: "calc(100% - 24px)", sm: "auto" }} maxW="520px">
-            <GlowCard p={3} borderRadius="full" bg="rgba(3,3,3,0.85)" backdropFilter="saturate(180%) blur(18px)" border="1px solid rgba(255,255,255,0.08)">
+          <Box position="fixed" bottom={{ base: "14px", md: "24px" }} left="50%" transform="translateX(-50%)" zIndex={200} w={{ base: "calc(100% - 32px)", sm: "auto" }} maxW="520px">
+            <GlowCard p={3} borderRadius={{ base: "2xl", sm: "full" }} bg="rgba(3,3,3,0.85)" backdropFilter="saturate(180%) blur(18px)" border="1px solid rgba(255,255,255,0.08)">
               <Stack direction={{ base: "column", sm: "row" }} spacing={3}>
                 <Button onClick={() => navigate("/app")} w={{ base: "100%", sm: "auto" }} bgGradient="linear(to-r, #6366f1, #7c3aed)" color="white" borderRadius="full">Try the sandbox</Button>
                 <Button variant="ghost" border="1px solid" borderColor="rgba(255,255,255,0.2)" color="rgba(255,255,255,0.7)" borderRadius="full" w={{ base: "100%", sm: "auto" }} _hover={{ bg: "rgba(255,255,255,0.05)", color: "white" }} onClick={() => scrollTo("#waitlist")}>Join waitlist</Button>

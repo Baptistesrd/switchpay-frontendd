@@ -172,7 +172,7 @@ export default function HeroSection() {
             whileHover={{ scale: 1.03, boxShadow: "0 0 25px rgba(251,191,36,0.15)" }}
             whileTap={{ scale: 0.98 }}
             style={{
-              padding: "12px 32px",
+              padding: "14px 32px",
               borderRadius: "9999px",
               border: "1px solid rgba(251,191,36,0.25)",
               cursor: "pointer",
@@ -190,7 +190,7 @@ export default function HeroSection() {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
             style={{
-              padding: "12px 32px",
+              padding: "14px 32px",
               borderRadius: "9999px",
               border: "1px solid rgba(255,255,255,0.2)",
               cursor: "pointer",

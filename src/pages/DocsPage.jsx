@@ -68,7 +68,7 @@ export default function DocsPage() {
         <title>Developer Docs — switchpay</title>
         <meta name="description" content="switchpay API documentation: authentication, transaction routing, webhooks, and advanced features for borderless payment systems." />
       </Helmet>
-      <Box py={24} bg="#030303" minH="100vh">
+      <Box py={24} bg="#030303" minH="100vh" overflowX="hidden">
         <Container maxW="6xl">
           <VStack align="start" spacing={16}>
 

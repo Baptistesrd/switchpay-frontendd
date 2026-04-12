@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Box,
   Heading,
@@ -17,6 +17,7 @@ import {
   Badge,
   Button,
   Spinner,
+  Skeleton,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -46,7 +47,7 @@ export default function App() {
   const [lastUpdated, setLastUpdated] = useState(null);
   const [apiKey, setAndUseApiKey] = useApiKey();
   const [isFetching, setIsFetching] = useState(false);
-  const [pollErrorCount, setPollErrorCount] = useState(0);
+  const pollErrorCountRef = useRef(0);
   const [pollPaused, setPollPaused] = useState(false);
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
@@ -80,34 +81,33 @@ export default function App() {
     setIsFetching(false);
   };
 
-  // Mount: get temp key, fetch health for strategy, then fetch all data
+  // Mount: /health and /generate-temp-key run in parallel
   useEffect(() => {
-    axios
-      .get(`${BACKEND_URL}/health`)
-      .then((res) => setStrategy(res.data?.strategy || "weighted_score"))
-      .catch(() => {});
-
     async function init() {
-      try {
-        const res = await axios.get(`${BACKEND_URL}/generate-temp-key`);
-        const key = res.data?.api_key;
+      const [healthRes, keyRes] = await Promise.allSettled([
+        axios.get(`${BACKEND_URL}/health`),
+        axios.get(`${BACKEND_URL}/generate-temp-key`),
+      ]);
+
+      if (healthRes.status === "fulfilled") {
+        setStrategy(healthRes.value.data?.strategy || "weighted_score");
+      }
+
+      if (keyRes.status === "fulfilled") {
+        const key = keyRes.value.data?.api_key;
         if (key) {
           setAndUseApiKey(key);
           await fetchAll(key);
-        } else {
-          const fallback = localStorage.getItem("apiKey");
-          if (fallback) {
-            setAndUseApiKey(fallback);
-            await fetchAll(fallback);
-          }
+          return;
         }
-      } catch (err) {
-        console.error("Failed to generate temp key:", err);
-        const fallback = localStorage.getItem("apiKey");
-        if (fallback) {
-          setAndUseApiKey(fallback);
-          await fetchAll(fallback);
-        }
+      } else {
+        console.error("Failed to generate temp key:", keyRes.reason);
+      }
+
+      const fallback = localStorage.getItem("apiKey");
+      if (fallback) {
+        setAndUseApiKey(fallback);
+        await fetchAll(fallback);
       }
     }
 
@@ -123,16 +123,13 @@ export default function App() {
       try {
         await Promise.all([fetchTransactions(apiKey), fetchMetrics()]);
         setLastUpdated(new Date());
-        setPollErrorCount(0);
+        pollErrorCountRef.current = 0;
       } catch {
-        setPollErrorCount((n) => {
-          const next = n + 1;
-          if (next >= 3) {
-            setPollPaused(true);
-            setTimeout(() => setPollPaused(false), 60000);
-          }
-          return next;
-        });
+        pollErrorCountRef.current += 1;
+        if (pollErrorCountRef.current >= 3) {
+          setPollPaused(true);
+          setTimeout(() => setPollPaused(false), 60000);
+        }
       }
     }, 30000);
     return () => clearInterval(id);
@@ -234,9 +231,13 @@ export default function App() {
 
         <Tabs variant="soft-rounded" colorScheme="purple" isFitted>
           <TabList mb={8}>
-            {["New Transaction", "Transaction History", "Dashboard"].map((label) => (
+            {[
+              { id: "new-tx",  base: "New Tx",   full: "New Transaction" },
+              { id: "history", base: "History",  full: "Transaction History" },
+              { id: "dash",    base: "Dashboard", full: "Dashboard" },
+            ].map((tab) => (
               <Tab
-                key={label}
+                key={tab.id}
                 fontWeight="semibold"
                 _selected={{
                   color: "white",
@@ -244,7 +245,8 @@ export default function App() {
                 }}
                 _hover={{ bg: "whiteAlpha.100" }}
               >
-                {label}
+                <Box as="span" display={{ base: "none", md: "inline" }}>{tab.full}</Box>
+                <Box as="span" display={{ base: "inline", md: "none" }}>{tab.base}</Box>
               </Tab>
             ))}
           </TabList>
@@ -285,26 +287,39 @@ export default function App() {
             {/* ── Dashboard ── */}
             <TabPanel>
               <DashboardErrorBoundary>
-                {/* KPI cards */}
+                {/* KPI cards — skeleton until first fetch resolves */}
                 <SimpleGrid columns={[1, 2, 4]} spacing={6} mb={8}>
-                  <KpiCard label="Total Volume">
-                    <StatNumber>
-                      <Counter to={totalAmount} isMoney decimals={2} />
-                    </StatNumber>
-                  </KpiCard>
-                  <KpiCard label="# Transactions">
-                    <StatNumber>
-                      <Counter to={count} />
-                    </StatNumber>
-                  </KpiCard>
-                  <KpiCard label="Success Rate">
-                    <StatNumber>{successRate}%</StatNumber>
-                  </KpiCard>
-                  <KpiCard label="Failures">
-                    <StatNumber>
-                      <Counter to={failCount} />
-                    </StatNumber>
-                  </KpiCard>
+                  {!lastUpdated ? (
+                    <>
+                      {[...Array(4)].map((_, i) => (
+                        <GlowCard key={i} p={6}>
+                          <Skeleton height="14px" mb={3} borderRadius="md" startColor="whiteAlpha.100" endColor="whiteAlpha.300" />
+                          <Skeleton height="32px" borderRadius="md" startColor="whiteAlpha.100" endColor="whiteAlpha.300" />
+                        </GlowCard>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      <KpiCard label="Total Volume">
+                        <StatNumber>
+                          <Counter to={totalAmount} isMoney decimals={2} />
+                        </StatNumber>
+                      </KpiCard>
+                      <KpiCard label="# Transactions">
+                        <StatNumber>
+                          <Counter to={count} />
+                        </StatNumber>
+                      </KpiCard>
+                      <KpiCard label="Success Rate">
+                        <StatNumber>{successRate}%</StatNumber>
+                      </KpiCard>
+                      <KpiCard label="Failures">
+                        <StatNumber>
+                          <Counter to={failCount} />
+                        </StatNumber>
+                      </KpiCard>
+                    </>
+                  )}
                 </SimpleGrid>
 
                 {/* Analytics charts */}

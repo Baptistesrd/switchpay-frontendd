@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import {
   Box,
   VStack,
@@ -62,7 +62,7 @@ export default function SwitchPayAIPremiumChat() {
     },
   ];
 
-  const showConversation = async () => {
+  const showConversation = useCallback(async () => {
     let i = 0;
     while (i < conversation.length) {
       const msg = conversation[i];
@@ -79,9 +79,12 @@ export default function SwitchPayAIPremiumChat() {
         await new Promise((res) => setTimeout(res, 800));
       }
     }
-  };
+  // conversation is a static constant defined outside the render cycle
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
+    const node = chatRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
@@ -92,10 +95,10 @@ export default function SwitchPayAIPremiumChat() {
       { threshold: 0.4 }
     );
 
-    if (chatRef.current) observer.observe(chatRef.current);
+    if (node) observer.observe(node);
 
     return () => {
-      if (chatRef.current) observer.unobserve(chatRef.current);
+      if (node) observer.unobserve(node);
     };
   }, [hasPlayed]);
 
@@ -104,7 +107,7 @@ export default function SwitchPayAIPremiumChat() {
       hasRun.current = true;
       showConversation();
     }
-  }, [hasPlayed]);
+  }, [hasPlayed, showConversation]);
 
   return (
     <Box

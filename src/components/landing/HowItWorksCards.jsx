@@ -8,18 +8,21 @@ const STEPS = [
   {
     n: "01",
     icon: "💳",
+    iconLabel: "credit card",
     title: "Collect",
     desc: "Your frontend sends the payment request secured with an API key.",
   },
   {
     n: "02",
     icon: "⚡",
+    iconLabel: "lightning bolt",
     title: "Route",
     desc: "Our smart router instantly selects the most efficient PSP.",
   },
   {
     n: "03",
     icon: "✅",
+    iconLabel: "check mark",
     title: "Settle",
     desc: "The transaction is processed and your KPIs are updated in real time.",
   },
@@ -57,8 +60,7 @@ export default function HowItWorksCards() {
             border="1px solid rgba(99,102,241,0.25)"
             borderRadius="2xl"
             p={6}
-            h="160px"
-            overflow="hidden"
+            minH="160px"
             position="relative"
           >
             {/* Ghost watermark */}
@@ -87,7 +89,7 @@ export default function HowItWorksCards() {
                 fontSize="xl"
                 flexShrink={0}
               >
-                {step.icon}
+                <span role="img" aria-label={step.iconLabel}>{step.icon}</span>
               </Box>
               <Box>
                 <Box
@@ -222,7 +224,7 @@ export default function HowItWorksCards() {
                   fontSize="2xl"
                   mt={6}
                 >
-                  {step.icon}
+                  <span role="img" aria-label={step.iconLabel}>{step.icon}</span>
                 </Box>
 
                 {/* Title */}

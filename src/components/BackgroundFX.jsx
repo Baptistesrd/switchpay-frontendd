@@ -59,7 +59,7 @@ export default function BackgroundFX({ fixed = true }) {
         filter="blur(80px) saturate(140%)"
         animation="auroraFloat3 120s ease-in-out infinite"
       />
-      {/* Noise overlay */}
+      {/* Noise overlay — inline SVG feTurbulence, no external request */}
       <Box
         position="absolute"
         inset={0}
@@ -67,7 +67,7 @@ export default function BackgroundFX({ fixed = true }) {
         mixBlendMode="overlay"
         style={{
           backgroundImage:
-            "url('https://grainy-gradients.vercel.app/noise.png')",
+            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E\")",
         }}
       />
     </Box>

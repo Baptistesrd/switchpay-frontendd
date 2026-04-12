@@ -1,18 +1,34 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import {
   ChakraProvider,
   extendTheme,
   ColorModeScript,
+  Box,
+  Spinner,
 } from "@chakra-ui/react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 
-import Landing from "./pages/Landing";
-import Contact from "./pages/Contact";
-import DocsPage from "./pages/DocsPage";
-import App from "./App";
+const Landing  = lazy(() => import("./pages/Landing"));
+const Contact  = lazy(() => import("./pages/Contact"));
+const DocsPage = lazy(() => import("./pages/DocsPage"));
+const App      = lazy(() => import("./App"));
+
+function PageLoader() {
+  return (
+    <Box
+      minH="100vh"
+      bg="#030303"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Spinner size="xl" color="purple.400" thickness="3px" />
+    </Box>
+  );
+}
 
 const theme = extendTheme({
   config: {
@@ -58,13 +74,15 @@ root.render(
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <Router>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/app" element={<App />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/docs" element={<DocsPage />} /> 
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/"       element={<Landing />} />
+            <Route path="/app"    element={<App />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/docs"   element={<DocsPage />} />
+            <Route path="*"       element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
       </Router>
     </ChakraProvider>
     </HelmetProvider>

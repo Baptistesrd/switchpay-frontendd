@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useApiKey } from "../hooks/useApiKey";
 import {
-  VStack, HStack, FormControl, FormLabel, Input, Select, IconButton,
+  VStack, HStack, Stack, FormControl, FormLabel, Input, Select, IconButton,
   InputGroup, InputRightElement, useToast, Tooltip, Text, Box, Divider
 } from "@chakra-ui/react";
 import {
@@ -20,12 +21,10 @@ const CURRENCY_SYMBOLS = {
 
 export default function TransactionForm({ onNewTransaction }) {
   const [formData, setFormData] = useState({ montant: "", devise: "", pays: "", device: "" });
-  const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "");
+  const [apiKey, , setApiKeyState] = useApiKey();
   const [showApi, setShowApi] = useState(false);
   const [loading, setLoading] = useState(false);
-  const toast = useToast();  
-
-  useEffect(() => { localStorage.setItem("apiKey", apiKey); }, [apiKey]);
+  const toast = useToast();
 
   const handleChange = (e) => setFormData((f) => ({ ...f, [e.target.name]: e.target.value }));
 
@@ -121,7 +120,7 @@ export default function TransactionForm({ onNewTransaction }) {
               type={showApi ? "text" : "password"}
               placeholder="Fetching temporary key..."
               value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
+              onChange={(e) => setApiKeyState(e.target.value)}
               borderRadius="lg"
               pr="5rem"
             />
@@ -152,7 +151,7 @@ export default function TransactionForm({ onNewTransaction }) {
 
         <Divider />
 
-        <HStack spacing={6} align="start">
+        <Stack direction={{ base: "column", md: "row" }} spacing={6} align="start">
           <FormControl isRequired>
             <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Amount</FormLabel>
             <InputGroup>
@@ -196,9 +195,9 @@ export default function TransactionForm({ onNewTransaction }) {
               ))}
             </Select>
           </FormControl>
-        </HStack>
+        </Stack>
 
-        <HStack spacing={6} align="start">
+        <Stack direction={{ base: "column", md: "row" }} spacing={6} align="start">
           <FormControl isRequired>
             <FormLabel fontSize="sm" fontWeight="semibold" opacity={0.8}>Country</FormLabel>
             <Select
@@ -246,7 +245,7 @@ export default function TransactionForm({ onNewTransaction }) {
               ))}
             </Select>
           </FormControl>
-        </HStack>
+        </Stack>
 
         <HStack justify="space-between">
           <Text fontSize="xs" opacity={0.6}>

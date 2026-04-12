@@ -54,7 +54,7 @@ export default function TransactionTable({ transactions }) {
   const pspColor = useColorModeValue("gray.600", "gray.400");
 
   return (
-    <Box bg={cardBg} p={5} borderRadius="2xl" border="1px solid" borderColor={borderCol} shadow="xl">
+    <Box bg={cardBg} p={5} borderRadius="2xl" border="1px solid" borderColor={borderCol} shadow="xl" overflowX="hidden">
       <Heading size="md" textAlign="left" fontWeight="semibold" fontFamily="'DM Sans', sans-serif">
         Transaction History
       </Heading>
