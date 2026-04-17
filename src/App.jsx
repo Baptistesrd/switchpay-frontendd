@@ -1,32 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Box,
-  Heading,
-  Text,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Stat,
-  StatLabel,
-  StatNumber,
-  SimpleGrid,
-  Divider,
-  HStack,
-  Badge,
-  Button,
-  Spinner,
-  Skeleton,
-} from "@chakra-ui/react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 import TransactionForm from "./components/TransactionForm";
 import TransactionTable from "./components/TransactionTable";
-import MagneticButton from "./components/MagneticButton";
 import Counter from "./components/Counter";
 import DashCharts from "./components/DashCharts";
 import GlowCard from "./components/GlowCard";
@@ -36,11 +14,11 @@ import RoutingEngine from "./components/RoutingEngine";
 import DashboardErrorBoundary from "./components/DashboardErrorBoundary";
 import { useApiKey } from "./hooks/useApiKey";
 
-const MotionBox = motion(Box);
-
 const EMPTY_METRICS = { summary: {}, by_psp: {}, thompson: {} };
+const TABS = ["New Transaction", "History", "Dashboard"];
 
 export default function App() {
+  const [tab, setTab] = useState(0);
   const [transactions, setTransactions] = useState([]);
   const [metricsData, setMetricsData] = useState(EMPTY_METRICS);
   const [strategy, setStrategy] = useState("weighted_score");
@@ -56,22 +34,16 @@ export default function App() {
     try {
       const keyToUse = explicitKey || apiKey || localStorage.getItem("apiKey");
       if (!keyToUse) return;
-      const res = await axios.get(`${BACKEND_URL}/transactions`, {
-        headers: { "x-api-key": keyToUse },
-      });
+      const res = await axios.get(`${BACKEND_URL}/transactions`, { headers: { "x-api-key": keyToUse } });
       setTransactions(res.data || []);
-    } catch (err) {
-      console.error("Error fetching transactions:", err);
-    }
+    } catch (err) { console.error(err); }
   };
 
   const fetchMetrics = async () => {
     try {
       const res = await axios.get(`${BACKEND_URL}/metrics`);
       setMetricsData(res.data || EMPTY_METRICS);
-    } catch (err) {
-      console.error("Error fetching metrics:", err);
-    }
+    } catch (err) { console.error(err); }
   };
 
   const fetchAll = async (explicitKey) => {
@@ -81,41 +53,24 @@ export default function App() {
     setIsFetching(false);
   };
 
-  // Mount: /health and /generate-temp-key run in parallel
   useEffect(() => {
     async function init() {
       const [healthRes, keyRes] = await Promise.allSettled([
         axios.get(`${BACKEND_URL}/health`),
         axios.get(`${BACKEND_URL}/generate-temp-key`),
       ]);
-
-      if (healthRes.status === "fulfilled") {
-        setStrategy(healthRes.value.data?.strategy || "weighted_score");
-      }
-
+      if (healthRes.status === "fulfilled") setStrategy(healthRes.value.data?.strategy || "weighted_score");
       if (keyRes.status === "fulfilled") {
         const key = keyRes.value.data?.api_key;
-        if (key) {
-          setAndUseApiKey(key);
-          await fetchAll(key);
-          return;
-        }
-      } else {
-        console.error("Failed to generate temp key:", keyRes.reason);
+        if (key) { setAndUseApiKey(key); await fetchAll(key); return; }
       }
-
       const fallback = localStorage.getItem("apiKey");
-      if (fallback) {
-        setAndUseApiKey(fallback);
-        await fetchAll(fallback);
-      }
+      if (fallback) { setAndUseApiKey(fallback); await fetchAll(fallback); }
     }
-
     init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 30-second polling with backoff: pauses for 60s after 3 consecutive errors
   useEffect(() => {
     if (!apiKey) return;
     const id = setInterval(async () => {
@@ -126,237 +81,130 @@ export default function App() {
         pollErrorCountRef.current = 0;
       } catch {
         pollErrorCountRef.current += 1;
-        if (pollErrorCountRef.current >= 3) {
-          setPollPaused(true);
-          setTimeout(() => setPollPaused(false), 60000);
-        }
+        if (pollErrorCountRef.current >= 3) { setPollPaused(true); setTimeout(() => setPollPaused(false), 60000); }
       }
     }, 30000);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apiKey, pollPaused]);
 
-  const totalAmount = useMemo(
-    () => transactions.reduce((acc, tx) => acc + Number(tx.montant || 0), 0),
-    [transactions]
-  );
-
+  const totalAmount = useMemo(() => transactions.reduce((acc, tx) => acc + Number(tx.montant || 0), 0), [transactions]);
   const count = transactions.length;
   const successCount = transactions.filter((tx) => tx.status === "success").length;
   const failCount = count - successCount;
   const successRate = count > 0 ? Math.round((successCount / count) * 100) : 0;
 
   return (
-    <Box position="relative" minH="100vh" overflow="hidden">
-      {/* Background */}
-      <Box
-        position="absolute"
-        inset={0}
-        bgGradient="linear(to-br, #0f172a, #1e1b4b, #312e81)"
-        _before={{
-          content: '""',
-          position: "absolute",
-          inset: 0,
-          bg: "radial-gradient(circle at 20% 30%, rgba(99,102,241,0.25), transparent 40%)",
-        }}
-        _after={{
-          content: '""',
-          position: "absolute",
-          inset: 0,
-          bg: "radial-gradient(circle at 80% 70%, rgba(236,72,153,0.2), transparent 50%)",
-        }}
-      />
+    <div style={{ position: "relative", minHeight: "100vh", overflow: "hidden", background: "linear-gradient(135deg, #0f172a, #1e1b4b, #312e81)" }}>
       <BackgroundFX fixed />
+      <Navbar onRefresh={() => fetchAll(apiKey)} lastUpdated={lastUpdated} />
 
-      <Navbar
-        onRefresh={() => fetchAll(apiKey)}
-        lastUpdated={lastUpdated}
-      />
+      <div style={{ position: "relative", zIndex: 1, maxWidth: "1200px", margin: "0 auto", padding: "96px 24px 48px" }}>
 
-      <Box position="relative" zIndex={1} maxW="7xl" mx="auto" px={6} py={16}>
-        {/* Hero */}
-        <MotionBox
-          textAlign="center"
-          mb={16}
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <Heading
-            as="h1"
-            fontSize={{ base: "5xl", md: "7xl", lg: "8xl" }}
-            fontWeight="extrabold"
-            lineHeight="1.1"
+        {/* Header */}
+        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+          style={{ marginBottom: "40px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>
+              Dashboard
+            </h1>
+            <p style={{ margin: "4px 0 0", fontSize: "14px", color: "rgba(255,255,255,0.4)" }}>
+              {isFetching ? "Updating..." : pollPaused ? "Connection lost � retrying in 60s" : lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString()}` : "Loading..."}
+            </p>
+          </div>
+          <button onClick={() => navigate("/contact")}
+            style={{ padding: "10px 20px", borderRadius: "9999px", border: "1px solid rgba(255,255,255,0.15)", background: "transparent", color: "rgba(255,255,255,0.6)", fontSize: "14px", cursor: "pointer" }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.6)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"; }}
           >
-            Start a transaction{" "}
-            <Box
-              as="span"
-              bgGradient="linear(to-r, brand.500, brand.300)"
-              bgClip="text"
+            Book a demo
+          </button>
+        </motion.div>
+
+        {/* Tabs */}
+        <div style={{ display: "flex", gap: "4px", marginBottom: "32px", background: "rgba(255,255,255,0.04)", borderRadius: "12px", padding: "4px" }}>
+          {TABS.map((t, i) => (
+            <button key={t} onClick={() => setTab(i)}
+              style={{
+                flex: 1, padding: "10px", borderRadius: "9px", border: "none", cursor: "pointer",
+                fontSize: "14px", fontWeight: 500, transition: "all 0.2s",
+                background: tab === i ? "rgba(99,102,241,0.8)" : "transparent",
+                color: tab === i ? "#fff" : "rgba(255,255,255,0.45)",
+              }}
             >
-              now.
-            </Box>
-          </Heading>
-          <HStack spacing={4} justify="center" mt={10}>
-            <Button
-              type="button"
-              onClick={() => navigate("/contact")}
-              variant="outline"
-              borderRadius="full"
-              px={6}
-              py={2.5}
-              fontWeight="medium"
-              fontSize="sm"
-              rightIcon={<ExternalLinkIcon />}
-              w={{ base: "100%", sm: "auto" }}
-            >
-              Book a Demo
-            </Button>
-          </HStack>
-        </MotionBox>
+              {t}
+            </button>
+          ))}
+        </div>
 
-        {/* Polling indicator */}
-        <HStack justify="flex-end" mb={2} spacing={2} opacity={0.6}>
-          {isFetching && <Spinner size="xs" color="purple.300" />}
-          {pollPaused ? (
-            <Text fontSize="xs" color="orange.300">
-              Connection lost — retrying in 60s
-            </Text>
-          ) : lastUpdated ? (
-            <Text fontSize="xs" color="gray.400">
-              Last updated: {lastUpdated.toLocaleTimeString()}
-            </Text>
-          ) : null}
-        </HStack>
+        {/* Tab content */}
+        <DashboardErrorBoundary>
+          <AnimatePresence mode="wait">
+            <motion.div key={tab} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
 
-        <Tabs variant="soft-rounded" colorScheme="purple" isFitted>
-          <TabList mb={8}>
-            {[
-              { id: "new-tx",  base: "New Tx",   full: "New Transaction" },
-              { id: "history", base: "History",  full: "Transaction History" },
-              { id: "dash",    base: "Dashboard", full: "Dashboard" },
-            ].map((tab) => (
-              <Tab
-                key={tab.id}
-                fontWeight="semibold"
-                _selected={{
-                  color: "white",
-                  bgGradient: "linear(to-r, brand.500, brand.300)",
-                }}
-                _hover={{ bg: "whiteAlpha.100" }}
-              >
-                <Box as="span" display={{ base: "none", md: "inline" }}>{tab.full}</Box>
-                <Box as="span" display={{ base: "inline", md: "none" }}>{tab.base}</Box>
-              </Tab>
-            ))}
-          </TabList>
-
-          <TabPanels>
-            {/* ── New Transaction ── */}
-            <TabPanel>
-              <DashboardErrorBoundary>
-                <GlowCard p={8} interactive={false}>
-                  <Heading size="md" mb={2}>
-                    New Transaction
-                  </Heading>
-                  <Text mb={6} color="gray.400">
-                    Fill the form and send — routing happens in your FastAPI backend.
-                  </Text>
+              {/* New Transaction */}
+              {tab === 0 && (
+                <GlowCard p={8}>
+                  <h2 style={{ margin: "0 0 6px", fontSize: "18px", fontWeight: 600, color: "#fff" }}>New Transaction</h2>
+                  <p style={{ margin: "0 0 24px", fontSize: "14px", color: "rgba(255,255,255,0.4)" }}>Fill the form and send � routing happens in your FastAPI backend.</p>
                   <TransactionForm onNewTransaction={() => fetchAll(apiKey)} />
                 </GlowCard>
-              </DashboardErrorBoundary>
-            </TabPanel>
+              )}
 
-            {/* ── Transaction History ── */}
-            <TabPanel>
-              <DashboardErrorBoundary>
+              {/* History */}
+              {tab === 1 && (
                 <GlowCard p={6}>
-                  <HStack justify="space-between" mb={4} wrap="wrap" spacing={3}>
-                    <HStack spacing={3}>
-                      <Badge colorScheme="blue">Total: {count}</Badge>
-                      <Badge colorScheme="green">Success: {successCount}</Badge>
-                      <Badge colorScheme="red">Failed: {failCount}</Badge>
-                    </HStack>
-                    <MagneticButton type="button">Download CSV</MagneticButton>
-                  </HStack>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
+                    {[["Total", count, "#3b82f6"], ["Success", successCount, "#22c55e"], ["Failed", failCount, "#ef4444"]].map(([label, val, color]) => (
+                      <span key={label} style={{ fontSize: "12px", fontWeight: 600, padding: "4px 12px", borderRadius: "9999px", background: `${color}20`, color, border: `1px solid ${color}40` }}>
+                        {label}: {val}
+                      </span>
+                    ))}
+                  </div>
                   <TransactionTable transactions={transactions} />
                 </GlowCard>
-              </DashboardErrorBoundary>
-            </TabPanel>
+              )}
 
-            {/* ── Dashboard ── */}
-            <TabPanel>
-              <DashboardErrorBoundary>
-                {/* KPI cards — skeleton until first fetch resolves */}
-                <SimpleGrid columns={[1, 2, 4]} spacing={6} mb={8}>
-                  {!lastUpdated ? (
-                    <>
-                      {[...Array(4)].map((_, i) => (
-                        <GlowCard key={i} p={6}>
-                          <Skeleton height="14px" mb={3} borderRadius="md" startColor="whiteAlpha.100" endColor="whiteAlpha.300" />
-                          <Skeleton height="32px" borderRadius="md" startColor="whiteAlpha.100" endColor="whiteAlpha.300" />
-                        </GlowCard>
-                      ))}
-                    </>
-                  ) : (
-                    <>
-                      <KpiCard label="Total Volume">
-                        <StatNumber>
-                          <Counter to={totalAmount} isMoney decimals={2} />
-                        </StatNumber>
-                      </KpiCard>
-                      <KpiCard label="# Transactions">
-                        <StatNumber>
-                          <Counter to={count} />
-                        </StatNumber>
-                      </KpiCard>
-                      <KpiCard label="Success Rate">
-                        <StatNumber>{successRate}%</StatNumber>
-                      </KpiCard>
-                      <KpiCard label="Failures">
-                        <StatNumber>
-                          <Counter to={failCount} />
-                        </StatNumber>
-                      </KpiCard>
-                    </>
-                  )}
-                </SimpleGrid>
+              {/* Dashboard */}
+              {tab === 2 && (
+                <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "16px" }}>
+                    {!lastUpdated ? (
+                      [...Array(4)].map((_, i) => (
+                        <div key={i} style={{ borderRadius: "16px", padding: "24px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", height: "90px" }} />
+                      ))
+                    ) : (
+                      [
+                        { label: "Total Volume", value: <Counter to={totalAmount} isMoney decimals={2} /> },
+                        { label: "Transactions", value: <Counter to={count} /> },
+                        { label: "Success Rate", value: `${successRate}%` },
+                        { label: "Failures", value: <Counter to={failCount} /> },
+                      ].map(({ label, value }) => (
+                        <div key={label} style={{ borderRadius: "16px", padding: "24px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                          <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", marginBottom: "8px", fontWeight: 500 }}>{label}</div>
+                          <div style={{ fontSize: "26px", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>{value}</div>
+                        </div>
+                      ))
+                    )}
+                  </div>
 
-                {/* Analytics charts */}
-                <GlowCard p={6} mb={6}>
-                  <Heading size="md" mb={4}>
-                    Analytics
-                  </Heading>
-                  <Divider mb={4} />
-                  <DashCharts transactions={transactions} metricsData={metricsData} />
-                </GlowCard>
+                  <GlowCard p={6}>
+                    <h3 style={{ margin: "0 0 20px", fontSize: "16px", fontWeight: 600, color: "#fff" }}>Analytics</h3>
+                    <DashCharts transactions={transactions} metricsData={metricsData} />
+                  </GlowCard>
 
-                {/* Routing Engine panel */}
-                <GlowCard p={6}>
-                  <Heading size="md" mb={4}>
-                    Routing Engine
-                  </Heading>
-                  <Divider mb={4} />
-                  <RoutingEngine metricsData={metricsData} strategy={strategy} />
-                </GlowCard>
-              </DashboardErrorBoundary>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </Box>
-    </Box>
-  );
-}
+                  <GlowCard p={6}>
+                    <h3 style={{ margin: "0 0 20px", fontSize: "16px", fontWeight: 600, color: "#fff" }}>Routing Engine</h3>
+                    <RoutingEngine metricsData={metricsData} strategy={strategy} />
+                  </GlowCard>
+                </div>
+              )}
 
-function KpiCard({ label, children }) {
-  return (
-    <GlowCard p={6}>
-      <Stat>
-        <StatLabel color="gray.400" fontWeight="medium">
-          {label}
-        </StatLabel>
-        {children}
-      </Stat>
-    </GlowCard>
+            </motion.div>
+          </AnimatePresence>
+        </DashboardErrorBoundary>
+
+      </div>
+    </div>
   );
 }
