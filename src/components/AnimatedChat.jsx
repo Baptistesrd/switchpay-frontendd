@@ -147,7 +147,6 @@ export default function SwitchPayAIPremiumChat() {
         }}
       />
 
-      {/* Header */}
       <HStack
         spacing={2}
         px={3}
