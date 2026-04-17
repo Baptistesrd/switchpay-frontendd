@@ -72,7 +72,7 @@ root.render(
   <React.StrictMode>
     <HelmetProvider>
     <ChakraProvider theme={theme}>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+      
       <Router>
         <Suspense fallback={<PageLoader />}>
           <Routes>

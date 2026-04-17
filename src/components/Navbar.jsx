@@ -40,12 +40,10 @@ export default function Navbar({ onRefresh, lastUpdated }) {
         transition: "background 0.3s, border-color 0.3s",
       }}
     >
-      {/* Logo */}
       <Link to="/" style={{ fontWeight: 700, fontSize: "16px", letterSpacing: "-0.01em", background: "linear-gradient(90deg, #a5b4fc, #fff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", textDecoration: "none" }}>
         switchpay
       </Link>
 
-      {/* Center links — landing only */}
       <div style={{ display: "flex", alignItems: "center", gap: "28px" }}>
         {isLanding && LANDING_LINKS.map(({ label, hash }) => (
           <button key={label} onClick={() => scrollTo(hash)}
@@ -56,8 +54,6 @@ export default function Navbar({ onRefresh, lastUpdated }) {
             {label}
           </button>
         ))}
-
-        {/* Dashboard: last updated + refresh */}
         {!isLanding && onRefresh && (
           <button onClick={onRefresh}
             style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "9999px", cursor: "pointer", fontSize: "13px", color: "rgba(255,255,255,0.5)", padding: "6px 16px" }}
@@ -69,7 +65,6 @@ export default function Navbar({ onRefresh, lastUpdated }) {
         )}
       </div>
 
-      {/* CTA */}
       <div style={{ display: "flex", gap: "8px" }}>
         {isLanding ? (
           <Link to="/app" style={{ padding: "8px 20px", borderRadius: "9999px", background: "linear-gradient(135deg, #6366f1, #7c3aed)", color: "#fff", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}>
