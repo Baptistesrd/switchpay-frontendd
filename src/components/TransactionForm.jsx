@@ -8,7 +8,7 @@ import {
   ViewIcon, ViewOffIcon, CopyIcon, ArrowForwardIcon
 } from "@chakra-ui/icons";
 import axios from "axios";
-import MagneticButton from "./MagneticButton";
+
 
 const CURRENCIES = ["EUR","USD","GBP","JPY","CHF","CAD","AUD","CNY","INR","BRL","ZAR","SGD","MXN","TRY"];
 const DEVICES = ["web","mobile"];
@@ -251,7 +251,7 @@ export default function TransactionForm({ onNewTransaction }) {
           <Text fontSize="xs" opacity={0.6}>
             <b>Idempotency-Key</b> auto-generated per request
           </Text>
-          <MagneticButton
+          <Button
             type="submit"
             isLoading={loading}
             rightIcon={<ArrowForwardIcon />}
@@ -265,7 +265,7 @@ export default function TransactionForm({ onNewTransaction }) {
             _hover={{ shadow: "xl", transform: "translateY(-2px)" }}
           >
             Send Transaction
-          </MagneticButton>
+          </Button>
         </HStack>
       </VStack>
     </form>
