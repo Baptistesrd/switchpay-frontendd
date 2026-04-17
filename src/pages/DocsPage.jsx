@@ -1,413 +1,190 @@
-import React from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  VStack,
-  Code,
-  Divider,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Tabs,
-  Tab,
-  TabList,
-  TabPanels,
-  TabPanel,
-  SimpleGrid,
-  List,
-  ListItem,
-  ListIcon,
-  Button,
-  HStack,
-} from "@chakra-ui/react";
-import {
-  CheckCircleIcon,
-  WarningIcon,
-  InfoIcon,
-} from "@chakra-ui/icons";
-import { Link as RouterLink } from "react-router-dom";
-import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import Layout from "../components/Layout";
-import GlowCard from "../components/GlowCard";
 import { PSP_TABLE } from "../data/pspData";
 
-const MotionBox = motion(Box);
+const SECTIONS = [
+  { id: "intro", label: "Introduction" },
+  { id: "auth", label: "Authentication" },
+  { id: "transaction", label: "Create a Transaction" },
+  { id: "metrics", label: "Retrieve Metrics" },
+  { id: "advanced", label: "Advanced Features" },
+  { id: "psps", label: "PSP Landscape" },
+];
 
-const textColor = "rgba(255,255,255,0.55)";
+const Code = ({ children }) => (
+  <code style={{ background: "rgba(99,102,241,0.12)", color: "#a5b4fc", padding: "2px 8px", borderRadius: "6px", fontSize: "13px", fontFamily: "monospace" }}>
+    {children}
+  </code>
+);
 
-const codeBoxProps = {
-  bg: "rgba(0,0,0,0.4)",
-  border: "1px solid",
-  borderColor: "rgba(255,255,255,0.08)",
-  borderLeftWidth: "3px",
-  borderLeftColor: "rgba(99,102,241,0.5)",
-  borderRadius: "xl",
-  p: 4,
+const CodeBlock = ({ children }) => (
+  <pre style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,255,255,0.07)", borderLeft: "3px solid rgba(99,102,241,0.5)", borderRadius: "12px", padding: "20px", overflowX: "auto", fontSize: "13px", color: "#67e8f9", fontFamily: "monospace", lineHeight: 1.7, margin: "16px 0" }}>
+    <code>{children}</code>
+  </pre>
+);
+
+const Section = ({ id, title, children }) => (
+  <motion.section
+    id={id}
+    initial={{ opacity: 0, y: 16 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.4 }}
+    style={{ marginBottom: "64px" }}
+  >
+    <h2 style={{ margin: "0 0 20px", fontSize: "24px", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", paddingBottom: "12px", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+      {title}
+    </h2>
+    {children}
+  </motion.section>
+);
+
+const P = ({ children }) => (
+  <p style={{ margin: "0 0 16px", fontSize: "15px", color: "rgba(255,255,255,0.55)", lineHeight: 1.8 }}>{children}</p>
+);
+
+const Accordion = ({ q, children }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ borderRadius: "12px", border: "1px solid rgba(255,255,255,0.07)", marginBottom: "8px", overflow: "hidden" }}>
+      <button onClick={() => setOpen(!open)} style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 18px", background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.7)", fontSize: "14px", fontWeight: 500, textAlign: "left" }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = "none"; }}
+      >
+        {q}
+        <motion.span animate={{ rotate: open ? 45 : 0 }} transition={{ duration: 0.2 }} style={{ fontSize: "18px", color: "#a5b4fc", flexShrink: 0, marginLeft: "12px" }}>+</motion.span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }}>
+            <div style={{ padding: "0 18px 18px", fontSize: "14px", color: "rgba(255,255,255,0.45)", lineHeight: 1.7 }}>{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 };
 
-const accordionButtonProps = {
-  color: "rgba(255,255,255,0.7)",
-  _hover: { color: "white", bg: "rgba(255,255,255,0.04)" },
-  borderRadius: "lg",
-};
+const Check = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ flexShrink: 0, marginTop: "3px" }}>
+    <path d="M2 7l3.5 3.5L12 3" stroke="#a5b4fc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const Li = ({ children }) => (
+  <li style={{ display: "flex", alignItems: "flex-start", gap: "10px", marginBottom: "8px", fontSize: "14px", color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>
+    <Check />{children}
+  </li>
+);
 
 export default function DocsPage() {
-  const fadeIn = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.6 } },
+  const [activeSection, setActiveSection] = useState("intro");
+
+  const scrollTo = (id) => {
+    const el = document.querySelector(`#${id}`);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    setActiveSection(id);
   };
 
   return (
     <Layout>
       <Helmet>
         <title>Developer Docs — switchpay</title>
-        <meta name="description" content="switchpay API documentation: authentication, transaction routing, webhooks, and advanced features for borderless payment systems." />
+        <meta name="description" content="switchpay API documentation" />
       </Helmet>
-      <Box py={24} bg="#030303" minH="100vh" overflowX="hidden">
-        <Container maxW="6xl">
-          <VStack align="start" spacing={16}>
 
-            {/* Header */}
-            <MotionBox initial="hidden" animate="visible" variants={fadeIn} w="full">
-              <HStack justify="space-between" w="full" wrap="wrap" gap={4}>
-                <Heading
-                  size="2xl"
-                  bgGradient="linear(to-r, #a5b4fc, rgba(255,255,255,0.9), #fda4af)"
-                  bgClip="text"
-                >
-                  switchpay Developer Docs
-                </Heading>
-                <Button
-                  as={RouterLink}
-                  to="/"
-                  px={8}
-                  py={5}
-                  fontSize="md"
-                  fontWeight="600"
-                  borderRadius="full"
-                  color="rgba(255,255,255,0.7)"
-                  bg="rgba(255,255,255,0.04)"
-                  border="1px solid"
-                  borderColor="rgba(255,255,255,0.1)"
-                  backdropFilter="blur(12px)"
-                  transition="all 0.35s ease"
-                  _hover={{
-                    bg: "rgba(255,255,255,0.08)",
-                    borderColor: "rgba(99,102,241,0.4)",
-                    color: "white",
-                    transform: "translateY(-2px) scale(1.03)",
-                  }}
-                >
-                  ←
-                </Button>
-              </HStack>
+      <div style={{ background: "#030303", minHeight: "100vh", display: "flex" }}>
 
-              <Text fontSize="lg" color={textColor} maxW="3xl" mt={6} lineHeight="1.8">
-                Build resilient, borderless payment systems with <b>switchpay's Routing API</b>.
-                This documentation covers every endpoint, architectural concept, and real-world
-                use case you need to scale from <b>0 → global</b>.
-              </Text>
-            </MotionBox>
-
-            {/* Why Payment Routing Matters */}
-            <MotionBox
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeIn}
-              w="full"
+        {/* Sidebar */}
+        <aside style={{ width: "220px", flexShrink: 0, position: "sticky", top: 0, height: "100vh", borderRight: "1px solid rgba(255,255,255,0.06)", padding: "80px 0 32px", display: "flex", flexDirection: "column" }}>
+          <div style={{ padding: "0 20px 20px", borderBottom: "1px solid rgba(255,255,255,0.06)", marginBottom: "16px" }}>
+            <Link to="/" style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)", textDecoration: "none" }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = "#a5b4fc"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
             >
-              <GlowCard p={10}>
-                <Heading size="lg" mb={4} color="white">
-                  <span role="img" aria-label="globe">🌍</span> Why Payment Routing Matters
-                </Heading>
-                <Text color={textColor} mb={4}>
-                  The payment stack is a maze of APIs, acquirers, and local constraints. switchpay abstracts the complexity into one adaptive, intelligent routing layer.
-                </Text>
+              ← Back to home
+            </Link>
+          </div>
+          <nav style={{ padding: "0 12px", flex: 1 }}>
+            <p style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", padding: "0 8px", marginBottom: "8px" }}>API Reference</p>
+            {SECTIONS.map(({ id, label }) => (
+              <button key={id} onClick={() => scrollTo(id)}
+                style={{ display: "block", width: "100%", textAlign: "left", padding: "8px 12px", borderRadius: "8px", border: "none", cursor: "pointer", fontSize: "13px", fontWeight: activeSection === id ? 500 : 400, color: activeSection === id ? "#a5b4fc" : "rgba(255,255,255,0.45)", background: activeSection === id ? "rgba(99,102,241,0.1)" : "transparent", marginBottom: "2px", transition: "all 0.15s" }}
+                onMouseEnter={(e) => { if (activeSection !== id) e.currentTarget.style.color = "#fff"; }}
+                onMouseLeave={(e) => { if (activeSection !== id) e.currentTarget.style.color = "rgba(255,255,255,0.45)"; }}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+        </aside>
 
-                <Text color={textColor} mb={4}>
-                  Below is a non-exhaustive overview of the current payment landscape:
-                </Text>
+        {/* Main content */}
+        <main style={{ flex: 1, padding: "80px 64px 80px 56px", maxWidth: "860px", overflowY: "auto" }}>
 
-                <Box
-                  mt={8}
-                  border="1px solid"
-                  borderColor="rgba(255,255,255,0.08)"
-                  borderRadius="2xl"
-                  overflow="hidden"
-                  style={{ backdropFilter: "blur(12px)" }}
-                  boxShadow="0 0 24px rgba(0,0,0,0.4)"
-                >
-                  <Box
-                    maxH="70vh"
-                    overflowY="auto"
-                    overflowX="auto"
-                    css={{
-                      "&::-webkit-scrollbar": { height: "6px", width: "6px" },
-                      "&::-webkit-scrollbar-thumb": {
-                        background: "rgba(255,255,255,0.1)",
-                        borderRadius: "10px",
-                      },
-                    }}
-                  >
-                    <table
-                      style={{
-                        width: "100%",
-                        borderCollapse: "collapse",
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: "0.95rem",
-                      }}
-                    >
-                      <thead
-                        style={{
-                          position: "sticky",
-                          top: 0,
-                          background: "rgba(255,255,255,0.05)",
-                          backdropFilter: "blur(12px)",
-                          zIndex: 10,
-                        }}
-                      >
-                        <tr>
-                          {["PSP / Network", "Core Strength", "Primary Region"].map((col) => (
-                            <th
-                              key={col}
-                              scope="col"
-                              style={{
-                                padding: "14px 16px",
-                                textAlign: "left",
-                                color: "rgba(255,255,255,0.6)",
-                                fontWeight: "600",
-                                fontSize: "0.72rem",
-                                letterSpacing: "0.08em",
-                                textTransform: "uppercase",
-                                borderBottom: "1px solid rgba(255,255,255,0.08)",
-                              }}
-                            >
-                              {col}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
+          <Section id="intro" title="Introduction">
+            <P>Build resilient, borderless payment systems with the <strong style={{ color: "#fff" }}>switchpay Routing API</strong>. One adaptive layer in front of Stripe, Adyen, Wise, and Rapyd.</P>
+            <P>switchpay acts as a <strong style={{ color: "#fff" }}>meta-router</strong> that intelligently selects which PSP should process a given payment based on country, currency, fees, latency, and device.</P>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "12px", marginTop: "24px" }}>
+              {[["95%+", "Auth Rate"], ["4", "PSPs Integrated"], ["<200ms", "Routing Decision"], ["1", "Unified API"]].map(([val, label]) => (
+                <div key={label} style={{ borderRadius: "12px", padding: "20px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", textAlign: "center" }}>
+                  <div style={{ fontSize: "24px", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>{val}</div>
+                  <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.35)", marginTop: "4px" }}>{label}</div>
+                </div>
+              ))}
+            </div>
+          </Section>
 
-                      <tbody>
-                        {PSP_TABLE.map(([psp, desc, region], i) => (
-                          <tr
-                            key={i}
-                            style={{
-                              backgroundColor:
-                                i % 2 === 0
-                                  ? "rgba(255,255,255,0.015)"
-                                  : "rgba(255,255,255,0.03)",
-                              transition: "background-color 0.2s ease",
-                              borderBottom: "1px solid rgba(255,255,255,0.06)",
-                            }}
-                            onMouseEnter={(e) =>
-                              (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.05)")
-                            }
-                            onMouseLeave={(e) =>
-                              (e.currentTarget.style.backgroundColor =
-                                i % 2 === 0
-                                  ? "rgba(255,255,255,0.015)"
-                                  : "rgba(255,255,255,0.03)")
-                            }
-                          >
-                            <td style={{ padding: "12px 16px", color: "#fff", fontWeight: 500 }}>
-                              {psp}
-                            </td>
-                            <td style={{ padding: "12px 16px", color: "rgba(255,255,255,0.65)" }}>
-                              {desc}
-                            </td>
-                            <td style={{ padding: "12px 16px" }}>
-                              <span
-                                style={{
-                                  display: "inline-block",
-                                  padding: "2px 10px",
-                                  borderRadius: "9999px",
-                                  background: "rgba(99,102,241,0.12)",
-                                  border: "1px solid rgba(99,102,241,0.25)",
-                                  color: "#a5b4fc",
-                                  fontSize: "0.75rem",
-                                }}
-                              >
-                                {region}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </Box>
-                </Box>
+          <Section id="auth" title="Authentication">
+            <P>Every request must include an <Code>x-api-key</Code> header. Keys are environment-specific — sandbox keys only process simulated payments.</P>
+            <CodeBlock>{`x-api-key: YOUR_API_KEY`}</CodeBlock>
+            <Accordion q="Key types">
+              <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+                <Li>Sandbox — test payments only, no real money moved</Li>
+                <Li>Production — live transactions, requires KYB verification</Li>
+                <Li>Keep keys server-side only, never expose in frontend code</Li>
+              </ul>
+            </Accordion>
+          </Section>
 
-                <Divider my={6} borderColor="rgba(255,255,255,0.08)" />
+          <Section id="transaction" title="Create a Transaction">
+            <P>The <Code>POST /transaction</Code> endpoint automatically routes each payment through the most efficient PSP.</P>
+            <CodeBlock>{`POST /transaction
+Content-Type: application/json
+x-api-key: YOUR_API_KEY
 
-                <Heading size="md" mb={3} color="white">
-                  The switchpay Approach
-                </Heading>
-                <Text color={textColor}>
-                  switchpay acts as a <b>meta-router</b> that intelligently selects which PSP should
-                  process a given payment based on:
-                </Text>
-                <List spacing={2} mt={2} color={textColor}>
-                  <ListItem><ListIcon as={CheckCircleIcon} color="#a5b4fc" /> Country & currency fit</ListItem>
-                  <ListItem><ListIcon as={CheckCircleIcon} color="#a5b4fc" /> Real-time latency & uptime</ListItem>
-                  <ListItem><ListIcon as={CheckCircleIcon} color="#a5b4fc" /> Cost-per-route optimization</ListItem>
-                  <ListItem><ListIcon as={CheckCircleIcon} color="#a5b4fc" /> AI-based routing predictions</ListItem>
-                </List>
-
-                <Text mt={4} color={textColor}>
-                  Think of it as the <b>Cloudflare of Payments</b> making your PSP stack smarter,
-                  faster, and globally consistent.
-                </Text>
-              </GlowCard>
-            </MotionBox>
-
-            {/* Authentication */}
-            <MotionBox
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeIn}
-              w="full"
-            >
-              <GlowCard p={10}>
-                <Heading size="lg" mb={4} color="white"><span role="img" aria-label="lock">🔐</span> Authentication</Heading>
-                <Text color={textColor}>
-                  Every request must include an{" "}
-                  <Code bg="rgba(99,102,241,0.15)" color="#a5b4fc" px={1.5} borderRadius="md">
-                    Authorization
-                  </Code>{" "}
-                  header with your API key.
-                  Keys are environment-specific (<b>Sandbox</b> / <b>Production</b>).
-                </Text>
-
-                <Box {...codeBoxProps} mt={4}>
-                  <Code whiteSpace="pre" bg="transparent" color="#67e8f9">
-                    Authorization: Bearer YOUR_API_KEY
-                  </Code>
-                </Box>
-
-                <Accordion mt={5} allowToggle>
-                  <AccordionItem border="none">
-                    <AccordionButton {...accordionButtonProps}>
-                      <Box flex="1" textAlign="left">🔍 Key Types</Box>
-                      <Box color="#a5b4fc"><AccordionIcon /></Box>
-                    </AccordionButton>
-                    <AccordionPanel bg="rgba(255,255,255,0.02)" borderRadius="lg">
-                      <List spacing={2}>
-                        <ListItem color={textColor}><ListIcon as={CheckCircleIcon} color="#a5b4fc" /> Sandbox — test payments only</ListItem>
-                        <ListItem color={textColor}><ListIcon as={CheckCircleIcon} color="#a5b4fc" /> Production — live transactions</ListItem>
-                        <ListItem color={textColor}><ListIcon as={WarningIcon} color="orange.400" /> Keep keys server-side only</ListItem>
-                      </List>
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
-              </GlowCard>
-            </MotionBox>
-
-            {/* Create a Transaction */}
-            <MotionBox
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeIn}
-              w="full"
-            >
-              <GlowCard p={10}>
-                <Heading size="lg" mb={4} color="white"><span role="img" aria-label="credit card">💳</span> Create a Transaction</Heading>
-                <Text color={textColor}>
-                  The{" "}
-                  <Code bg="rgba(99,102,241,0.15)" color="#a5b4fc" px={1.5} borderRadius="md">
-                    POST /transaction
-                  </Code>{" "}
-                  endpoint automatically routes each payment
-                  through the most efficient PSP.
-                </Text>
-
-                <Tabs mt={6} variant="enclosed" colorScheme="brand">
-                  <TabList borderColor="rgba(255,255,255,0.1)">
-                    <Tab
-                      color="rgba(255,255,255,0.5)"
-                      _selected={{ color: "white", borderColor: "rgba(255,255,255,0.2)", bg: "rgba(255,255,255,0.05)" }}
-                    >
-                      Request
-                    </Tab>
-                    <Tab
-                      color="rgba(255,255,255,0.5)"
-                      _selected={{ color: "white", borderColor: "rgba(255,255,255,0.2)", bg: "rgba(255,255,255,0.05)" }}
-                    >
-                      Response
-                    </Tab>
-                  </TabList>
-                  <TabPanels>
-                    <TabPanel>
-                      <Box {...codeBoxProps}>
-                        <Code whiteSpace="pre" bg="transparent" color="#67e8f9">{`POST /transaction
 {
   "amount": 125.50,
   "currency": "EUR",
   "country": "FR",
   "device": "mobile"
-}`}</Code>
-                      </Box>
-                    </TabPanel>
-                    <TabPanel>
-                      <Box {...codeBoxProps}>
-                        <Code whiteSpace="pre" bg="transparent" color="#67e8f9">{`{
+}`}</CodeBlock>
+            <p style={{ margin: "0 0 8px", fontSize: "13px", fontWeight: 500, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Response</p>
+            <CodeBlock>{`{
   "transaction_id": "tx_9834ABC",
   "psp": "Stripe",
   "status": "success",
   "latency_ms": 214,
   "fees": 0.35
-}`}</Code>
-                      </Box>
-                    </TabPanel>
-                  </TabPanels>
-                </Tabs>
+}`}</CodeBlock>
+            <Accordion q="Use cases">
+              <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+                <Li>Web checkout — route via your backend API</Li>
+                <Li>Mobile apps — real-time routing per device</Li>
+                <Li>Failover — automatic fallback if primary PSP fails</Li>
+              </ul>
+            </Accordion>
+          </Section>
 
-                <Accordion allowToggle mt={6}>
-                  <AccordionItem border="none">
-                    <AccordionButton {...accordionButtonProps}>
-                      <Box flex="1" textAlign="left"><span role="img" aria-label="settings">⚙️</span> Use Cases</Box>
-                      <Box color="#a5b4fc"><AccordionIcon /></Box>
-                    </AccordionButton>
-                    <AccordionPanel bg="rgba(255,255,255,0.02)" borderRadius="lg">
-                      <List spacing={3}>
-                        <ListItem color={textColor}><ListIcon as={InfoIcon} color="#a5b4fc" /> Web checkout → route via backend API</ListItem>
-                        <ListItem color={textColor}><ListIcon as={InfoIcon} color="#a5b4fc" /> Mobile apps → real-time routing</ListItem>
-                        <ListItem color={textColor}><ListIcon as={InfoIcon} color="#a5b4fc" /> Failover → fallback to Adyen if Stripe fails</ListItem>
-                      </List>
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
-              </GlowCard>
-            </MotionBox>
+          <Section id="metrics" title="Retrieve Metrics">
+            <P>Use <Code>GET /metrics</Code> to monitor routing performance and PSP utilization in real time.</P>
+            <CodeBlock>{`GET /metrics
+x-api-key: YOUR_API_KEY
 
-            {/* Retrieve Metrics */}
-            <MotionBox
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeIn}
-              w="full"
-            >
-              <GlowCard p={10}>
-                <Heading size="lg" mb={4} color="white"><span role="img" aria-label="chart">📈</span> Retrieve Metrics</Heading>
-                <Text color={textColor}>
-                  Use{" "}
-                  <Code bg="rgba(99,102,241,0.15)" color="#a5b4fc" px={1.5} borderRadius="md">
-                    GET /metrics
-                  </Code>{" "}
-                  to monitor routing performance and PSP utilization.
-                </Text>
-
-                <Box {...codeBoxProps} mt={4}>
-                  <Code whiteSpace="pre" bg="transparent" color="#67e8f9">{`GET /metrics
 {
   "total_transactions": 487231,
   "total_volume": 12500000,
@@ -417,100 +194,73 @@ export default function DocsPage() {
     "Rapyd": 77320,
     "Wise": 3897
   }
-}`}</Code>
-                </Box>
+}`}</CodeBlock>
+            <Accordion q="Field definitions">
+              <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+                <Li><strong>total_transactions</strong> — total number of processed payments</Li>
+                <Li><strong>total_volume</strong> — aggregate transaction value in base currency</Li>
+                <Li><strong>transactions_by_psp</strong> — volume breakdown per provider</Li>
+              </ul>
+            </Accordion>
+          </Section>
 
-                <Accordion mt={5} allowToggle>
-                  <AccordionItem border="none">
-                    <AccordionButton {...accordionButtonProps}>
-                      <Box flex="1" textAlign="left"><span role="img" aria-label="book">📘</span> Field Definitions</Box>
-                      <Box color="#a5b4fc"><AccordionIcon /></Box>
-                    </AccordionButton>
-                    <AccordionPanel bg="rgba(255,255,255,0.02)" borderRadius="lg">
-                      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={3} color={textColor}>
-                        <Text><b>total_transactions:</b> Total number of processed payments.</Text>
-                        <Text><b>total_volume:</b> Aggregate transaction value.</Text>
-                        <Text><b>transactions_by_psp:</b> Volume breakdown by provider.</Text>
-                      </SimpleGrid>
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
-              </GlowCard>
-            </MotionBox>
-
-            {/* Advanced Features */}
-            <MotionBox
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeIn}
-              w="full"
-            >
-              <GlowCard p={10}>
-                <Heading size="lg" mb={4} color="white"><span role="img" aria-label="lightning bolt">⚡</span> Advanced Features</Heading>
-                <Accordion allowMultiple>
-                  <AccordionItem border="none">
-                    <AccordionButton {...accordionButtonProps}>
-                      <Box flex="1" textAlign="left">Idempotency Keys</Box>
-                      <Box color="#a5b4fc"><AccordionIcon /></Box>
-                    </AccordionButton>
-                    <AccordionPanel bg="rgba(255,255,255,0.02)" borderRadius="lg">
-                      <Text color={textColor}>
-                        Prevent duplicate payments by including an{" "}
-                        <Code bg="rgba(99,102,241,0.15)" color="#a5b4fc" px={1.5} borderRadius="md">
-                          Idempotency-Key
-                        </Code>{" "}
-                        in requests.
-                      </Text>
-                      <Box {...codeBoxProps} mt={3}>
-                        <Code whiteSpace="pre" bg="transparent" color="#67e8f9">
-                          Idempotency-Key: tx_2025_001
-                        </Code>
-                      </Box>
-                    </AccordionPanel>
-                  </AccordionItem>
-
-                  <AccordionItem border="none">
-                    <AccordionButton {...accordionButtonProps}>
-                      <Box flex="1" textAlign="left">Webhooks</Box>
-                      <Box color="#a5b4fc"><AccordionIcon /></Box>
-                    </AccordionButton>
-                    <AccordionPanel bg="rgba(255,255,255,0.02)" borderRadius="lg">
-                      <Text color={textColor}>
-                        Receive live transaction updates via webhooks.
-                      </Text>
-                      <Box {...codeBoxProps} mt={3}>
-                        <Code whiteSpace="pre" bg="transparent" color="#67e8f9">{`POST /webhook
+          <Section id="advanced" title="Advanced Features">
+            <Accordion q="Idempotency Keys">
+              <P>Prevent duplicate payments by including an <Code>Idempotency-Key</Code> header. Same key always returns the same response.</P>
+              <CodeBlock>{`Idempotency-Key: tx_2025_001`}</CodeBlock>
+            </Accordion>
+            <Accordion q="Webhooks">
+              <P>Receive live transaction updates via webhooks registered in your dashboard.</P>
+              <CodeBlock>{`POST /webhook
 {
   "event": "transaction.completed",
   "data": { "id": "tx_9834ABC", "status": "success" }
-}`}</Code>
-                      </Box>
-                    </AccordionPanel>
-                  </AccordionItem>
+}`}</CodeBlock>
+            </Accordion>
+            <Accordion q="Smart Routing Logic">
+              <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+                <Li>Live PSP latency and uptime tracking</Li>
+                <Li>Route success rate optimization per country</Li>
+                <Li>Fee and FX-based decision making</Li>
+                <Li>Predictive AI-driven routing</Li>
+              </ul>
+            </Accordion>
+          </Section>
 
-                  <AccordionItem border="none">
-                    <AccordionButton {...accordionButtonProps}>
-                      <Box flex="1" textAlign="left">Smart Routing Logic</Box>
-                      <Box color="#a5b4fc"><AccordionIcon /></Box>
-                    </AccordionButton>
-                    <AccordionPanel bg="rgba(255,255,255,0.02)" borderRadius="lg">
-                      <List spacing={2} mt={2} color={textColor}>
-                        <ListItem><ListIcon as={CheckCircleIcon} color="#a5b4fc" /> Live PSP latency & uptime tracking</ListItem>
-                        <ListItem><ListIcon as={CheckCircleIcon} color="#a5b4fc" /> Route success rate optimization</ListItem>
-                        <ListItem><ListIcon as={CheckCircleIcon} color="#a5b4fc" /> Fee & FX-based decision-making</ListItem>
-                        <ListItem><ListIcon as={CheckCircleIcon} color="#a5b4fc" /> Predictive AI-driven routing</ListItem>
-                      </List>
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
-              </GlowCard>
-            </MotionBox>
+          <Section id="psps" title="PSP Landscape">
+            <P>An overview of the current payment provider ecosystem and where each fits in the stack.</P>
+            <div style={{ borderRadius: "16px", border: "1px solid rgba(255,255,255,0.07)", overflow: "hidden" }}>
+              <div style={{ maxHeight: "600px", overflowY: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+                  <thead style={{ position: "sticky", top: 0, background: "rgba(10,10,20,0.95)", backdropFilter: "blur(12px)" }}>
+                    <tr>
+                      {["PSP / Network", "Core Strength", "Region"].map((col) => (
+                        <th key={col} style={{ padding: "12px 16px", textAlign: "left", fontSize: "11px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>{col}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {PSP_TABLE.map(([psp, desc, region], i) => (
+                      <tr key={i}
+                        style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.015)" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(99,102,241,0.05)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.015)"; }}
+                      >
+                        <td style={{ padding: "10px 16px", color: "#fff", fontWeight: 500 }}>{psp}</td>
+                        <td style={{ padding: "10px 16px", color: "rgba(255,255,255,0.5)" }}>{desc}</td>
+                        <td style={{ padding: "10px 16px" }}>
+                          <span style={{ fontSize: "11px", padding: "2px 10px", borderRadius: "9999px", background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)", color: "#a5b4fc" }}>{region}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </Section>
 
-            <Divider borderColor="rgba(255,255,255,0.08)" />
-          </VStack>
-        </Container>
-      </Box>
+        </main>
+      </div>
     </Layout>
   );
 }
