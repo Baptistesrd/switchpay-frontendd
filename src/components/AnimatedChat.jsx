@@ -1,202 +1,199 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
-import {
-  Box,
-  VStack,
-  HStack,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import { motion } from "framer-motion";
+import { useCallback, useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-const MotionBox = motion(Box);
+const CONVERSATION = [
+  { sender: "user", text: "Which PSP gives me the best rate for EUR payments in Germany?" },
+  { sender: "ai", text: "Adyen currently offers ~0.5% lower fees than Stripe for EUR in DE. I'll alert you if that changes." },
+  { sender: "user", text: "What about USD payments in the UK?" },
+  { sender: "ai", text: "Wise is your best option — lowest conversion fees and direct settlement support for USD in GB." },
+];
 
-const DELAY_AFTER_USER_MESSAGE_MS = 1000;
-const DELAY_AI_THINKING_MS = 1800;
+const s = {
+  sans: "'DM Sans', sans-serif",
+  serif: "'DM Serif Display', Georgia, serif",
+};
 
-function ThinkingPulse() {
+function Cursor() {
   return (
-    <motion.div
-      style={{
-        width: "14px",
-        height: "14px",
-        borderRadius: "50%",
-        background: "linear-gradient(135deg, #63b3ed, #805ad5, #f687b3)",
-        boxShadow: "0 0 15px rgba(128,90,213,0.6)",
-        marginTop: 6,
-      }}
-      animate={{ scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }}
-      transition={{ duration: 1.2, repeat: Infinity }}
+    <motion.span
+      animate={{ opacity: [1, 0] }}
+      transition={{ duration: 0.6, repeat: Infinity, repeatType: "reverse" }}
+      style={{ display: "inline-block", width: "2px", height: "14px", background: "rgba(255,255,255,0.6)", marginLeft: "3px", verticalAlign: "middle" }}
     />
   );
 }
 
-export default function SwitchPayAIPremiumChat() {
-  const [messages, setMessages] = useState([]);
-  const [aiThinking, setAiThinking] = useState(false);
-  const [hasPlayed, setHasPlayed] = useState(false);
+function TypedMessage({ text, onDone }) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
 
-  const chatRef = useRef(null);
-  const hasRun = useRef(false);
-
-  const assistantBg = useColorModeValue("whiteAlpha.700", "whiteAlpha.100");
-  const userBg = useColorModeValue("blue.500", "blue.600");
-  const textColor = useColorModeValue("gray.800", "white");
-  const borderCol = useColorModeValue("whiteAlpha.300", "whiteAlpha.200");
-
-  const conversation = [
-    {
-      sender: "user",
-      text: "Which PSP gives me the best rate for € payments in Germany?",
-    },
-    {
-      sender: "assistant",
-      text: "✅ Adyen currently offers ~0.5% lower fees than Stripe for EUR. I'll alert you instantly if that changes.",
-    },
-    {
-      sender: "user",
-      text: "And what about USD payments in the UK?",
-    },
-    {
-      sender: "assistant",
-      text: "💡 Wise is your best option for USD in the UK — lowest conversion fees, and direct settlement support.",
-    },
-  ];
-
-  const showConversation = useCallback(async () => {
+  useEffect(() => {
     let i = 0;
-    while (i < conversation.length) {
-      const msg = conversation[i];
+    const interval = setInterval(() => {
+      i++;
+      setDisplayed(text.slice(0, i));
+      if (i >= text.length) {
+        clearInterval(interval);
+        setDone(true);
+        setTimeout(onDone, 400);
+      }
+    }, 18);
+    return () => clearInterval(interval);
+  }, [text, onDone]);
+
+  return (
+    <span>
+      {displayed}
+      {!done && <Cursor />}
+    </span>
+  );
+}
+
+function Thinking() {
+  return (
+    <div style={{ display: "flex", gap: "5px", alignItems: "center", padding: "4px 0" }}>
+      {[0, 1, 2].map((i) => (
+        <motion.div
+          key={i}
+          animate={{ y: [0, -5, 0] }}
+          transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15 }}
+          style={{ width: "5px", height: "5px", borderRadius: "50%", background: "rgba(255,255,255,0.3)" }}
+        />
+      ))}
+    </div>
+  );
+}
+
+export default function AnimatedChat() {
+  const [messages, setMessages] = useState([]);
+  const [thinking, setThinking] = useState(false);
+  const [typingIndex, setTypingIndex] = useState(null);
+  const [hasPlayed, setHasPlayed] = useState(false);
+  const ref = useRef(null);
+  const hasRun = useRef(false);
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, thinking]);
+
+  const play = useCallback(async () => {
+    for (let i = 0; i < CONVERSATION.length; i++) {
+      const msg = CONVERSATION[i];
       if (msg.sender === "user") {
-        setMessages((prev) => [...prev, msg]);
-        i++;
-        await new Promise((res) => setTimeout(res, DELAY_AFTER_USER_MESSAGE_MS));
+        await new Promise((res) => setTimeout(res, 600));
+        setMessages((prev) => [...prev, { ...msg, typing: false }]);
+        await new Promise((res) => setTimeout(res, 900));
       } else {
-        setAiThinking(true);
-        await new Promise((res) => setTimeout(res, DELAY_AI_THINKING_MS));
-        setAiThinking(false);
-        setMessages((prev) => [...prev, msg]);
-        i++;
-        await new Promise((res) => setTimeout(res, 800));
+        setThinking(true);
+        await new Promise((res) => setTimeout(res, 1600));
+        setThinking(false);
+        await new Promise((res) => setTimeout(res, 100));
+        setMessages((prev) => [...prev, { ...msg, typing: true }]);
+        setTypingIndex(i);
+        await new Promise((res) => setTimeout(res, msg.text.length * 18 + 800));
+        setTypingIndex(null);
+        setMessages((prev) => prev.map((m, idx) => idx === prev.length - 1 ? { ...m, typing: false } : m));
+        await new Promise((res) => setTimeout(res, 600));
       }
     }
-  // conversation is a static constant defined outside the render cycle
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    const node = chatRef.current;
     const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (entry.isIntersecting && !hasPlayed) {
-          setHasPlayed(true);
-        }
-      },
+      ([entry]) => { if (entry.isIntersecting && !hasPlayed) setHasPlayed(true); },
       { threshold: 0.4 }
     );
-
-    if (node) observer.observe(node);
-
-    return () => {
-      if (node) observer.unobserve(node);
-    };
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
   }, [hasPlayed]);
 
   useEffect(() => {
     if (hasPlayed && !hasRun.current) {
       hasRun.current = true;
-      showConversation();
+      play();
     }
-  }, [hasPlayed, showConversation]);
+  }, [hasPlayed, play]);
 
   return (
-    <Box
-      ref={chatRef}
-      position="relative"
-      w="100%"
-      maxW="4xl"
-      mx="auto"
-      p={8}
-      rounded="2xl"
-      border="1px solid"
-      borderColor={borderCol}
-      boxShadow="0 0 40px rgba(0,0,0,0.25)"
-      overflow="hidden"
-      bgGradient="linear(to-br, rgba(14,18,33,0.9), rgba(25,35,75,0.9))"
-      backdropFilter="blur(20px) saturate(180%)"
-      fontFamily="Inter, sans-serif"
-    >
-      {/* Gradient background */}
-      <Box
-        position="absolute"
-        top={0}
-        left={0}
-        w="full"
-        h="full"
-        zIndex={-1}
-        bgGradient="linear(to-br, #2b6cb0, #6b46c1, #3182ce)"
-        backgroundSize="200% 200%"
-        animation="gradientShift 10s ease infinite"
-        opacity={0.18}
-        sx={{
-          "@keyframes gradientShift": {
-            "0%": { backgroundPosition: "0% 50%" },
-            "50%": { backgroundPosition: "100% 50%" },
-            "100%": { backgroundPosition: "0% 50%" },
-          },
-        }}
-      />
+    <div ref={ref} style={{ width: "100%", maxWidth: "680px", margin: "0 auto" }}>
 
-      <HStack
-        spacing={2}
-        px={3}
-        py={1}
-        position="absolute"
-        top="10px"
-        left="0"
-        right="0"
-        justifyContent="flex-start"
-        alignItems="center"
-      >
-        <Box w={3} h={3} rounded="full" bg="red.400" ml={3} />
-        <Box w={3} h={3} rounded="full" bg="yellow.400" />
-        <Box w={3} h={3} rounded="full" bg="green.400" />
-        <Text fontSize="sm" ml={3} fontWeight="semibold" color="whiteAlpha.900">
-          switchpayAI
-        </Text>
-      </HStack>
+      {/* Window chrome */}
+      <div style={{ border: "1px solid rgba(255,255,255,0.08)", borderBottom: "none" }}>
+        <div style={{ padding: "12px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ display: "flex", gap: "6px" }}>
+            {["rgba(255,95,87,0.6)", "rgba(255,189,46,0.6)", "rgba(40,200,64,0.6)"].map((c, i) => (
+              <div key={i} style={{ width: "10px", height: "10px", borderRadius: "50%", background: c }} />
+            ))}
+          </div>
+          <span style={{ fontFamily: s.sans, fontSize: "12px", color: "rgba(255,255,255,0.25)", marginLeft: "8px", letterSpacing: "0.04em" }}>
+            switchpayAI
+          </span>
+        </div>
+      </div>
 
+      {/* Chat area */}
+      <div style={{ border: "1px solid rgba(255,255,255,0.08)", padding: "32px 28px", minHeight: "280px", display: "flex", flexDirection: "column", gap: "20px" }}>
+        <AnimatePresence>
+          {messages.map((msg, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              style={{
+                display: "flex",
+                justifyContent: msg.sender === "user" ? "flex-end" : "flex-start",
+              }}
+            >
+              <div style={{
+                maxWidth: "72%",
+                padding: "12px 16px",
+                background: msg.sender === "user" ? "rgba(255,255,255,0.06)" : "transparent",
+                border: msg.sender === "user" ? "1px solid rgba(255,255,255,0.1)" : "none",
+                borderLeft: msg.sender === "ai" ? "2px solid rgba(255,255,255,0.15)" : undefined,
+                paddingLeft: msg.sender === "ai" ? "16px" : undefined,
+                fontFamily: s.sans,
+                fontSize: "14px",
+                lineHeight: 1.65,
+                color: msg.sender === "user" ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.55)",
+              }}>
+                {msg.typing ? (
+                  <TypedMessage text={msg.text} onDone={() => { }} />
+                ) : msg.text}
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
 
-      {/* Conversation */}
-      <VStack spacing={4} align="stretch">
-        {messages.map((msg, idx) => (
-          <MotionBox
-            key={idx}
-            alignSelf={msg.sender === "user" ? "flex-end" : "flex-start"}
-            bg={msg.sender === "user" ? userBg : assistantBg}
-            px={5}
-            py={3}
-            borderRadius="2xl"
-            color={msg.sender === "user" ? "white" : textColor}
-            maxW="75%"
-            boxShadow="lg"
-            initial={{ opacity: 0, y: 20, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+        {thinking && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{ display: "flex", alignItems: "center", gap: "12px" }}
           >
-            {msg.text}
-          </MotionBox>
-        ))}
-
-        {aiThinking && (
-          <HStack alignSelf="flex-start" spacing={3}>
-            <ThinkingPulse />
-            <Text color="whiteAlpha.700" fontSize="sm">
-              switchpayAI is analyzing market rates...
-            </Text>
-          </HStack>
+            <Thinking />
+            <span style={{ fontFamily: s.sans, fontSize: "12px", color: "rgba(255,255,255,0.2)", letterSpacing: "0.04em" }}>
+              analyzing market rates
+            </span>
+          </motion.div>
         )}
-      </VStack>
-    </Box>
+
+        <div ref={bottomRef} />
+      </div>
+
+      {/* Input bar */}
+      <div style={{ border: "1px solid rgba(255,255,255,0.08)", borderTop: "none", padding: "14px 20px", display: "flex", alignItems: "center", gap: "12px" }}>
+        <div style={{ flex: 1, fontFamily: s.sans, fontSize: "13px", color: "rgba(255,255,255,0.15)", letterSpacing: "0.02em" }}>
+          Ask about PSPs, routing, fees...
+        </div>
+        <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 6h8M6 2l4 4-4 4" stroke="rgba(255,255,255,0.3)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+      </div>
+
+    </div>
   );
 }
