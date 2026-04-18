@@ -29,123 +29,80 @@ export default function Navbar({ onRefresh, lastUpdated }) {
 
   return (
     <>
-      <div style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
-        display: "flex", justifyContent: "center",
-        padding: "16px 24px",
-        pointerEvents: "none",
-      }}>
-        <motion.div
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          style={{
-            display: "flex", alignItems: "center", gap: "32px",
-            background: scrolled ? "rgba(8,8,8,0.85)" : "rgba(8,8,8,0.6)",
-            backdropFilter: "blur(16px)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: "9999px",
-            padding: "8px 8px 8px 24px",
-            pointerEvents: "all",
-            transition: "background 0.3s",
-          }}
-        >
-          {/* Logo */}
-          <Link
-            to="/"
-            style={{
-              fontFamily: "'DM Serif Display', Georgia, serif",
-              fontWeight: 400, fontSize: "16px", color: "#fff",
-              textDecoration: "none", flexShrink: 0,
-            }}
-          >
-            switchpay
-          </Link>
+      <motion.nav
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        style={{
+          position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "0 40px", height: "60px",
+          background: scrolled ? "rgba(8,8,8,0.92)" : "rgba(8,8,8,0.7)",
+          backdropFilter: "blur(16px)",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          transition: "background 0.3s",
+        }}
+      >
+        <Link to="/" style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontWeight: 400, fontSize: "18px", color: "#fff", textDecoration: "none" }}>
+          switchpay
+        </Link>
 
-          {/* Desktop links */}
-          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-            {isLanding && LANDING_LINKS.map(({ label, hash, route }) => (
-              route ? (
-                <Link
-                  key={label}
-                  to={route}
-                  style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.4)", textDecoration: "none", transition: "color 0.2s" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
-                >
-                  {label}
-                </Link>
-              ) : (
-                <button
-                  key={label}
-                  onClick={() => scrollTo(hash)}
-                  style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.4)", padding: 0, transition: "color 0.2s" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
-                >
-                  {label}
-                </button>
-              )
-            ))}
-
-            {/* Dashboard: refresh */}
-            {!isLanding && onRefresh && (
-              <button
-                onClick={onRefresh}
+        <div style={{ display: "flex", alignItems: "center", gap: "28px" }}>
+          {isLanding && LANDING_LINKS.map(({ label, hash, route }) => (
+            route ? (
+              <Link key={label} to={route}
+                style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.4)", textDecoration: "none" }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
+              >
+                {label}
+              </Link>
+            ) : (
+              <button key={label} onClick={() => scrollTo(hash)}
                 style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.4)", padding: 0 }}
                 onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
               >
-                {lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString()}` : "Refresh"}
+                {label}
               </button>
-            )}
-          </div>
+            )
+          ))}
 
-          {/* CTA */}
+          {!isLanding && onRefresh && (
+            <button onClick={onRefresh}
+              style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.4)", padding: 0 }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
+            >
+              {lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString()}` : "Refresh"}
+            </button>
+          )}
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           {isLanding ? (
-            <Link
-              to="/app"
-              style={{
-                fontFamily: "'DM Sans', sans-serif", fontWeight: 600,
-                fontSize: "13px", color: "#080808",
-                background: "#fff", borderRadius: "9999px",
-                padding: "9px 20px", textDecoration: "none",
-                transition: "opacity 0.2s", flexShrink: 0,
-              }}
+            <Link to="/app"
+              style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: "13px", color: "#080808", background: "#fff", borderRadius: "9999px", padding: "8px 20px", textDecoration: "none" }}
               onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
               onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
             >
               Get started
             </Link>
           ) : (
-            <Link
-              to="/"
-              style={{
-                fontFamily: "'DM Sans', sans-serif", fontSize: "13px",
-                color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.12)",
-                borderRadius: "9999px", padding: "9px 20px", textDecoration: "none",
-                flexShrink: 0,
-              }}
+            <Link to="/"
+              style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "9999px", padding: "8px 20px", textDecoration: "none" }}
             >
-              ← Home
+              Home
             </Link>
           )}
-        </motion.div>
-      </div>
+        </div>
+      </motion.nav>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            style={{
-              position: "fixed", inset: 0, zIndex: 999,
-              background: "rgba(8,8,8,0.97)",
-              display: "flex", flexDirection: "column",
-              alignItems: "center", justifyContent: "center", gap: "40px",
-            }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            style={{ position: "fixed", inset: 0, zIndex: 999, background: "rgba(8,8,8,0.97)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "40px" }}
           >
             {LANDING_LINKS.map(({ label, hash, route }) => (
               route ? (
