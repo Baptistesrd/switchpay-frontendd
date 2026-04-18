@@ -17,38 +17,55 @@ export default function PspCarousel() {
 
   const start = () => controls.start({
     x: ["0%", "-33.333%"],
-    transition: { duration: 22, ease: "linear", repeat: Infinity },
+    transition: { duration: 28, ease: "linear", repeat: Infinity },
   });
 
   useEffect(() => { start(); }, []); // eslint-disable-line
 
   return (
-    <div style={{ padding: "24px 0", overflow: "hidden", background: "#030303" }}>
+    <div style={{
+      borderBottom: "1px solid rgba(255,255,255,0.06)",
+      background: "#080808",
+      padding: "20px 0",
+      overflow: "hidden",
+    }}>
+      {/* Label */}
+      <div style={{
+        textAlign: "center",
+        fontFamily: "'DM Sans', sans-serif",
+        fontSize: "10px", fontWeight: 500,
+        letterSpacing: "0.12em", textTransform: "uppercase",
+        color: "rgba(255,255,255,0.18)",
+        marginBottom: "20px",
+      }}>
+        Works with
+      </div>
+
+      {/* Track */}
       <div
         onMouseEnter={() => controls.stop()}
         onMouseLeave={start}
         style={{
-          WebkitMaskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
-          maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+          maskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
         }}
       >
-        <motion.div animate={controls} style={{ display: "flex", gap: "12px", width: "max-content" }}>
+        <motion.div animate={controls} style={{ display: "flex", gap: "48px", width: "max-content", alignItems: "center", padding: "0 24px" }}>
           {tripled.map((logo, i) => (
-            <div key={i} style={{
-              display: "flex", alignItems: "center", justifyContent: "center",
-              padding: "12px 24px", background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.07)", borderRadius: "12px",
-              flexShrink: 0, width: "160px", height: "72px",
-            }}>
-              <img
-                src={logo.src}
-                alt={logo.name}
-                style={{
-                  height: "32px", width: "auto", objectFit: "contain",
-                  filter: logo.invert ? "brightness(0) invert(1) opacity(0.8)" : "opacity(0.8)",
-                }}
-              />
-            </div>
+            <img
+              key={i}
+              src={logo.src}
+              alt={logo.name}
+              style={{
+                height: "22px", width: "auto", objectFit: "contain", flexShrink: 0,
+                filter: logo.invert
+                  ? "brightness(0) invert(1) opacity(0.25)"
+                  : "brightness(0) invert(1) opacity(0.25)",
+                transition: "opacity 0.2s",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.filter = logo.invert ? "brightness(0) invert(1) opacity(0.7)" : "brightness(0) invert(1) opacity(0.7)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.filter = "brightness(0) invert(1) opacity(0.25)"; }}
+            />
           ))}
         </motion.div>
       </div>
