@@ -40,12 +40,10 @@ export default function Pricing() {
 
       {/* Header */}
       <div style={{ padding: "64px 80px 48px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-        <p style={{ margin: "0 0 16px", fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>
-          Pricing
-        </p>
+
         <h2 style={{ margin: 0, fontFamily: "'DM Serif Display', Georgia, serif", fontWeight: 400, fontSize: "clamp(32px, 4vw, 52px)", lineHeight: 1.08, letterSpacing: "-0.02em", color: "#fff" }}>
-          Simple, transparent.<br />
-          <span style={{ color: "rgba(255,255,255,0.3)" }}>Only pay for real value.</span>
+          Simple, transparent.
+          <span style={{ color: "rgba(255,255,255,0.3)" }}> Only pay for real value.</span>
         </h2>
       </div>
 

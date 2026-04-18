@@ -34,12 +34,10 @@ export default function Faq() {
 
       {/* Header */}
       <div style={{ padding: "64px 80px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-        <p style={{ margin: "0 0 16px", fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>
-          FAQ
-        </p>
+
         <h2 style={{ margin: "0 0 48px", fontFamily: "'DM Serif Display', Georgia, serif", fontWeight: 400, fontSize: "clamp(32px, 4vw, 52px)", lineHeight: 1.08, letterSpacing: "-0.02em", color: "#fff" }}>
-          Everything you need<br />
-          <span style={{ color: "rgba(255,255,255,0.3)" }}>to know.</span>
+          Everything you need
+          <span style={{ color: "rgba(255,255,255,0.3)" }}> to know.</span>
         </h2>
       </div>
 
