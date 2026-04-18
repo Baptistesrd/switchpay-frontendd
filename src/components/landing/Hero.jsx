@@ -41,9 +41,14 @@ export default function Hero() {
 
         {/* Headline */}
         <motion.div variants={fade(0.1)} initial="hidden" animate="visible">
-          <h1 style={{ margin: 0, fontWeight: 700, lineHeight: 1.08, letterSpacing: "-0.03em", fontSize: "clamp(44px, 7.5vw, 88px)" }}>
+          <h1 style={{
+            margin: 0, fontWeight: 400, lineHeight: 1.08,
+            letterSpacing: "-0.02em",
+            fontSize: "clamp(44px, 7.5vw, 88px)",
+            fontFamily: "'DM Serif Display', Georgia, serif",
+          }}>
             <span style={{ color: "#fff", display: "block" }}>Don't let one PSP</span>
-            <span style={{ display: "block", background: "linear-gradient(90deg, #a5b4fc 0%, #fff 50%, #fda4af 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+            <span style={{ display: "block", color: "rgba(255,255,255,0.35)" }}>
               decide your success.
             </span>
           </h1>

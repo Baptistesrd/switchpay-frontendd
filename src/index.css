@@ -1,8 +1,11 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  background: #080808;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -11,7 +14,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   min-height: 100%;
   overflow-x: hidden;
   overflow-y: visible;
@@ -20,38 +25,26 @@ html, body, #root {
 
 html {
   scrollbar-width: thin;
-  scrollbar-color: #4a5568 #1a202c;
+  scrollbar-color: #333 #080808;
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(26, 32, 44, 0.7);
-  border-radius: 10px;
+  background: #080808;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #3385ff, #2368f5);
-  border-radius: 10px;
-  border: 2px solid rgba(26, 32, 44, 0.9);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-  transition: background 0.3s ease;
+  background: #333;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #4c9bff, #3385ff);
+  background: #444;
 }
 
-/* === Animations === */
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-
-/* === Links === */
 a:hover {
   text-decoration: none;
 }
