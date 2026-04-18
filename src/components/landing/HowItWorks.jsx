@@ -19,8 +19,8 @@ export default function HowItWorks() {
           How it works
         </p>
         <h2 style={{ margin: 0, fontFamily: "'DM Serif Display', Georgia, serif", fontWeight: 400, fontSize: "clamp(32px, 4vw, 52px)", lineHeight: 1.08, letterSpacing: "-0.02em", color: "#fff" }}>
-          Three steps,<br />
-          <span style={{ color: "rgba(255,255,255,0.3)" }}>one decision layer.</span>
+          Three steps,
+          <span style={{ color: "rgba(255,255,255,0.3)" }}> one decision layer.</span>
         </h2>
       </div>
 

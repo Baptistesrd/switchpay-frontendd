@@ -64,12 +64,6 @@ export default function Hero() {
       {/* Content */}
       <div style={{ position: "relative", zIndex: 1, maxWidth: "1100px", margin: "0 auto", width: "100%" }}>
 
-        <motion.div variants={fade(0)} initial="hidden" animate="visible">
-          <p style={{ margin: "0 0 28px", fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>
-            Smart Payment Routing
-          </p>
-        </motion.div>
-
         <motion.div variants={fade(0.1)} initial="hidden" animate="visible">
           <h1 style={{
             margin: "0 0 32px",
@@ -88,7 +82,7 @@ export default function Hero() {
 
         <motion.div variants={fade(0.2)} initial="hidden" animate="visible">
           <p style={{ margin: "0 0 48px", fontFamily: "'DM Sans', sans-serif", fontSize: "16px", color: "rgba(255,255,255,0.4)", lineHeight: 1.75, maxWidth: "420px" }}>
-            Route each transaction to the best PSP automatically — based on auth rate, country, currency, fees, and device.
+            Route each transaction to the best PSP automatically, based on auth rate, country, currency, fees, and device.
           </p>
         </motion.div>
 
@@ -117,25 +111,9 @@ export default function Hero() {
               background: "transparent", border: "1px solid rgba(255,255,255,0.12)",
             }}
           >
-            Read the docs →
+            Read the docs
           </motion.button>
         </motion.div>
-
-        {/* Stats en bas */}
-        <motion.div
-          variants={fade(0.4)}
-          initial="hidden"
-          animate="visible"
-          style={{ display: "flex", gap: "48px" }}
-        >
-          {[["95%+", "Auth Rate"], ["4", "PSPs"], ["<200ms", "Routing"]].map(([val, label]) => (
-            <div key={label}>
-              <div style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "32px", fontWeight: 400, color: "#fff", lineHeight: 1 }}>{val}</div>
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", color: "rgba(255,255,255,0.25)", letterSpacing: "0.08em", textTransform: "uppercase", marginTop: "6px" }}>{label}</div>
-            </div>
-          ))}
-        </motion.div>
-
       </div>
     </section>
   );
