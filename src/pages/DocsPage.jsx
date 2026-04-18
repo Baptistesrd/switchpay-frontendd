@@ -5,6 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import Layout from "../components/Layout";
 import { PSP_TABLE } from "../data/pspData";
 
+const s = {
+  sans: "'DM Sans', sans-serif",
+  serif: "'DM Serif Display', Georgia, serif",
+  border: "1px solid rgba(255,255,255,0.06)",
+  muted: "rgba(255,255,255,0.4)",
+};
+
 const SECTIONS = [
   { id: "intro", label: "Introduction" },
   { id: "auth", label: "Authentication" },
@@ -15,52 +22,43 @@ const SECTIONS = [
 ];
 
 const Code = ({ children }) => (
-  <code style={{ background: "rgba(99,102,241,0.12)", color: "#a5b4fc", padding: "2px 8px", borderRadius: "6px", fontSize: "13px", fontFamily: "monospace" }}>
+  <code style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.8)", padding: "2px 8px", borderRadius: "4px", fontSize: "13px", fontFamily: "monospace" }}>
     {children}
   </code>
 );
 
 const CodeBlock = ({ children }) => (
-  <pre style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,255,255,0.07)", borderLeft: "3px solid rgba(99,102,241,0.5)", borderRadius: "12px", padding: "20px", overflowX: "auto", fontSize: "13px", color: "#67e8f9", fontFamily: "monospace", lineHeight: 1.7, margin: "16px 0" }}>
+  <pre style={{ background: "#0d0d0d", border: s.border, borderLeft: "2px solid rgba(255,255,255,0.2)", padding: "24px", overflowX: "auto", fontSize: "13px", color: "rgba(255,255,255,0.6)", fontFamily: "monospace", lineHeight: 1.8, margin: "20px 0", borderRadius: "0" }}>
     <code>{children}</code>
   </pre>
 );
 
-const Section = ({ id, title, children }) => (
-  <motion.section
-    id={id}
-    initial={{ opacity: 0, y: 16 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.4 }}
-    style={{ marginBottom: "64px" }}
-  >
-    <h2 style={{ margin: "0 0 20px", fontSize: "24px", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", paddingBottom: "12px", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-      {title}
-    </h2>
-    {children}
-  </motion.section>
+const P = ({ children }) => (
+  <p style={{ margin: "0 0 20px", fontFamily: s.sans, fontSize: "15px", color: s.muted, lineHeight: 1.8 }}>{children}</p>
 );
 
-const P = ({ children }) => (
-  <p style={{ margin: "0 0 16px", fontSize: "15px", color: "rgba(255,255,255,0.55)", lineHeight: 1.8 }}>{children}</p>
+const Li = ({ children }) => (
+  <li style={{ display: "flex", alignItems: "flex-start", gap: "12px", marginBottom: "10px", fontFamily: s.sans, fontSize: "14px", color: s.muted, lineHeight: 1.6 }}>
+    <span style={{ color: "rgba(255,255,255,0.2)", marginTop: "2px", flexShrink: 0 }}>—</span>
+    {children}
+  </li>
 );
 
 const Accordion = ({ q, children }) => {
   const [open, setOpen] = useState(false);
   return (
-    <div style={{ borderRadius: "12px", border: "1px solid rgba(255,255,255,0.07)", marginBottom: "8px", overflow: "hidden" }}>
-      <button onClick={() => setOpen(!open)} style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 18px", background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.7)", fontSize: "14px", fontWeight: 500, textAlign: "left" }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = "none"; }}
+    <div style={{ borderTop: s.border, marginTop: "8px" }}>
+      <button
+        onClick={() => setOpen(!open)}
+        style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 0", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
       >
-        {q}
-        <motion.span animate={{ rotate: open ? 45 : 0 }} transition={{ duration: 0.2 }} style={{ fontSize: "18px", color: "#a5b4fc", flexShrink: 0, marginLeft: "12px" }}>+</motion.span>
+        <span style={{ fontFamily: s.sans, fontSize: "14px", fontWeight: 500, color: "rgba(255,255,255,0.6)" }}>{q}</span>
+        <motion.span animate={{ rotate: open ? 45 : 0 }} transition={{ duration: 0.2 }} style={{ fontSize: "18px", color: "rgba(255,255,255,0.3)", flexShrink: 0 }}>+</motion.span>
       </button>
       <AnimatePresence initial={false}>
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }}>
-            <div style={{ padding: "0 18px 18px", fontSize: "14px", color: "rgba(255,255,255,0.45)", lineHeight: 1.7 }}>{children}</div>
+            <div style={{ paddingBottom: "20px" }}>{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -68,72 +66,91 @@ const Accordion = ({ q, children }) => {
   );
 };
 
-const Check = () => (
-  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ flexShrink: 0, marginTop: "3px" }}>
-    <path d="M2 7l3.5 3.5L12 3" stroke="#a5b4fc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
-const Li = ({ children }) => (
-  <li style={{ display: "flex", alignItems: "flex-start", gap: "10px", marginBottom: "8px", fontSize: "14px", color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>
-    <Check />{children}
-  </li>
+const Section = ({ id, title, children }) => (
+  <motion.section
+    id={id}
+    initial={{ opacity: 0, y: 12 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.4 }}
+    style={{ paddingBottom: "72px", borderBottom: s.border, marginBottom: "72px" }}
+  >
+    <p style={{ margin: "0 0 12px", fontFamily: s.sans, fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>
+      {id}
+    </p>
+    <h2 style={{ margin: "0 0 32px", fontFamily: s.serif, fontWeight: 400, fontSize: "clamp(24px, 3vw, 36px)", lineHeight: 1.1, letterSpacing: "-0.02em", color: "#fff" }}>
+      {title}
+    </h2>
+    {children}
+  </motion.section>
 );
 
 export default function DocsPage() {
-  const [activeSection, setActiveSection] = useState("intro");
+  const [active, setActive] = useState("intro");
 
   const scrollTo = (id) => {
     const el = document.querySelector(`#${id}`);
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "start" });
-    setActiveSection(id);
+    setActive(id);
   };
 
   return (
     <Layout>
       <Helmet>
-        <title>Developer Docs — switchpay</title>
+        <title>Developer Docs switchpay</title>
         <meta name="description" content="switchpay API documentation" />
       </Helmet>
 
-      <div style={{ background: "#030303", minHeight: "100vh", display: "flex" }}>
+      <div style={{ background: "#080808", minHeight: "100vh", display: "flex" }}>
 
         {/* Sidebar */}
-        <aside style={{ width: "220px", flexShrink: 0, position: "sticky", top: 0, height: "100vh", borderRight: "1px solid rgba(255,255,255,0.06)", padding: "80px 0 32px", display: "flex", flexDirection: "column" }}>
-          <div style={{ padding: "0 20px 20px", borderBottom: "1px solid rgba(255,255,255,0.06)", marginBottom: "16px" }}>
-            <Link to="/" style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)", textDecoration: "none" }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = "#a5b4fc"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
+        <aside style={{ width: "240px", flexShrink: 0, position: "sticky", top: 0, height: "100vh", borderRight: s.border, padding: "0", display: "flex", flexDirection: "column" }}>
+          <div style={{ padding: "24px 24px 20px", borderBottom: s.border }}>
+            <Link to="/"
+              style={{ fontFamily: s.sans, fontSize: "12px", color: "rgba(255,255,255,0.3)", textDecoration: "none" }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.3)"; }}
             >
-              ← Back to home
+              Back to home
             </Link>
           </div>
-          <nav style={{ padding: "0 12px", flex: 1 }}>
-            <p style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", padding: "0 8px", marginBottom: "8px" }}>API Reference</p>
+
+          <div style={{ padding: "24px 16px" }}>
+            <p style={{ margin: "0 0 12px", fontFamily: s.sans, fontSize: "10px", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", padding: "0 8px" }}>
+              API Reference
+            </p>
             {SECTIONS.map(({ id, label }) => (
               <button key={id} onClick={() => scrollTo(id)}
-                style={{ display: "block", width: "100%", textAlign: "left", padding: "8px 12px", borderRadius: "8px", border: "none", cursor: "pointer", fontSize: "13px", fontWeight: activeSection === id ? 500 : 400, color: activeSection === id ? "#a5b4fc" : "rgba(255,255,255,0.45)", background: activeSection === id ? "rgba(99,102,241,0.1)" : "transparent", marginBottom: "2px", transition: "all 0.15s" }}
-                onMouseEnter={(e) => { if (activeSection !== id) e.currentTarget.style.color = "#fff"; }}
-                onMouseLeave={(e) => { if (activeSection !== id) e.currentTarget.style.color = "rgba(255,255,255,0.45)"; }}
+                style={{
+                  display: "block", width: "100%", textAlign: "left",
+                  padding: "9px 12px", border: "none", cursor: "pointer",
+                  fontFamily: s.sans, fontSize: "13px",
+                  color: active === id ? "#fff" : "rgba(255,255,255,0.35)",
+                  background: "transparent",
+                  borderLeft: active === id ? "1px solid #fff" : "1px solid transparent",
+                  marginBottom: "2px", transition: "all 0.15s",
+                }}
+                onMouseEnter={(e) => { if (active !== id) e.currentTarget.style.color = "rgba(255,255,255,0.7)"; }}
+                onMouseLeave={(e) => { if (active !== id) e.currentTarget.style.color = "rgba(255,255,255,0.35)"; }}
               >
                 {label}
               </button>
             ))}
-          </nav>
+          </div>
         </aside>
 
-        {/* Main content */}
-        <main style={{ flex: 1, padding: "80px 64px 80px 56px", maxWidth: "860px", overflowY: "auto" }}>
+        {/* Main */}
+        <main style={{ flex: 1, padding: "80px 80px 80px 72px", maxWidth: "800px" }}>
 
           <Section id="intro" title="Introduction">
-            <P>Build resilient, borderless payment systems with the <strong style={{ color: "#fff" }}>switchpay Routing API</strong>. One adaptive layer in front of Stripe, Adyen, Wise, and Rapyd.</P>
-            <P>switchpay acts as a <strong style={{ color: "#fff" }}>meta-router</strong> that intelligently selects which PSP should process a given payment based on country, currency, fees, latency, and device.</P>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "12px", marginTop: "24px" }}>
-              {[["95%+", "Auth Rate"], ["4", "PSPs Integrated"], ["<200ms", "Routing Decision"], ["1", "Unified API"]].map(([val, label]) => (
-                <div key={label} style={{ borderRadius: "12px", padding: "20px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", textAlign: "center" }}>
-                  <div style={{ fontSize: "24px", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>{val}</div>
-                  <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.35)", marginTop: "4px" }}>{label}</div>
+            <P>Build resilient, borderless payment systems with the <strong style={{ color: "#fff", fontWeight: 500 }}>switchpay Routing API</strong>. One adaptive layer in front of Stripe, Adyen, Wise, and Rapyd.</P>
+            <P>switchpay acts as a meta-router that intelligently selects which PSP should process a given payment based on country, currency, fees, latency, and device.</P>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0", marginTop: "32px", border: s.border }}>
+              {[["95%+", "Auth Rate"], ["4", "PSPs"], ["<200ms", "Routing"], ["1", "Unified API"]].map(([val, label], i) => (
+                <div key={label} style={{ padding: "24px 20px", borderRight: i < 3 ? s.border : "none", textAlign: "center" }}>
+                  <div style={{ fontFamily: s.serif, fontSize: "28px", fontWeight: 400, color: "#fff", lineHeight: 1 }}>{val}</div>
+                  <div style={{ fontFamily: s.sans, fontSize: "10px", color: "rgba(255,255,255,0.25)", letterSpacing: "0.08em", textTransform: "uppercase", marginTop: "8px" }}>{label}</div>
                 </div>
               ))}
             </div>
@@ -163,7 +180,7 @@ x-api-key: YOUR_API_KEY
   "country": "FR",
   "device": "mobile"
 }`}</CodeBlock>
-            <p style={{ margin: "0 0 8px", fontSize: "13px", fontWeight: 500, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Response</p>
+            <p style={{ margin: "0 0 8px", fontFamily: s.sans, fontSize: "11px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>Response</p>
             <CodeBlock>{`{
   "transaction_id": "tx_9834ABC",
   "psp": "Stripe",
@@ -197,9 +214,9 @@ x-api-key: YOUR_API_KEY
 }`}</CodeBlock>
             <Accordion q="Field definitions">
               <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
-                <Li><strong>total_transactions</strong> — total number of processed payments</Li>
-                <Li><strong>total_volume</strong> — aggregate transaction value in base currency</Li>
-                <Li><strong>transactions_by_psp</strong> — volume breakdown per provider</Li>
+                <Li><strong style={{ color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>total_transactions</strong> — total number of processed payments</Li>
+                <Li><strong style={{ color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>total_volume</strong> — aggregate transaction value in base currency</Li>
+                <Li><strong style={{ color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>transactions_by_psp</strong> — volume breakdown per provider</Li>
               </ul>
             </Accordion>
           </Section>
@@ -229,27 +246,27 @@ x-api-key: YOUR_API_KEY
 
           <Section id="psps" title="PSP Landscape">
             <P>An overview of the current payment provider ecosystem and where each fits in the stack.</P>
-            <div style={{ borderRadius: "16px", border: "1px solid rgba(255,255,255,0.07)", overflow: "hidden" }}>
-              <div style={{ maxHeight: "600px", overflowY: "auto" }}>
+            <div style={{ border: s.border, overflow: "hidden" }}>
+              <div style={{ maxHeight: "560px", overflowY: "auto" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
-                  <thead style={{ position: "sticky", top: 0, background: "rgba(10,10,20,0.95)", backdropFilter: "blur(12px)" }}>
+                  <thead style={{ position: "sticky", top: 0, background: "#080808", borderBottom: s.border }}>
                     <tr>
                       {["PSP / Network", "Core Strength", "Region"].map((col) => (
-                        <th key={col} style={{ padding: "12px 16px", textAlign: "left", fontSize: "11px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>{col}</th>
+                        <th key={col} style={{ padding: "12px 16px", textAlign: "left", fontFamily: s.sans, fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>{col}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {PSP_TABLE.map(([psp, desc, region], i) => (
                       <tr key={i}
-                        style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.015)" }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(99,102,241,0.05)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.015)"; }}
+                        style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                       >
-                        <td style={{ padding: "10px 16px", color: "#fff", fontWeight: 500 }}>{psp}</td>
-                        <td style={{ padding: "10px 16px", color: "rgba(255,255,255,0.5)" }}>{desc}</td>
-                        <td style={{ padding: "10px 16px" }}>
-                          <span style={{ fontSize: "11px", padding: "2px 10px", borderRadius: "9999px", background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)", color: "#a5b4fc" }}>{region}</span>
+                        <td style={{ padding: "11px 16px", fontFamily: s.sans, color: "#fff", fontWeight: 500 }}>{psp}</td>
+                        <td style={{ padding: "11px 16px", fontFamily: s.sans, color: "rgba(255,255,255,0.4)" }}>{desc}</td>
+                        <td style={{ padding: "11px 16px" }}>
+                          <span style={{ fontFamily: s.sans, fontSize: "11px", padding: "2px 10px", border: s.border, color: "rgba(255,255,255,0.4)" }}>{region}</span>
                         </td>
                       </tr>
                     ))}

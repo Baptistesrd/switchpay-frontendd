@@ -20,8 +20,8 @@ export default function PaymentStackMap() {
           The stack
         </p>
         <h2 style={{ margin: 0, fontFamily: "'DM Serif Display', Georgia, serif", fontWeight: 400, fontSize: "clamp(32px, 4vw, 52px)", lineHeight: 1.08, letterSpacing: "-0.02em", color: "#fff" }}>
-          Where switchpay sits<br />
-          <span style={{ color: "rgba(255,255,255,0.3)" }}>in the payment stack.</span>
+          Where switchpay sits
+          <span style={{ color: "rgba(255,255,255,0.3)" }}> in the payment stack.</span>
         </h2>
       </div>
 
