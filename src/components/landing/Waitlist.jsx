@@ -24,77 +24,83 @@ export default function Waitlist() {
   };
 
   return (
-    <section id="waitlist" style={{ background: "#030303", padding: "100px 24px" }}>
-      <div style={{ maxWidth: "560px", margin: "0 auto", textAlign: "center" }}>
+    <section id="waitlist" style={{ background: "#080808", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
 
-        <h2 style={{ margin: 0, fontWeight: 700, fontSize: "clamp(32px, 5vw, 48px)", lineHeight: 1.1, letterSpacing: "-0.03em", color: "#fff" }}>
-          Join the waitlist.
-        </h2>
-        <p style={{ margin: "16px 0 40px", color: "rgba(255,255,255,0.4)", fontSize: "16px" }}>
-          Be the first to access smart payment routing.
-        </p>
+      <div style={{ padding: "64px 80px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "center" }}>
 
-        <AnimatePresence mode="wait">
-          {success ? (
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}
-            >
-              <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.3)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "8px" }}>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M4 10L8.5 14.5L16 6" stroke="#a5b4fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <p style={{ margin: 0, fontSize: "18px", fontWeight: 600, color: "#fff" }}>You're on the list!</p>
-              <p style={{ margin: 0, fontSize: "14px", color: "rgba(255,255,255,0.4)" }}>We'll be in touch soon.</p>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="form"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}
-            >
-              <div style={{ display: "flex", gap: "8px", width: "100%", maxWidth: "420px" }}>
-                <input
-                  type="email"
-                  placeholder="you@company.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && submit()}
-                  style={{
-                    flex: 1, padding: "12px 16px", borderRadius: "9999px",
-                    background: "rgba(255,255,255,0.06)",
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    color: "#fff", fontSize: "15px", outline: "none",
-                  }}
-                />
-                <motion.button
-                  onClick={submit}
-                  disabled={loading}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  style={{
-                    padding: "12px 24px", borderRadius: "9999px", border: "none",
-                    cursor: loading ? "not-allowed" : "pointer",
-                    fontWeight: 600, fontSize: "15px", color: "#fff",
-                    background: "linear-gradient(135deg, #6366f1, #7c3aed)",
-                    opacity: loading ? 0.7 : 1, whiteSpace: "nowrap",
-                  }}
-                >
-                  {loading ? "..." : "Join"}
-                </motion.button>
-              </div>
-              {error && (
-                <p style={{ margin: 0, fontSize: "13px", color: "rgba(244,63,94,0.8)" }}>{error}</p>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Left */}
+        <div>
+          <p style={{ margin: "0 0 16px", fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>
+            Early access
+          </p>
+          <h2 style={{ margin: "0 0 20px", fontFamily: "'DM Serif Display', Georgia, serif", fontWeight: 400, fontSize: "clamp(32px, 4vw, 52px)", lineHeight: 1.08, letterSpacing: "-0.02em", color: "#fff" }}>
+            Join the waitlist.<br />
+            <span style={{ color: "rgba(255,255,255,0.3)" }}>Be first to route.</span>
+          </h2>
+          <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.35)", lineHeight: 1.75, maxWidth: "360px" }}>
+            Get early access to smart payment routing. We'll reach out as soon as your spot opens.
+          </p>
+        </div>
+
+        {/* Right — form */}
+        <div>
+          <AnimatePresence mode="wait">
+            {success ? (
+              <motion.div
+                key="success"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+              >
+                <p style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontWeight: 400, fontSize: "24px", color: "#fff", marginBottom: "8px" }}>
+                  You're on the list.
+                </p>
+                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.35)" }}>
+                  We'll be in touch soon.
+                </p>
+              </motion.div>
+            ) : (
+              <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <div style={{ display: "flex", gap: "0", borderBottom: "1px solid rgba(255,255,255,0.15)", paddingBottom: "12px", marginBottom: "16px" }}>
+                  <input
+                    type="email"
+                    placeholder="you@company.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && submit()}
+                    style={{
+                      flex: 1, background: "none", border: "none", outline: "none",
+                      fontFamily: "'DM Sans', sans-serif", fontSize: "16px",
+                      color: "#fff", padding: "0",
+                    }}
+                  />
+                  <motion.button
+                    onClick={submit}
+                    disabled={loading}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.97 }}
+                    style={{
+                      background: "#fff", border: "none", borderRadius: "9999px",
+                      padding: "8px 20px", cursor: loading ? "not-allowed" : "pointer",
+                      fontFamily: "'DM Sans', sans-serif", fontWeight: 600,
+                      fontSize: "13px", color: "#080808", opacity: loading ? 0.6 : 1,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {loading ? "..." : "Join →"}
+                  </motion.button>
+                </div>
+                {error && (
+                  <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: "12px", color: "rgba(244,63,94,0.8)" }}>{error}</p>
+                )}
+                <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.2)" }}>
+                  No spam. Unsubscribe anytime.
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
       </div>
     </section>
   );
