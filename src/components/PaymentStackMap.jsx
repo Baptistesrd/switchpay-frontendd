@@ -77,8 +77,7 @@ export default function PaymentStackMap() {
 
       {/* Quote */}
       <div style={{ padding: "0 80px 56px" }}>
-        <p style={{ margin: 0, fontFamily: "'DM Serif Display', Georgia, serif", fontStyle: "italic", fontSize: "16px", color: "rgba(255,255,255,0.2)", lineHeight: 1.7, maxWidth: "600px" }}>
-          "Routing decisions are continuously optimized for the highest authorization rate — maximizing successful payments and aligning merchant revenue with customer intent."
+        <p style={{ margin: 0, fontFamily: "'DM Serif Display', Georgia, serif", fontStyle: "italic", fontSize: "16px", color: "rgba(255,255,255,0.2)", lineHeight: 1.7, maxWidth: "600px" }}>Routing decisions are continuously optimized for the highest authorization rate, maximizing successful payments and aligning merchant revenue with customer intent.
         </p>
       </div>
 

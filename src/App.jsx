@@ -7,7 +7,6 @@ import TransactionForm from "./components/TransactionForm";
 import TransactionTable from "./components/TransactionTable";
 import Counter from "./components/Counter";
 import DashCharts from "./components/DashCharts";
-import BackgroundFX from "./components/BackgroundFX";
 import Navbar from "./components/Navbar";
 import RoutingEngine from "./components/RoutingEngine";
 import DashboardErrorBoundary from "./components/DashboardErrorBoundary";
@@ -115,7 +114,6 @@ export default function App() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#080808" }}>
-      <BackgroundFX fixed />
       <Navbar onRefresh={() => fetchAll(apiKey)} lastUpdated={lastUpdated} />
 
       <div style={{ position: "relative", zIndex: 1, paddingTop: "60px" }}>
