@@ -182,7 +182,7 @@ export default function App() {
                 <div style={{ padding: "48px 80px" }}>
                   <p style={{ margin: "0 0 8px", fontFamily: s.sans, fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>New Transaction</p>
                   <h2 style={{ margin: "0 0 32px", fontFamily: s.serif, fontWeight: 400, fontSize: "32px", color: "#fff" }}>Send a payment</h2>
-                  <div style={{ maxWidth: "560px" }}>
+                  <div>
                     <TransactionForm onNewTransaction={() => fetchAll(apiKey)} />
                   </div>
                 </div>

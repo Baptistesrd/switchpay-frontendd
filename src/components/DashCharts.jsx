@@ -148,7 +148,7 @@ export default function DashCharts({ transactions, metricsData }) {
     return (
       <Box py={12} textAlign="center">
         <Text color="gray.500" fontSize="md">
-          No transactions yet — submit your first payment to see data here.
+          No transactions yet: submit your first payment to see data here.
         </Text>
       </Box>
     );

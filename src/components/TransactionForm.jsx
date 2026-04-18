@@ -54,7 +54,7 @@ export default function TransactionForm({ onNewTransaction }) {
         payload,
         { headers: { "x-api-key": apiKey, "Idempotency-Key": idempotencyKey } }
       );
-      showToast(`Transaction sent — ID: ${res.data?.id || idempotencyKey}`, "success");
+      showToast(`Transaction sent ï¿½ ID: ${res.data?.id || idempotencyKey}`, "success");
       onNewTransaction?.(res.data);
       setFormData({ montant: "", devise: "", pays: "", device: "" });
     } catch (err) {
@@ -143,9 +143,6 @@ export default function TransactionForm({ onNewTransaction }) {
 
       {/* Footer */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "24px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-        <span style={{ fontFamily: s.sans, fontSize: "11px", color: "rgba(255,255,255,0.2)" }}>
-          Idempotency-Key auto-generated per request
-        </span>
         <button
           type="submit"
           disabled={loading}
@@ -159,7 +156,7 @@ export default function TransactionForm({ onNewTransaction }) {
           onMouseEnter={(e) => { if (!loading) e.currentTarget.style.opacity = "0.85"; }}
           onMouseLeave={(e) => { e.currentTarget.style.opacity = loading ? "0.6" : "1"; }}
         >
-          {loading ? "Sending..." : "Send Transaction ?"}
+          {loading ? "Sending..." : "Send Transaction"}
         </button>
       </div>
 

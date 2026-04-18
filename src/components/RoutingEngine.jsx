@@ -141,7 +141,7 @@ export default function RoutingEngine({ metricsData, strategy }) {
 
       {!hasData && (
         <Text color="gray.500" fontSize="sm">
-          No routing data yet — send some transactions to populate this panel.
+          No routing data yet: send some transactions to populate this panel.
         </Text>
       )}
 
