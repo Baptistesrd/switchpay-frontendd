@@ -38,7 +38,7 @@ export default function PspCarousel() {
         color: "rgba(255,255,255,0.18)",
         marginBottom: "20px",
       }}>
-        Works with
+        Integrated Payment Service Providers so far
       </div>
 
       {/* Track */}
