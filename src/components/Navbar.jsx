@@ -110,7 +110,7 @@ export default function Navbar({ onRefresh, lastUpdated }) {
             )
           )}
 
-          {/* Hamburger — mobile only */}
+          {/* Hamburger, mobile only */}
           {isMobile && (
             <button
               onClick={() => setMenuOpen(!menuOpen)}

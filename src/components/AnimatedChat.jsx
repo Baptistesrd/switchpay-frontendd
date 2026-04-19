@@ -6,7 +6,7 @@ const CONVERSATION = [
   { sender: "user", text: "Which PSP gives me the best rate for EUR payments in Germany?" },
   { sender: "ai", text: "Adyen currently offers ~0.5% lower fees than Stripe for EUR in DE. I'll alert you if that changes." },
   { sender: "user", text: "What about USD payments in the UK?" },
-  { sender: "ai", text: "Wise is your best option — lowest conversion fees and direct settlement support for USD in GB." },
+  { sender: "ai", text: "Wise is your best option : lowest conversion fees and direct settlement support for USD in GB." },
 ];
 
 const s = {

@@ -11,7 +11,7 @@ PSP layer : simulated providers (Stripe, Adyen, Wise, Rapyd) with differentiated
 Dashboard : real-time KPIs, PSP distribution, latency histogram, and routing opportunity detection
 Frontend : React + Chakra UI, deployed on Render
 Known limits
-The current scoring assumes PSP performance is stationary over the history window — which real-world data would not guarantee. Handling non-stationarity (concept drift, seasonality) and quantifying estimation uncertainty are open problems that motivated further study.
+The current scoring assumes PSP performance is stationary over the history window,  which real-world data would not guarantee. Handling non-stationarity (concept drift, seasonality) and quantifying estimation uncertainty are open problems that motivated further study.
 
 Stack
 Python · FastAPI · SQLite · React · Chakra UI · Recharts · Render

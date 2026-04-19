@@ -39,7 +39,7 @@ const P = ({ children }) => (
 
 const Li = ({ children }) => (
   <li style={{ display: "flex", alignItems: "flex-start", gap: "12px", marginBottom: "10px", fontFamily: s.sans, fontSize: "14px", color: s.muted, lineHeight: 1.6 }}>
-    <span style={{ color: "rgba(255,255,255,0.2)", marginTop: "2px", flexShrink: 0 }}>—</span>
+    <span style={{ color: "rgba(255,255,255,0.2)", marginTop: "2px", flexShrink: 0 }}></span>
     {children}
   </li>
 );
@@ -87,7 +87,7 @@ export default function DocsPage() {
   return (
     <Layout>
       <Helmet>
-        <title>Developer Docs — switchpay</title>
+        <title>Developer Docs  switchpay</title>
         <meta name="description" content="switchpay API documentation" />
       </Helmet>
 
@@ -127,7 +127,7 @@ export default function DocsPage() {
 
         <div style={{ display: "flex", flex: 1 }}>
 
-          {/* Sidebar — desktop only */}
+          {/* Sidebar  desktop only */}
           <aside style={{ width: "240px", flexShrink: 0, position: "sticky", top: "53px", height: "calc(100vh - 53px)", borderRight: s.border, display: "flex", flexDirection: "column", overflowY: "auto" }}
             className="docs-sidebar"
           >
@@ -164,12 +164,12 @@ export default function DocsPage() {
             </Section>
 
             <Section id="auth" title="Authentication">
-              <P>Every request must include an <Code>x-api-key</Code> header. Keys are environment-specific — sandbox keys only process simulated payments.</P>
+              <P>Every request must include an <Code>x-api-key</Code> header. Keys are environment-specific  sandbox keys only process simulated payments.</P>
               <CodeBlock>{`x-api-key: YOUR_API_KEY`}</CodeBlock>
               <Accordion q="Key types">
                 <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
-                  <Li>Sandbox — test payments only, no real money moved</Li>
-                  <Li>Production — live transactions, requires KYB verification</Li>
+                  <Li>Sandbox  test payments only, no real money moved</Li>
+                  <Li>Production  live transactions, requires KYB verification</Li>
                   <Li>Keep keys server-side only, never expose in frontend code</Li>
                 </ul>
               </Accordion>
@@ -197,9 +197,9 @@ x-api-key: YOUR_API_KEY
 }`}</CodeBlock>
               <Accordion q="Use cases">
                 <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
-                  <Li>Web checkout — route via your backend API</Li>
-                  <Li>Mobile apps — real-time routing per device</Li>
-                  <Li>Failover — automatic fallback if primary PSP fails</Li>
+                  <Li>Web checkout  route via your backend API</Li>
+                  <Li>Mobile apps  real-time routing per device</Li>
+                  <Li>Failover  automatic fallback if primary PSP fails</Li>
                 </ul>
               </Accordion>
             </Section>
@@ -221,9 +221,9 @@ x-api-key: YOUR_API_KEY
 }`}</CodeBlock>
               <Accordion q="Field definitions">
                 <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
-                  <Li><strong style={{ color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>total_transactions</strong> — total number of processed payments</Li>
-                  <Li><strong style={{ color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>total_volume</strong> — aggregate transaction value in base currency</Li>
-                  <Li><strong style={{ color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>transactions_by_psp</strong> — volume breakdown per provider</Li>
+                  <Li><strong style={{ color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>total_transactions</strong>  total number of processed payments</Li>
+                  <Li><strong style={{ color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>total_volume</strong>  aggregate transaction value in base currency</Li>
+                  <Li><strong style={{ color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>transactions_by_psp</strong>  volume breakdown per provider</Li>
                 </ul>
               </Accordion>
             </Section>

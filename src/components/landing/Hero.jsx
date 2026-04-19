@@ -22,11 +22,11 @@ export default function Hero() {
       overflow: "hidden",
     }}>
 
-      {/* Vertical lines — desktop only */}
+      {/* Vertical lines, desktop only */}
       <div style={{ position: "absolute", top: 0, bottom: 0, left: "40px", width: "1px", background: "rgba(255,255,255,0.05)", pointerEvents: "none" }} />
       <div style={{ position: "absolute", top: 0, bottom: 0, right: "40px", width: "1px", background: "rgba(255,255,255,0.05)", pointerEvents: "none" }} />
 
-      {/* Image droite — masquée sur mobile */}
+      {/* Image droite, masquée sur mobile */}
       <div style={{
         position: "absolute",
         top: 0, right: 0, bottom: 0,

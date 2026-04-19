@@ -154,7 +154,7 @@ export default function TransactionForm({ onNewTransaction }) {
         payload,
         { headers: { "x-api-key": apiKey, "Idempotency-Key": idempotencyKey } }
       );
-      showToast(`Transaction sent — ID: ${res.data?.id || idempotencyKey}`, "success");
+      showToast(`Transaction sent! ID: ${res.data?.id || idempotencyKey}`, "success");
       onNewTransaction?.(res.data);
       setFormData({ montant: "", devise: "", pays: "", device: "" });
     } catch (err) {

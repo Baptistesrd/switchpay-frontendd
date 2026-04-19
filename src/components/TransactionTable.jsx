@@ -33,7 +33,7 @@ function WebhookButton({ transactionId }) {
     <button
       onClick={simulate}
       disabled={loading}
-      title="Randomly sets the transaction to success or failed — simulates real-world PSP callback behavior."
+      title="Randomly sets the transaction to success or failed : simulates real-world PSP callback behavior."
       style={{
         background: "none", border: "1px solid rgba(255,255,255,0.08)",
         padding: "5px 12px", cursor: loading ? "not-allowed" : "pointer",

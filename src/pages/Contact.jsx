@@ -74,7 +74,7 @@ export default function Contact() {
   return (
     <>
     <Helmet>
-      <title>Contact — switchpay</title>
+      <title>contact</title>
       <meta name="description" content="Talk to the switchpay team. Fix your payment routing strategy and improve your success rate." />
     </Helmet>
     <Box

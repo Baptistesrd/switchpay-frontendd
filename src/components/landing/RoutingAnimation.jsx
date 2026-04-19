@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from "react";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const STEPS = [
-  { node: 0, pipe: 0, log: "€247.50 EUR · FR · mobile — request initiated", status: [] },
+  { node: 0, pipe: 0, log: "€247.50 EUR · FR · mobile : request initiated", status: [] },
   { node: 1, pipe: 1, log: "Request received · forwarded to switchpay", status: [0] },
   { node: 2, pipe: null, log: "switchpay analyzing: Stripe 1.4% · Adyen 0.9% · Rapyd 1.1%", status: [] },
-  { node: 2, pipe: 2, log: "Decision: Adyen selected — lowest fee, 96% auth rate in FR", status: [1], pspVal: "Adyen", latVal: "142ms" },
+  { node: 2, pipe: 2, log: "Decision: Adyen selected : lowest fee, 96% auth rate in FR", status: [1], pspVal: "Adyen", latVal: "142ms" },
   { node: 3, pipe: 3, log: "Transaction routed to Adyen · processing...", status: [2] },
   { node: 4, pipe: 4, log: "Acquirer confirmed · settlement in progress", status: [] },
   { node: 5, pipe: null, log: "Success · tx_9f3a2c · 0.9% fee · €247.50 settled", status: [3], done: true },
@@ -148,9 +148,9 @@ export default function RoutingAnimation() {
       <div style={{ display: "flex", gap: "48px", marginBottom: "40px", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "32px" }}>
         {[
           { label: "Amount", value: "€247.50", visible: visibleStats[0] },
-          { label: "PSP Selected", value: stats.psp || "—", visible: visibleStats[1] },
-          { label: "Latency", value: stats.latency || "—", visible: visibleStats[2] },
-          { label: "Status", value: stats.status || "—", visible: visibleStats[3] },
+          { label: "PSP Selected", value: stats.psp || ":", visible: visibleStats[1] },
+          { label: "Latency", value: stats.latency || ":", visible: visibleStats[2] },
+          { label: "Status", value: stats.status || ":", visible: visibleStats[3] },
         ].map(({ label, value, visible }) => (
           <div key={label} style={{ opacity: visible ? 1 : 0, transition: "opacity 0.4s", textAlign: "left" }}>
             <div style={{ fontFamily: s.serif, fontSize: "28px", fontWeight: 400, color: label === "Status" && value === "Success" ? "#4ade80" : "#fff", lineHeight: 1 }}>
@@ -174,7 +174,7 @@ export default function RoutingAnimation() {
               animation: "fadeUp 0.3s ease forwards",
             }}
           >
-            <span style={{ color: "rgba(255,255,255,0.15)", marginRight: "10px" }}>—</span>
+            <span style={{ color: "rgba(255,255,255,0.15)", marginRight: "10px" }}>:</span>
             {log.text}
           </div>
         ))}
