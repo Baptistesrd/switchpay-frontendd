@@ -38,17 +38,16 @@ export default function Pricing() {
   return (
     <section id="pricing" style={{ background: "#080808", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
 
-      {/* Header */}
-      <div style={{ padding: "64px 80px 48px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-
-        <h2 style={{ margin: 0, fontFamily: "'DM Serif Display', Georgia, serif", fontWeight: 400, fontSize: "clamp(32px, 4vw, 52px)", lineHeight: 1.08, letterSpacing: "-0.02em", color: "#fff" }}>
-          Simple, transparent.
-          <span style={{ color: "rgba(255,255,255,0.3)" }}> Only pay for real value.</span>
+      <div style={{ padding: "clamp(40px, 6vw, 64px) clamp(24px, 6vw, 80px) clamp(32px, 4vw, 48px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+        <p style={{ margin: "0 0 16px", fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>
+          Pricing
+        </p>
+        <h2 style={{ margin: 0, fontFamily: "'DM Serif Display', Georgia, serif", fontWeight: 400, fontSize: "clamp(28px, 4vw, 52px)", lineHeight: 1.08, letterSpacing: "-0.02em", color: "#fff" }}>
+          Simple, transparent.<span style={{ color: "rgba(255,255,255,0.3)" }}> Only pay for real value.</span>
         </h2>
       </div>
 
-      {/* Tiers grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}>
         {TIERS.map((tier, i) => (
           <motion.div
             key={i}
@@ -57,20 +56,20 @@ export default function Pricing() {
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: i * 0.08 }}
             style={{
-              padding: "48px 40px",
+              padding: "clamp(28px, 4vw, 48px) clamp(20px, 4vw, 40px)",
               borderRight: i < 2 ? "1px solid rgba(255,255,255,0.06)" : "none",
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
               borderTop: tier.highlight ? "1px solid rgba(255,255,255,0.3)" : "1px solid transparent",
               background: tier.highlight ? "rgba(255,255,255,0.02)" : "transparent",
               display: "flex", flexDirection: "column", gap: "32px",
             }}
           >
-            {/* Title + price */}
             <div>
               <p style={{ margin: "0 0 20px", fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>
                 {tier.title}
               </p>
               <div style={{ display: "flex", alignItems: "baseline", gap: "4px", marginBottom: "12px" }}>
-                <span style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontWeight: 400, fontSize: "48px", color: "#fff", lineHeight: 1 }}>
+                <span style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontWeight: 400, fontSize: "clamp(36px, 5vw, 48px)", color: "#fff", lineHeight: 1 }}>
                   {tier.price}
                 </span>
                 {tier.per && (
@@ -84,7 +83,6 @@ export default function Pricing() {
               </p>
             </div>
 
-            {/* Features */}
             <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "12px", flex: 1 }}>
               {tier.features.map((f, j) => (
                 <li key={j} style={{ display: "flex", alignItems: "center", gap: "12px", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.5)" }}>
@@ -94,13 +92,13 @@ export default function Pricing() {
               ))}
             </ul>
 
-            {/* CTA */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => tier.cta === "Contact us" ? navigate("/contact") : scrollToWaitlist()}
               style={{
-                width: "100%", padding: "13px", border: "1px solid rgba(255,255,255,0.15)",
+                width: "100%", padding: "13px",
+                border: "1px solid rgba(255,255,255,0.15)",
                 borderRadius: "9999px", cursor: "pointer",
                 fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: "13px",
                 color: tier.highlight ? "#080808" : "rgba(255,255,255,0.6)",
