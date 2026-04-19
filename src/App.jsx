@@ -8,7 +8,6 @@ import TransactionTable from "./components/TransactionTable";
 import Counter from "./components/Counter";
 import DashCharts from "./components/DashCharts";
 import Navbar from "./components/Navbar";
-import RoutingEngine from "./components/RoutingEngine";
 import DashboardErrorBoundary from "./components/DashboardErrorBoundary";
 import { useApiKey } from "./hooks/useApiKey";
 
@@ -238,13 +237,6 @@ export default function App() {
                     <p style={{ margin: "0 0 8px", fontFamily: s.sans, fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>Analytics</p>
                     <h3 style={{ margin: "0 0 32px", fontFamily: s.serif, fontWeight: 400, fontSize: "28px", color: "#fff" }}>Performance overview</h3>
                     <DashCharts transactions={transactions} metricsData={metricsData} />
-                  </div>
-
-                  {/* Routing Engine */}
-                  <div style={{ padding: "48px 80px" }}>
-                    <p style={{ margin: "0 0 8px", fontFamily: s.sans, fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>Routing Engine</p>
-                    <h3 style={{ margin: "0 0 32px", fontFamily: s.serif, fontWeight: 400, fontSize: "28px", color: "#fff" }}>Active strategy</h3>
-                    <RoutingEngine metricsData={metricsData} strategy={strategy} />
                   </div>
                 </div>
               )}

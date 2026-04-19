@@ -9,7 +9,6 @@ import Pricing from "../components/landing/Pricing";
 import Waitlist from "../components/landing/Waitlist";
 import Faq from "../components/landing/Faq";
 import Footer from "../components/landing/Footer";
-import RoutingAnimation from "../components/landing/RoutingAnimation";
 
 export default function Landing() {
   return (
@@ -18,7 +17,6 @@ export default function Landing() {
       <Hero />
       <PspCarousel />
       <HowItWorks />
-      <RoutingAnimation />
       <PaymentStackMap />
       <AiAssistant />
       <Pricing />
