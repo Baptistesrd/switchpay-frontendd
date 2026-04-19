@@ -51,7 +51,7 @@ export default function Navbar({ onRefresh, lastUpdated }) {
           {isLanding && LANDING_LINKS.map(({ label, hash, route }) => (
             route ? (
               <Link key={label} to={route}
-                style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.4)", textDecoration: "none" }}
+                style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "15px", color: "rgba(255,255,255,0.4)", textDecoration: "none" }}
                 onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
               >
@@ -59,7 +59,7 @@ export default function Navbar({ onRefresh, lastUpdated }) {
               </Link>
             ) : (
               <button key={label} onClick={() => scrollTo(hash)}
-                style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.4)", padding: 0 }}
+                style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontSize: "15px", color: "rgba(255,255,255,0.4)", padding: 0 }}
                 onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
               >
@@ -70,7 +70,7 @@ export default function Navbar({ onRefresh, lastUpdated }) {
 
           {!isLanding && onRefresh && (
             <button onClick={onRefresh}
-              style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.4)", padding: 0 }}
+              style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontSize: "15px", color: "rgba(255,255,255,0.4)", padding: 0 }}
               onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; }}
               onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
             >
