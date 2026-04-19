@@ -141,7 +141,7 @@ export default function TransactionForm({ onNewTransaction }) {
     const err = validate();
     if (err) { showToast(err, "warning"); return; }
     const payload = {
-      montant: parseFloat(formData.montant),
+      montant: parseFloat(formData.montant.toString().replace(/,/g, "")),
       devise: formData.devise,
       pays: formData.pays.toUpperCase(),
       device: formData.device,

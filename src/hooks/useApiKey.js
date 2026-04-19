@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 export function useApiKey() {
-  const [apiKey, setApiKeyState] = useState(localStorage.getItem("apiKey") || "");
+  const [apiKey, setApiKeyState] = useState(process.env.REACT_APP_API_KEY || localStorage.getItem("apiKey") || "");
 
   useEffect(() => {
     localStorage.setItem("apiKey", apiKey);
