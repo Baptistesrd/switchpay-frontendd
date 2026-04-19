@@ -74,7 +74,7 @@ export default function App() {
     async function init() {
       const [healthRes, keyRes] = await Promise.allSettled([
         axios.get(`${BACKEND_URL}/health`),
-        axios.get(`${BACKEND_URL}/generate-temp-key`),
+        axios.get(`${BACKEND_URL}/generate-temp-key`, { headers: { "x-api-key": process.env.REACT_APP_API_KEY } }),
       ]);
       if (healthRes.status === "fulfilled") setStrategy(healthRes.value.data?.strategy || "weighted_score");
       if (keyRes.status === "fulfilled") {
