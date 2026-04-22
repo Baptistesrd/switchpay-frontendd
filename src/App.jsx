@@ -10,6 +10,7 @@ import DashCharts from "./components/DashCharts";
 import Navbar from "./components/Navbar";
 import DashboardErrorBoundary from "./components/DashboardErrorBoundary";
 import { useApiKey } from "./hooks/useApiKey";
+import { getApiKey, logout } from "./hooks/useAuth";
 
 const EMPTY_METRICS = { summary: {}, by_psp: {}, thompson: {} };
 const TABS = ["New Transaction", "History", "Dashboard"];
@@ -72,19 +73,17 @@ export default function App() {
 
   useEffect(() => {
     async function init() {
-      const [healthRes, keyRes] = await Promise.allSettled([
-        axios.get(`${BACKEND_URL}/health`),
-        process.env.REACT_APP_API_KEY
-          ? Promise.resolve({ data: { api_key: process.env.REACT_APP_API_KEY } })
-          : axios.get(`${BACKEND_URL}/generate-temp-key`),
-      ]);
-      if (healthRes.status === "fulfilled") setStrategy(healthRes.value.data?.strategy || "weighted_score");
-      if (keyRes.status === "fulfilled") {
-        const key = keyRes.value.data?.api_key;
-        if (key) { setAndUseApiKey(key); await fetchAll(key); return; }
-      }
-      const fallback = localStorage.getItem("apiKey");
-      if (fallback) { setAndUseApiKey(fallback); await fetchAll(fallback); }
+      // Use the api_key from the JWT auth system
+      const key = getApiKey();
+      if (!key) { logout(); return; }
+
+      try {
+        const healthRes = await axios.get(`${BACKEND_URL}/health`);
+        setStrategy(healthRes.data?.strategy || "weighted_score");
+      } catch { /* non-critical */ }
+
+      setAndUseApiKey(key);
+      await fetchAll(key);
     }
     init();
     // eslint-disable-next-line react-hooks/exhaustive-deps

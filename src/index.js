@@ -10,11 +10,22 @@ import {
 } from "@chakra-ui/react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import { isAuthenticated, restoreAxiosHeaders } from "./hooks/useAuth";
 
-const Landing  = lazy(() => import("./pages/Landing"));
-const Contact  = lazy(() => import("./pages/Contact"));
-const DocsPage = lazy(() => import("./pages/DocsPage"));
-const App      = lazy(() => import("./App"));
+// Restore JWT + api_key headers from localStorage on every page load
+restoreAxiosHeaders();
+
+const Landing      = lazy(() => import("./pages/Landing"));
+const Contact      = lazy(() => import("./pages/Contact"));
+const DocsPage     = lazy(() => import("./pages/DocsPage"));
+const App          = lazy(() => import("./App"));
+const LoginPage    = lazy(() => import("./pages/LoginPage"));
+const RegisterPage = lazy(() => import("./pages/RegisterPage"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
+
+function ProtectedRoute({ children }) {
+  return isAuthenticated() ? children : <Navigate to="/login" replace />;
+}
 
 function PageLoader() {
   return (
@@ -76,11 +87,14 @@ root.render(
       <Router>
         <Suspense fallback={<PageLoader />}>
           <Routes>
-            <Route path="/"       element={<Landing />} />
-            <Route path="/app"    element={<App />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/docs"   element={<DocsPage />} />
-            <Route path="*"       element={<Navigate to="/" replace />} />
+            <Route path="/"             element={<Landing />} />
+            <Route path="/login"        element={<LoginPage />} />
+            <Route path="/register"     element={<RegisterPage />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/app"          element={<ProtectedRoute><App /></ProtectedRoute>} />
+            <Route path="/contact"      element={<Contact />} />
+            <Route path="/docs"         element={<DocsPage />} />
+            <Route path="*"             element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
       </Router>
